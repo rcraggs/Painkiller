@@ -3,16 +3,16 @@ package com.rcraggs.doubledose.viewmodel
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import com.rcraggs.doubledose.database.AppDatabase
-import com.rcraggs.doubledose.viewmodel.objects.DrugStatus
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.Transformations
 import android.util.Log
+import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Medicine
+import com.rcraggs.doubledose.viewmodel.objects.DrugStatus
 
 
 class HomeViewModel(context: Application): AndroidViewModel(context) {
+
+    var setOfChangedDrugs = HashSet<Int>()
 
     private lateinit var drugs: List<DrugStatus>
     lateinit var latestDose: LiveData<Dose>
@@ -31,6 +31,12 @@ class HomeViewModel(context: Application): AndroidViewModel(context) {
         return drugs
     }
 
+    fun getChangesArray() = setOfChangedDrugs.toIntArray()
+
+    fun clearChanges() {
+        setOfChangedDrugs.clear()
+    }
+
     fun takeDose(drugType: Medicine) {
 
         doseDao.insert(Dose(drugType))
@@ -40,6 +46,7 @@ class HomeViewModel(context: Application): AndroidViewModel(context) {
         val updatedDrug: DrugStatus? = drugs.find { it.type == drugType }
         if (updatedDrug != null){
             updatedDrug.dosesIn24Hours++
+            setOfChangedDrugs.add(drugs.indexOf(updatedDrug)) // So when we update the view we know which to update
         }
     }
 }
