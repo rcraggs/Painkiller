@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 //                    updateDetails()
 //                })
 
-        adapter = DrugAdapter(viewModel?.getDrugStatuses() ?: ArrayList())
+        adapter = DrugAdapter(viewModel?.getDrugStatuses() ?: ArrayList(), viewModel)
         rv_drugs.adapter = adapter
         rv_drugs.layoutManager = LinearLayoutManager(this)
 

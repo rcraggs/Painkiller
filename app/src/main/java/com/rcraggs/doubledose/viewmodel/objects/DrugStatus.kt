@@ -1,6 +1,7 @@
 package com.rcraggs.doubledose.viewmodel.objects
 
-class DrugStatus(val name: CharSequence) {
+import com.rcraggs.doubledose.model.Medicine
 
+class DrugStatus(val name: CharSequence, val type: Medicine ) {
 
 }
