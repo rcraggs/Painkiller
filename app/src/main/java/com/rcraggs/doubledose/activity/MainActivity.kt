@@ -1,9 +1,11 @@
 package com.rcraggs.doubledose.activity
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.ui.DrugAdapter
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
@@ -24,18 +26,19 @@ class MainActivity : AppCompatActivity() {
                 .get(HomeViewModel::class.java)
 
         viewModel.start()
-//
-//        viewModel.getUpdateTrigger().observe(this,
-//                Observer {
-//                    updateDetails()
-//                })
 
-        adapter = DrugAdapter(viewModel.getDrugStatuses() ?: ArrayList(), viewModel::takeDose)
+
+
+        adapter = DrugAdapter(viewModel.getDrugs() ?: ArrayList(), viewModel::takeDose)
         rv_drugs.adapter = adapter
         rv_drugs.layoutManager = LinearLayoutManager(this)
 
 
-        updateDetails()
+
+        viewModel.getLatest().observe(this,
+                Observer {
+                    Log.d("MainActivity", "Noticed Data Change in Main Activity")
+                })
     }
 
     private fun updateDetails() {

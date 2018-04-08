@@ -19,4 +19,7 @@ interface DoseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(d: Dose)
+
+    @Query("SELECT * FROM dose ORDER BY taken desc LIMIT 1")
+    fun getLatest(): LiveData<Dose>
 }
