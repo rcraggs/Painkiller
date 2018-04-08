@@ -8,6 +8,7 @@ import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import com.rcraggs.doubledose.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.drug_card.*
 
 class MainActivity : AppCompatActivity() {
 
