@@ -5,8 +5,9 @@ import android.arch.lifecycle.*
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Medicine
+import com.rcraggs.doubledose.viewmodel.objects.DrugStatus
 
-class HomeViewModel(val context: Application): AndroidViewModel(context) {
+class HomeViewModel(context: Application): AndroidViewModel(context) {
 
     private val update = MutableLiveData<Boolean>()
     fun getUpdateTrigger(): LiveData<Boolean> = update
@@ -18,7 +19,7 @@ class HomeViewModel(val context: Application): AndroidViewModel(context) {
     fun getTimeBeforeNextDose() = timeBeforeNextDose
     fun getMedicineName(): CharSequence? = "Paracetamol".toUpperCase()
 
-    val doseDao = AppDatabase.getInstance(context).doseDao()
+    private val doseDao = AppDatabase.getInstance(context).doseDao()
 
     fun start() {
         val liveData = MediatorLiveData<Boolean>()
@@ -31,6 +32,10 @@ class HomeViewModel(val context: Application): AndroidViewModel(context) {
 
     fun addDose() {
         doseDao.insert(Dose(Medicine.PARACETAMOL))
+    }
+
+    fun getDrugStatuses(): List<DrugStatus>? {
+        return listOf(DrugStatus("Paracetamol"), DrugStatus("Ibroprufen"))
     }
 }
 
