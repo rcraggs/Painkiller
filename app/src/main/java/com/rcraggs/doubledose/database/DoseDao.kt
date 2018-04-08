@@ -12,7 +12,7 @@ import com.rcraggs.doubledose.model.Medicine
 interface DoseDao {
 
     @Query("SELECT * FROM dose WHERE type = :cType ORDER BY taken desc LIMIT 1")
-    fun getLatest(cType: Medicine): Dose
+    fun getLatest(cType: Medicine): LiveData<Dose>
 
     @Query("SELECT * FROM dose ORDER BY taken desc")
     fun getAll(): List<Dose>

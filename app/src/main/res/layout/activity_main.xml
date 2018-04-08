@@ -74,7 +74,7 @@
                     android:padding="@dimen/card_button_margin">
 
                     <ImageView
-                        android:id="@+id/img_main_card41_favorite"
+                        android:id="@+id/img_dose_now"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
