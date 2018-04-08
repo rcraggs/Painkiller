@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.getLatest().observe(this,
                 Observer {
                     Log.d("MainActivity", "Noticed Data Change in Main Activity")
+                    adapter.notifyDataSetChanged()
                 })
     }
 

@@ -32,8 +32,15 @@ class HomeViewModel(context: Application): AndroidViewModel(context) {
     }
 
     fun takeDose(drugType: Medicine) {
+
         doseDao.insert(Dose(drugType))
         Log.d("HomeViewModel", "Taking dose of $drugType")
+
+        // todo moved to a general purpose update all drugs thing?
+        val updatedDrug: DrugStatus? = drugs.find { it.type == drugType }
+        if (updatedDrug != null){
+            updatedDrug.dosesIn24Hours++
+        }
     }
 }
 

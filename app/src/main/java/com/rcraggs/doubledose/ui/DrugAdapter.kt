@@ -30,7 +30,7 @@ class DrugHolder(private val v: View, private val doseAction: (Medicine) -> Unit
 
     fun bindDrug(item: DrugStatus) {
         v.tv_medicine_type.text = item.name
-        v.tv_amount_taken.text = "1/4"
+        v.tv_amount_taken.text = "${item.dosesIn24Hours}/4"
         v.tv_next_dose.text = System.currentTimeMillis().toString()
 
         v.img_dose_now.setOnClickListener {

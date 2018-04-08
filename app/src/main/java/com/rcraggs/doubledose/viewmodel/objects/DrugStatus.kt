@@ -4,4 +4,8 @@ import com.rcraggs.doubledose.model.Medicine
 
 class DrugStatus(val name: CharSequence, val type: Medicine ) {
 
+    var dosesIn24Hours: Int = 0
+
+
+
 }
