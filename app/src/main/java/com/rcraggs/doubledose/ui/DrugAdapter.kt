@@ -5,18 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.rcraggs.doubledose.R
-import com.rcraggs.doubledose.viewmodel.HomeViewModel
+import com.rcraggs.doubledose.model.Medicine
 import com.rcraggs.doubledose.viewmodel.objects.DrugStatus
 import kotlinx.android.synthetic.main.drug_card.view.*
-import java.util.*
 
-class DrugAdapter(private val items: List<DrugStatus>, val vm: HomeViewModel): RecyclerView.Adapter<DrugHolder>() {
+class DrugAdapter(private val items: List<DrugStatus>, private val doseAction: (Medicine) -> Unit): RecyclerView.Adapter<DrugHolder>() {
 
     override fun getItemCount() = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrugHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.drug_card, parent, false)
-        return DrugHolder(v, vm)
+        return DrugHolder(v, doseAction)
     }
 
     override fun onBindViewHolder(holder: DrugHolder, position: Int) {
@@ -25,7 +24,7 @@ class DrugAdapter(private val items: List<DrugStatus>, val vm: HomeViewModel): R
     }
 }
 
-class DrugHolder(private val v: View, val vm: HomeViewModel): RecyclerView.ViewHolder(v) {
+class DrugHolder(private val v: View, private val doseAction: (Medicine) -> Unit): RecyclerView.ViewHolder(v) {
 
     // todo homeviewmodel as an interface with a click handler (or lambda)
 
@@ -35,7 +34,7 @@ class DrugHolder(private val v: View, val vm: HomeViewModel): RecyclerView.ViewH
         v.tv_next_dose.text = System.currentTimeMillis().toString()
 
         v.img_dose_now.setOnClickListener {
-            vm.takeDose(item.type)
+            doseAction(item.type)
         }
     }
 }
