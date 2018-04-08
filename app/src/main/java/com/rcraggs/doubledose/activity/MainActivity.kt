@@ -1,6 +1,5 @@
 package com.rcraggs.doubledose.activity
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -10,7 +9,6 @@ import com.rcraggs.doubledose.ui.DrugAdapter
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import com.rcraggs.doubledose.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.drug_card.*
 
 class MainActivity : AppCompatActivity() {
 
