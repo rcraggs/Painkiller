@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.ui.DrugStatus
+import org.threeten.bp.Instant
 import java.util.*
 
 
@@ -20,14 +21,23 @@ class HomeViewModel(context: Application): AndroidViewModel(context) {
     fun start() {
         latestDose = doseDao.getLatest()
 
-        drugs = listOf(DrugStatus("Paracetamol", "PARACETAMOL"),
-                DrugStatus("Ibroprufen", "IBROPRUFEN"))
+        drugs = listOf(DrugStatus("Paracetamol"),
+                DrugStatus("Ibroprufen"))
     }
 
-    fun getLatest() = latestDose
+    fun getUpdate() = latestDose
 
     fun getDrugs(): List<DrugStatus>? {
         return drugs
+    }
+
+    fun updateDrugStatus(pos: Int) {
+
+        // todo is this something that a mediator can deal with?
+
+        val drug = drugs[pos]
+        drug.dosesIn24Hours = doseDao.getDosesSince(drug.type, Instant.now().minusSeconds(60 * 60 * 24)).size
+        drug.timeOfLastDose = doseDao.getLatest(drug.type).taken
     }
 
     fun getChangesArray() = setOfChangedDrugs.toIntArray()
@@ -40,10 +50,8 @@ class HomeViewModel(context: Application): AndroidViewModel(context) {
 
         doseDao.insert(Dose(drugType))
 
-        // todo moved to a general purpose update all drugs thing?
         val updatedDrug: DrugStatus? = drugs.find { it.type == drugType }
         if (updatedDrug != null){
-            updatedDrug.dosesIn24Hours++
             setOfChangedDrugs.add(drugs.indexOf(updatedDrug)) // So when we update the view we know which to update
         }
     }

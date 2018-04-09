@@ -8,7 +8,7 @@ import android.content.Context
 import com.rcraggs.doubledose.model.DateConverter
 import com.rcraggs.doubledose.model.Dose
 
-@Database(entities = [Dose::class], version = 1, exportSchema = false)
+@Database(entities = [Dose::class], version = 2, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

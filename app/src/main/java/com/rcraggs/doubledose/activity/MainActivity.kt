@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.ui.DrugAdapter
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
@@ -31,9 +30,10 @@ class MainActivity : AppCompatActivity() {
         rv_drugs.adapter = adapter
         rv_drugs.layoutManager = LinearLayoutManager(this)
 
-        viewModel.getLatest().observe(this,
+        viewModel.getUpdate().observe(this,
                 Observer {
                     viewModel.getChangesArray().forEach {
+                        viewModel.updateDrugStatus(it)
                         adapter.notifyItemChanged(it)
                     }
                     viewModel.clearChanges()

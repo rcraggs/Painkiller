@@ -24,9 +24,9 @@ class DrugAdapter(private val items: List<DrugStatus>, private val doseAction: (
     class DrugHolder(private val v: View, private val doseAction: (String) -> Unit): RecyclerView.ViewHolder(v) {
 
         fun bindDrug(item: DrugStatus) {
-            v.tv_medicine_type.text = item.name
-            v.tv_amount_taken.text = "${item.dosesIn24Hours}/4"
-            v.tv_next_dose.text = System.currentTimeMillis().toString()
+            v.tv_medicine_type.text = item.type
+            v.tv_amount_taken.text = item.getNumberOfDosesInfo()
+            v.tv_next_dose.text = item.getTimeOfLastDoseInfo()
 
             v.img_dose_now.setOnClickListener {
                 doseAction(item.type)

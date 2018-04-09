@@ -7,6 +7,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.DoseDao
 import com.rcraggs.doubledose.model.Dose
+import com.rcraggs.doubledose.ui.DrugStatus
 import com.rcraggs.doubledose.util.blockingObserve
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -15,6 +16,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.properties.Delegates
 import org.threeten.bp.Instant
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
+
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -70,7 +75,7 @@ class TestDoseDoa {
 
         val d = Dose(paracetamol)
         doseDao.insert(d)
-        val retrieved = doseDao.getLatest(paracetamol).blockingObserve()
+        val retrieved = doseDao.getLatest(paracetamol)
         assertEquals(retrieved, d)
     }
 
@@ -150,6 +155,33 @@ class TestDoseDoa {
 
         val doses = doseDao.getDosesSince(ibroprufen, get24HoursAgo())
         assertEquals(1, doses.size)
+    }
+
+
+    @Test
+    fun testLastDoseTakenYesterday(){
+
+        val aTimeYesterday = Instant.now().minusSeconds(60*60*24)
+        val ld1: LocalDateTime = LocalDateTime.ofInstant(aTimeYesterday, ZoneId.systemDefault())
+
+        val status = DrugStatus(paracetamol)
+        status.timeOfLastDose = aTimeYesterday
+        val theTimeFormatterForTimeOnly = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(ld1)
+
+        assertEquals(status.getTimeOfLastDoseInfo(), theTimeFormatterForTimeOnly)
+    }
+
+    @Test
+    fun testLastDoseTakenToday(){
+
+        val aTimeToday = Instant.now()
+        val ld1: LocalDateTime = LocalDateTime.ofInstant(aTimeToday, ZoneId.systemDefault())
+
+        val status = DrugStatus(paracetamol)
+        status.timeOfLastDose = aTimeToday
+        val theTimeFormatterForTimeOnly = DateTimeFormatter.ISO_LOCAL_TIME.format(ld1)
+
+        assertEquals(status.getTimeOfLastDoseInfo(), theTimeFormatterForTimeOnly)
     }
 
     private fun get24HoursAgo(): Instant {
