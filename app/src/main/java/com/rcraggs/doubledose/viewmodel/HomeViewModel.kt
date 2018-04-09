@@ -3,11 +3,11 @@ package com.rcraggs.doubledose.viewmodel
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import android.util.Log
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Medicine
-import com.rcraggs.doubledose.viewmodel.objects.DrugStatus
+import com.rcraggs.doubledose.ui.DrugStatus
+import java.util.*
 
 
 class HomeViewModel(context: Application): AndroidViewModel(context) {
@@ -40,7 +40,6 @@ class HomeViewModel(context: Application): AndroidViewModel(context) {
     fun takeDose(drugType: Medicine) {
 
         doseDao.insert(Dose(drugType))
-        Log.d("HomeViewModel", "Taking dose of $drugType")
 
         // todo moved to a general purpose update all drugs thing?
         val updatedDrug: DrugStatus? = drugs.find { it.type == drugType }

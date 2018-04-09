@@ -7,13 +7,12 @@ import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.DoseDao
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Medicine
+import com.rcraggs.doubledose.util.blockingObserve
 import org.junit.After
-
+import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
-import org.junit.Before
 import kotlin.properties.Delegates
 
 /**
@@ -22,9 +21,11 @@ import kotlin.properties.Delegates
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class AndroidTests {
+class TestDoseDoa {
+
     @Test
     fun useAppContext() {
+
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
         assertEquals("com.rcraggs.doubledose", appContext.packageName)
@@ -50,8 +51,7 @@ class AndroidTests {
 
         val d = Dose(Medicine.PARACETAMOL)
         doseDao.insert(d)
-        val retrieved = doseDao.getLatest(Medicine.PARACETAMOL)
-
+        val retrieved = doseDao.getLatest(Medicine.PARACETAMOL).blockingObserve()
         assertEquals(retrieved, d)
     }
 
@@ -64,7 +64,6 @@ class AndroidTests {
         doseDao.insert(Dose(Medicine.IBROPRUFEN))
 
         val retrieved = doseDao.getAll()
-
         assertEquals(retrieved.size, 3)
     }
 }
