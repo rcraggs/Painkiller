@@ -27,29 +27,16 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.start()
 
-
-
         adapter = DrugAdapter(viewModel.getDrugs() ?: ArrayList(), viewModel::takeDose)
         rv_drugs.adapter = adapter
         rv_drugs.layoutManager = LinearLayoutManager(this)
 
-
-
         viewModel.getLatest().observe(this,
                 Observer {
-                    Log.d("MainActivity", "Noticed Data Change in Main Activity")
-
                     viewModel.getChangesArray().forEach {
                         adapter.notifyItemChanged(it)
                     }
-
                     viewModel.clearChanges()
                 })
-    }
-
-    private fun updateDetails() {
-//        tv_amount_taken.text = viewModel.getTakenIn24House()
-//        tv_next_dose.text = viewModel.getTimeBeforeNextDose()
-//        tv_medicine_type.text = viewModel.getMedicineName()
     }
 }
