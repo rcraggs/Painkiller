@@ -23,6 +23,10 @@ class HomeViewModel(context: Application): AndroidViewModel(context) {
 
         drugs = listOf(DrugStatus("Paracetamol"),
                 DrugStatus("Ibroprufen"))
+
+        drugs.forEachIndexed { index, _ ->
+            updateDrugStatus(index)
+        }
     }
 
     fun getUpdate() = latestDose
@@ -37,7 +41,7 @@ class HomeViewModel(context: Application): AndroidViewModel(context) {
 
         val drug = drugs[pos]
         drug.dosesIn24Hours = doseDao.getDosesSince(drug.type, Instant.now().minusSeconds(60 * 60 * 24)).size
-        drug.timeOfLastDose = doseDao.getLatest(drug.type).taken
+        drug.timeOfLastDose = doseDao.getLatest(drug.type)?.taken
     }
 
     fun getChangesArray() = setOfChangedDrugs.toIntArray()

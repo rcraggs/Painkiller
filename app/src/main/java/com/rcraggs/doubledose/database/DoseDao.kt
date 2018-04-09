@@ -9,7 +9,7 @@ import org.threeten.bp.Instant
 interface DoseDao {
 
     @Query("SELECT * FROM dose WHERE type = :type ORDER BY taken desc LIMIT 1")
-    fun getLatest(type: String): Dose
+    fun getLatest(type: String): Dose?
 
     @Query("SELECT * FROM dose ORDER BY taken desc")
     fun getAll(): List<Dose>

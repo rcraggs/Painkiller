@@ -2,9 +2,13 @@ package com.rcraggs.doubledose.activity
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.ui.DrugAdapter
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
@@ -38,5 +42,26 @@ class MainActivity : AppCompatActivity() {
                     }
                     viewModel.clearChanges()
                 })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when (item.itemId) {
+
+            R.id.action_settings -> {
+                true
+            }
+            R.id.action_show_history -> {
+                Log.d("MainActvity", "History Clicked")
+//                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

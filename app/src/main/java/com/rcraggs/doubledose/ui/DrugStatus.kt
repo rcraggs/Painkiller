@@ -10,6 +10,9 @@ import org.threeten.bp.format.DateTimeFormatter
 
 class DrugStatus(val type: String ) {
 
+    val doseTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+    val doseDateTimeFormatter = DateTimeFormatter.ofPattern("E d-MMM-yyyy h:mm a")
+
     var dosesIn24Hours: Int = 0
     var timeOfLastDose: Instant? = null
 
@@ -29,9 +32,9 @@ class DrugStatus(val type: String ) {
         // First check if the last dose was today so we don't need to print the date
         return if (nowDateTime.dayOfYear == doseLocalDateTime.dayOfYear &&
                 nowDateTime.year == doseLocalDateTime.year){
-            DateTimeFormatter.ISO_LOCAL_TIME.format(doseLocalDateTime)
+            doseTimeFormatter.format(doseLocalDateTime)
         }else{
-            DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(doseLocalDateTime)
+            doseDateTimeFormatter.format(doseLocalDateTime)
         }
     }
 }
