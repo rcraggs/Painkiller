@@ -1,11 +1,9 @@
 package com.rcraggs.doubledose.database
 
 import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import com.rcraggs.doubledose.model.Dose
+import org.threeten.bp.Instant
 
 @Dao
 interface DoseDao {
@@ -17,8 +15,19 @@ interface DoseDao {
     fun getAll(): List<Dose>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(d: Dose)
+    fun insert(d: Dose) : Long
+
+    @Delete
+    fun delete(d: Dose)
+
+    @Query("DELETE FROM dose")
+    fun deleteAll()
 
     @Query("SELECT * FROM dose ORDER BY taken desc LIMIT 1")
     fun getLatest(): LiveData<Dose>
+
+    @Query("SELECT * FROM dose WHERE type = :type AND taken > :date ORDER BY taken DESC")
+    fun getDosesSince(type: String, date: Instant): List<Dose>
+
+
 }

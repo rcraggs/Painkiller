@@ -1,6 +1,7 @@
 package com.rcraggs.doubledose.model
 
 import android.arch.persistence.room.*
+import org.threeten.bp.Instant
 
 import java.util.*
 
@@ -14,7 +15,7 @@ class Dose (
 
     @TypeConverters(DateConverter::class)
     @ColumnInfo(name="taken")
-    var taken: Date = Calendar.getInstance().time
+    var taken = Instant.now()
 
     override fun toString(): String {
         return "$type at $taken"
@@ -39,12 +40,12 @@ class Dose (
 class DateConverter {
 
     @TypeConverter
-    fun fromTimestamp(value: Long): Date {
-        return Date(value)
+    fun fromTimestamp(value: Long): Instant {
+        return Instant.ofEpochMilli(value)
     }
 
     @TypeConverter
-    fun dateToTimestamp(date: Date): Long {
-        return date.time
+    fun dateToTimestamp(date: Instant): Long {
+        return date.toEpochMilli()
     }
 }

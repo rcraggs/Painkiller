@@ -3,6 +3,7 @@ package com.rcraggs.doubledose
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.DoseDao
 import com.rcraggs.doubledose.model.Dose
@@ -13,6 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.properties.Delegates
+import org.threeten.bp.Instant
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -38,6 +40,7 @@ class TestDoseDoa {
         val context = InstrumentationRegistry.getTargetContext();
         db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build();
         doseDao = db.doseDao()
+        AndroidThreeTen.init(context);
     }
 
     @After
@@ -45,24 +48,111 @@ class TestDoseDoa {
         db.close()
     }
 
+    private val paracetamol = "PARACETAMOL"
+    private val ibroprufen = "IBROPRUFEN"
+
+    @Test
+    fun testAddThenDeleteLeavesNone() {
+
+        val startNumber = doseDao.getAll().size
+
+        val d = Dose(paracetamol)
+        val insertedId = doseDao.insert(d)
+        d.id = insertedId
+        doseDao.delete(d)
+
+        val endNumber = doseDao.getAll().size
+        assertEquals(endNumber, startNumber)
+    }
+
     @Test
     fun canSaveAndGetLatest() {
 
-        val d = Dose("PARACETAMOL")
+        val d = Dose(paracetamol)
         doseDao.insert(d)
-        val retrieved = doseDao.getLatest("PARACETAMOL").blockingObserve()
+        val retrieved = doseDao.getLatest(paracetamol).blockingObserve()
         assertEquals(retrieved, d)
     }
 
+    @Test
+    fun testDeleteAll() {
+
+        doseDao.insert(Dose(paracetamol))
+        doseDao.insert(Dose(paracetamol))
+        doseDao.insert(Dose(ibroprufen))
+
+        doseDao.deleteAll()
+
+        val endNumber = doseDao.getAll().size
+        assertEquals(0, endNumber)
+    }
 
     @Test
     fun canSaveAndGet3() {
 
-        doseDao.insert(Dose("PARACETAMOL"))
-        doseDao.insert(Dose("PARACETAMOL"))
-        doseDao.insert(Dose("IBROPRUFEN"))
+        doseDao.insert(Dose(paracetamol))
+        doseDao.insert(Dose(paracetamol))
+        doseDao.insert(Dose(ibroprufen))
 
         val retrieved = doseDao.getAll()
         assertEquals(retrieved.size, 3)
+    }
+
+    @Test
+    fun testGetLatestAnyType() {
+
+        doseDao.insert(Dose(paracetamol))
+        doseDao.insert(Dose(paracetamol))
+
+        val d = Dose(ibroprufen)
+        d.taken = d.taken.plusSeconds(1000)
+
+        doseDao.insert(d)
+
+
+        val retrieved = doseDao.getLatest().blockingObserve()
+        assertEquals(d, retrieved)
+    }
+
+    @Test
+    fun testNoDosesGivesNothingIn24Hours() {
+        val doses = doseDao.getDosesSince(paracetamol, get24HoursAgo())
+        assertEquals(0, doses.size)
+    }
+
+    @Test
+    fun testNoDosesOfSameTypeGivesNothingIn24Hours() {
+
+        doseDao.insert(Dose(ibroprufen))
+
+        val doses = doseDao.getDosesSince(paracetamol, get24HoursAgo())
+        assertEquals(0, doses.size)
+    }
+
+    @Test
+    fun testADoseJustOver24HoursGiveNothin() {
+
+        val d = Dose(ibroprufen)
+        d.taken = get24HoursAgo().minusSeconds(10)
+        doseDao.insert(d)
+
+        val doses = doseDao.getDosesSince(ibroprufen, get24HoursAgo())
+        assertEquals(0, doses.size)
+    }
+
+
+    @Test
+    fun testADoseJustUnder24HoursGiveOne() {
+
+        val d = Dose(ibroprufen)
+        d.taken = get24HoursAgo().plusSeconds(10)
+        doseDao.insert(d)
+
+        val doses = doseDao.getDosesSince(ibroprufen, get24HoursAgo())
+        assertEquals(1, doses.size)
+    }
+
+    private fun get24HoursAgo(): Instant {
+        return Instant.now().minusSeconds(60 * 60 * 24)
     }
 }
