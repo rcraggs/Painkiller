@@ -6,7 +6,6 @@ import android.support.test.runner.AndroidJUnit4
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.DoseDao
 import com.rcraggs.doubledose.model.Dose
-import com.rcraggs.doubledose.model.Medicine
 import com.rcraggs.doubledose.util.blockingObserve
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -49,9 +48,9 @@ class TestDoseDoa {
     @Test
     fun canSaveAndGetLatest() {
 
-        val d = Dose(Medicine.PARACETAMOL)
+        val d = Dose("PARACETAMOL")
         doseDao.insert(d)
-        val retrieved = doseDao.getLatest(Medicine.PARACETAMOL).blockingObserve()
+        val retrieved = doseDao.getLatest("PARACETAMOL").blockingObserve()
         assertEquals(retrieved, d)
     }
 
@@ -59,9 +58,9 @@ class TestDoseDoa {
     @Test
     fun canSaveAndGet3() {
 
-        doseDao.insert(Dose(Medicine.PARACETAMOL))
-        doseDao.insert(Dose(Medicine.PARACETAMOL))
-        doseDao.insert(Dose(Medicine.IBROPRUFEN))
+        doseDao.insert(Dose("PARACETAMOL"))
+        doseDao.insert(Dose("PARACETAMOL"))
+        doseDao.insert(Dose("IBROPRUFEN"))
 
         val retrieved = doseDao.getAll()
         assertEquals(retrieved.size, 3)

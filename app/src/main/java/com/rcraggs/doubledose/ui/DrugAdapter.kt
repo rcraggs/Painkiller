@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.rcraggs.doubledose.R
-import com.rcraggs.doubledose.model.Medicine
 import kotlinx.android.synthetic.main.drug_card.view.*
 
-class DrugAdapter(private val items: List<DrugStatus>, private val doseAction: (Medicine) -> Unit): RecyclerView.Adapter<DrugAdapter.DrugHolder>() {
+class DrugAdapter(private val items: List<DrugStatus>, private val doseAction: (String) -> Unit): RecyclerView.Adapter<DrugAdapter.DrugHolder>() {
 
     override fun getItemCount() = items.size
 
@@ -22,7 +21,7 @@ class DrugAdapter(private val items: List<DrugStatus>, private val doseAction: (
         holder.bindDrug(item)
     }
 
-    class DrugHolder(private val v: View, private val doseAction: (Medicine) -> Unit): RecyclerView.ViewHolder(v) {
+    class DrugHolder(private val v: View, private val doseAction: (String) -> Unit): RecyclerView.ViewHolder(v) {
 
         fun bindDrug(item: DrugStatus) {
             v.tv_medicine_type.text = item.name

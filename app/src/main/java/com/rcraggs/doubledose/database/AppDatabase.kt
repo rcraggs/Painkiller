@@ -7,10 +7,9 @@ import android.arch.persistence.room.TypeConverters
 import android.content.Context
 import com.rcraggs.doubledose.model.DateConverter
 import com.rcraggs.doubledose.model.Dose
-import com.rcraggs.doubledose.model.MedicineTypeConverter
 
 @Database(entities = [Dose::class], version = 1, exportSchema = false)
-@TypeConverters(DateConverter::class, MedicineTypeConverter::class)
+@TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
     companion object {

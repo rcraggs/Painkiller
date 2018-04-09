@@ -6,9 +6,8 @@ import java.util.*
 
 @Entity(tableName = "dose")
 class Dose (
-        @TypeConverters(MedicineTypeConverter::class)
         @ColumnInfo(name="type")
-        var type: Medicine = Medicine.EMPTY){
+        var type: String = ""){
 
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true) var id: Long = 0
@@ -48,23 +47,4 @@ class DateConverter {
     fun dateToTimestamp(date: Date): Long {
         return date.time
     }
-}
-
-class MedicineTypeConverter {
-
-    @TypeConverter
-    fun toConsumptionType(ordinal : Int): Medicine{
-        return Medicine.values()[ordinal]
-    }
-
-    @TypeConverter
-    fun toInt(type : Medicine) : Int {
-        return type.ordinal
-    }
-}
-
-enum class Medicine private constructor(val code: Int) {
-    PARACETAMOL(0),
-    IBROPRUFEN(1),
-    EMPTY(-1)
 }

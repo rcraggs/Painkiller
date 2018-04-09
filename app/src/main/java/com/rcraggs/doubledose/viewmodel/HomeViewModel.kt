@@ -5,7 +5,6 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.model.Dose
-import com.rcraggs.doubledose.model.Medicine
 import com.rcraggs.doubledose.ui.DrugStatus
 import java.util.*
 
@@ -15,14 +14,14 @@ class HomeViewModel(context: Application): AndroidViewModel(context) {
     var setOfChangedDrugs = HashSet<Int>()
 
     private lateinit var drugs: List<DrugStatus>
-    lateinit var latestDose: LiveData<Dose>
+    private lateinit var latestDose: LiveData<Dose>
     private val doseDao = AppDatabase.getInstance(context).doseDao()
 
     fun start() {
         latestDose = doseDao.getLatest()
 
-        drugs = listOf(DrugStatus("Paracetamol", Medicine.PARACETAMOL),
-                DrugStatus("Ibroprufen", Medicine.IBROPRUFEN))
+        drugs = listOf(DrugStatus("Paracetamol", "PARACETAMOL"),
+                DrugStatus("Ibroprufen", "IBROPRUFEN"))
     }
 
     fun getLatest() = latestDose
@@ -37,7 +36,7 @@ class HomeViewModel(context: Application): AndroidViewModel(context) {
         setOfChangedDrugs.clear()
     }
 
-    fun takeDose(drugType: Medicine) {
+    fun takeDose(drugType: String) {
 
         doseDao.insert(Dose(drugType))
 
