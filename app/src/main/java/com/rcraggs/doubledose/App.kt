@@ -2,10 +2,13 @@ package com.rcraggs.doubledose
 
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.rcraggs.doubledose.di.appModule
+import org.koin.android.ext.android.startKoin
 
 class App: Application() {
     override fun onCreate() {
         super.onCreate()
-        AndroidThreeTen.init(this);
+        AndroidThreeTen.init(this)
+        startKoin(this, listOf(appModule))
     }
 }

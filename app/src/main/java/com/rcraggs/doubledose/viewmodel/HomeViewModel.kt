@@ -1,22 +1,21 @@
 package com.rcraggs.doubledose.viewmodel
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import com.rcraggs.doubledose.database.AppDatabase
+import android.arch.lifecycle.ViewModel
+import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.ui.DrugStatus
 import org.threeten.bp.Instant
 import java.util.*
 
 
-class HomeViewModel(context: Application): AndroidViewModel(context) {
+class HomeViewModel(repo: AppRepo): ViewModel() {
 
     var setOfChangedDrugs = HashSet<Int>()
 
     private lateinit var drugs: List<DrugStatus>
     private lateinit var latestDose: LiveData<Dose>
-    private val doseDao = AppDatabase.getInstance(context).doseDao()
+    private val doseDao = repo.db.doseDao()
 
     fun start() {
         latestDose = doseDao.getLatest()

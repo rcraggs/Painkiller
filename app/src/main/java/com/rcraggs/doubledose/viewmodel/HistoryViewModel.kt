@@ -1,16 +1,16 @@
 package com.rcraggs.doubledose.viewmodel
 
 import android.arch.lifecycle.ViewModel
-import android.content.Context
-import com.rcraggs.doubledose.database.AppDatabase
+import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 
-class HistoryViewModel(context: Context): ViewModel(){
+class HistoryViewModel(val repo: AppRepo): ViewModel(){
 
     lateinit var doses: List<Dose>
-    private val doseDao = AppDatabase.getInstance(context).doseDao()
 
     fun start(type: String = "") {
+
+        val doseDao = repo.db.doseDao()
 
         doses = if (type == null || type.isBlank()){
             doseDao.getAll()
@@ -18,5 +18,4 @@ class HistoryViewModel(context: Context): ViewModel(){
             doseDao.getAll(type)
         }
     }
-
 }
