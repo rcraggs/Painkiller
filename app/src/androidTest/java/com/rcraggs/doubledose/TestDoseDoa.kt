@@ -166,9 +166,9 @@ class TestDoseDoa {
 
         val status = DrugStatus(paracetamol)
         status.timeOfLastDose = aTimeYesterday
-        val theTimeFormatterForTimeOnly = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(ld1)
+        val theTimeFormatterWithDate = DrugStatus.doseDateTimeFormatter.format(ld1)
 
-        assertEquals(status.getTimeOfLastDoseInfo(), theTimeFormatterForTimeOnly)
+        assertEquals(status.getTimeOfLastDoseInfo(), theTimeFormatterWithDate)
     }
 
     @Test
@@ -179,7 +179,7 @@ class TestDoseDoa {
 
         val status = DrugStatus(paracetamol)
         status.timeOfLastDose = aTimeToday
-        val theTimeFormatterForTimeOnly = DateTimeFormatter.ISO_LOCAL_TIME.format(ld1)
+        val theTimeFormatterForTimeOnly = DrugStatus.doseTimeFormatter.format(ld1)
 
         assertEquals(status.getTimeOfLastDoseInfo(), theTimeFormatterForTimeOnly)
     }

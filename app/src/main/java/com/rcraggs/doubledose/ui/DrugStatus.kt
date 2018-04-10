@@ -10,9 +10,6 @@ import org.threeten.bp.format.DateTimeFormatter
 
 class DrugStatus(val type: String ) {
 
-    val doseTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
-    val doseDateTimeFormatter = DateTimeFormatter.ofPattern("E d-MMM-yyyy h:mm a")
-
     var dosesIn24Hours: Int = 0
     var timeOfLastDose: Instant? = null
 
@@ -36,5 +33,10 @@ class DrugStatus(val type: String ) {
         }else{
             doseDateTimeFormatter.format(doseLocalDateTime)
         }
+    }
+
+    companion object {
+        val doseTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+        val doseDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("E d-MMM-yyyy h:mm a")
     }
 }
