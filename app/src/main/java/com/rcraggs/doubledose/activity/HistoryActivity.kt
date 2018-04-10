@@ -8,7 +8,6 @@ import com.rcraggs.doubledose.ui.DoseAdapter
 import com.rcraggs.doubledose.viewmodel.HistoryViewModel
 import kotlinx.android.synthetic.main.activity_history.*
 import org.koin.android.architecture.ext.viewModel
-import org.koin.android.ext.android.inject
 
 class HistoryActivity : AppCompatActivity() {
 

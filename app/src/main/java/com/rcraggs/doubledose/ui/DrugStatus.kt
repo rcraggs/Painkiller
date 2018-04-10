@@ -3,7 +3,6 @@ package com.rcraggs.doubledose.ui
 import com.rcraggs.doubledose.model.Drug
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.MonthDay
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 

@@ -37,7 +37,6 @@ class HomeViewModel(repo: AppRepo): ViewModel() {
     fun updateDrugStatus(pos: Int) {
 
         // todo is this something that a mediator can deal with?
-
         val drug = drugs[pos]
         drug.dosesIn24Hours = doseDao.getDosesSince(drug.type, Instant.now().minusSeconds(60 * 60 * 24)).size
         drug.timeOfLastDose = doseDao.getLatest(drug.type)?.taken

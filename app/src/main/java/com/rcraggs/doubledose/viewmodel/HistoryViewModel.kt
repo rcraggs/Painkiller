@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 
+@Suppress("MemberVisibilityCanBePrivate")
 class HistoryViewModel(val repo: AppRepo): ViewModel(){
 
     lateinit var doses: List<Dose>
@@ -12,7 +13,7 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
 
         val doseDao = repo.db.doseDao()
 
-        doses = if (type == null || type.isBlank()){
+        doses = if (type.isBlank()){
             doseDao.getAll()
         }else{
             doseDao.getAll(type)

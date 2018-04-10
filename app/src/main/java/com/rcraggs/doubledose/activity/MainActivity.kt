@@ -17,7 +17,6 @@ import org.koin.android.architecture.ext.viewModel
 class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<HomeViewModel>()
-    private lateinit var adapter: DrugAdapter // todo - does this need to be a member?
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.start()
 
-        adapter = DrugAdapter(viewModel.getDrugs() ?: ArrayList(), viewModel::takeDose)
+        val adapter = DrugAdapter(viewModel.getDrugs() ?: ArrayList(), viewModel::takeDose)
         rv_drugs.adapter = adapter
         rv_drugs.layoutManager = LinearLayoutManager(this)
 
