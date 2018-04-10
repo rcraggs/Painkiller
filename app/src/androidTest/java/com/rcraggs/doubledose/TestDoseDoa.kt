@@ -8,6 +8,7 @@ import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.DoseDao
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.ui.DrugStatus
+import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.blockingObserve
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -166,9 +167,9 @@ class TestDoseDoa {
 
         val status = DrugStatus(paracetamol)
         status.timeOfLastDose = aTimeYesterday
-        val theTimeFormatterWithDate = DrugStatus.doseDateTimeFormatter.format(ld1)
 
-        assertEquals(status.getTimeOfLastDoseInfo(), theTimeFormatterWithDate)
+        assertEquals(status.getTimeOfLastDoseInfo(), Constants.NONE_TODAY)
+
     }
 
     @Test

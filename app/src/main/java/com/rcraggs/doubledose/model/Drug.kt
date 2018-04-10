@@ -1,7 +1,8 @@
 package com.rcraggs.doubledose.model
 
 data class Drug(
-        val maxDosesPer24Hours: Int = 4
+        val maxDosesPer24Hours: Int = 4,
+        val hoursBetweenDoses: Long = 2
 ) {
 
     companion object {
