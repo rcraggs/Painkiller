@@ -7,13 +7,16 @@ import android.view.ViewGroup
 import com.rcraggs.doubledose.R
 import kotlinx.android.synthetic.main.drug_card.view.*
 
-class DrugAdapter(private val items: List<DrugStatus>, private val doseAction: (String) -> Unit): RecyclerView.Adapter<DrugAdapter.DrugHolder>() {
+class DrugAdapter(private val items: List<DrugStatus>,
+                  private val doseAction: (String) -> Unit,
+                  private val doseChooseAction: (String) -> Unit
+                  ): RecyclerView.Adapter<DrugAdapter.DrugHolder>() {
 
     override fun getItemCount() = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrugHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.drug_card, parent, false)
-        return DrugHolder(v, doseAction)
+        return DrugHolder(v, doseAction, doseChooseAction)
     }
 
     override fun onBindViewHolder(holder: DrugHolder, position: Int) {
@@ -21,7 +24,11 @@ class DrugAdapter(private val items: List<DrugStatus>, private val doseAction: (
         holder.bindDrug(item)
     }
 
-    class DrugHolder(private val v: View, private val doseAction: (String) -> Unit): RecyclerView.ViewHolder(v) {
+    class DrugHolder(
+            private val v: View,
+            private val doseAction: (String) -> Unit,
+            private val doseChooseAction: (String) -> Unit)
+        : RecyclerView.ViewHolder(v) {
 
         fun bindDrug(item: DrugStatus) {
             v.tv_medicine_type.text = item.type
@@ -30,6 +37,10 @@ class DrugAdapter(private val items: List<DrugStatus>, private val doseAction: (
 
             v.img_dose_now.setOnClickListener {
                 doseAction(item.type)
+            }
+
+            v.img_dose_choose.setOnClickListener {
+                doseChooseAction(item.type)
             }
         }
     }

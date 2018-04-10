@@ -13,6 +13,7 @@ import com.rcraggs.doubledose.ui.DrugAdapter
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.architecture.ext.viewModel
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,7 +25,9 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.start()
 
-        val adapter = DrugAdapter(viewModel.getDrugs() ?: ArrayList(), viewModel::takeDose)
+        val adapter = DrugAdapter(viewModel.getDrugs() ?: ArrayList(),
+                viewModel::takeDose,
+                this::chooseDoseTime)
         rv_drugs.adapter = adapter
         rv_drugs.layoutManager = LinearLayoutManager(this)
 
@@ -36,6 +39,17 @@ class MainActivity : AppCompatActivity() {
                     }
                     viewModel.clearChanges()
                 })
+    }
+
+    private fun chooseDoseTime(drugType: String) {
+        val newFragment = TimePickerFragment()
+
+        // Set the drug type
+        val bundle = Bundle()
+        bundle.putString(TimePickerFragment.ARG_DRUG_TYPE, drugType)
+        newFragment.arguments = bundle
+
+        newFragment.show(fragmentManager, "timepicker")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -51,12 +65,15 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_show_history -> {
-                Log.d("MainActvity", "History Clicked")
                 val intent = Intent(this, HistoryActivity::class.java)
                 startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    fun takeDose(type: String, hourOfDay: Int, minute: Int) {
+        viewModel.takeDose(type, hourOfDay, minute)
     }
 }

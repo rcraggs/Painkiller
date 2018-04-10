@@ -6,8 +6,9 @@ import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.ui.DrugStatus
 import org.threeten.bp.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import java.util.*
-
 
 class HomeViewModel(repo: AppRepo): ViewModel() {
 
@@ -51,9 +52,20 @@ class HomeViewModel(repo: AppRepo): ViewModel() {
     fun takeDose(drugType: String) {
 
         doseDao.insert(Dose(drugType))
+        setDrugTypeAsChanged(drugType)
+    }
 
+    fun takeDose(drugType: String, hourOfDay: Int, minute: Int) {
+        val dose = Dose(drugType)
+        val takenTime = LocalDateTime.now().withHour(hourOfDay).withMinute(minute)
+        dose.taken = takenTime.atZone(ZoneId.systemDefault()).toInstant()
+        doseDao.insert(dose)
+        setDrugTypeAsChanged(drugType)
+    }
+
+    private fun setDrugTypeAsChanged(drugType: String) {
         val updatedDrug: DrugStatus? = drugs.find { it.type == drugType }
-        if (updatedDrug != null){
+        if (updatedDrug != null) {
             setOfChangedDrugs.add(drugs.indexOf(updatedDrug)) // So when we update the view we know which to update
         }
     }
