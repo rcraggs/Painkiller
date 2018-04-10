@@ -29,5 +29,6 @@ interface DoseDao {
     @Query("SELECT * FROM dose WHERE type = :type AND taken > :date ORDER BY taken DESC")
     fun getDosesSince(type: String, date: Instant): List<Dose>
 
-
+    @Query("SELECT * FROM dose WHERE type = :type ORDER BY taken desc")
+    fun getAll(type: String): List<Dose>
 }

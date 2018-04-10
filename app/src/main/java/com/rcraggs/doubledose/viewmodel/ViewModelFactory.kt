@@ -11,6 +11,7 @@ class ViewModelFactory(val context: Application) : ViewModelProvider.Factory {
 
         return when {
             modelClass.isAssignableFrom(HomeViewModel::class.java) -> HomeViewModel(context) as T
+            modelClass.isAssignableFrom(HistoryViewModel::class.java) -> HistoryViewModel(context) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }

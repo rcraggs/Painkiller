@@ -58,7 +58,8 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_show_history -> {
                 Log.d("MainActvity", "History Clicked")
-//                startActivity(intent)
+                val intent = Intent(this, HistoryActivity::class.java)
+                startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
