@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
+import com.rcraggs.doubledose.util.Constants
 import kotlinx.android.synthetic.main.dose_history_item.view.*
 import kotlinx.android.synthetic.main.drug_card.view.*
 import org.threeten.bp.LocalDateTime
@@ -30,7 +31,7 @@ class DoseAdapter(private val items: List<Dose>): RecyclerView.Adapter<DoseAdapt
 
         fun bindDose(item: Dose) {
             val ld1: LocalDateTime = LocalDateTime.ofInstant(item.taken, ZoneId.systemDefault())
-            val takenTime = DrugStatus.doseTimeFormatter.format(ld1)
+            val takenTime = Constants.historyDoseTimeFormatter.format(ld1)
             v.tv_dose_history_text.text = "${item.drug.name} @ $takenTime"
         }
     }
