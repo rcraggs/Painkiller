@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.rcraggs.doubledose.R
+import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugAdapter
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -35,18 +36,18 @@ class MainActivity : AppCompatActivity() {
                 Observer {
                     viewModel.getChangesArray().forEach {
                         viewModel.updateDrugStatus(it)
-                        adapter.notifyItemChanged(it)
+                        adapter.notifyDataSetChanged()
                     }
                     viewModel.clearChanges()
                 })
     }
 
-    private fun chooseDoseTime(drugType: String) {
+    private fun chooseDoseTime(drug: Drug) {
         val newFragment = TimePickerFragment()
 
         // Set the drug type
         val bundle = Bundle()
-        bundle.putString(TimePickerFragment.ARG_DRUG_TYPE, drugType)
+        bundle.putLong(TimePickerFragment.ARG_DRUG_TYPE, drug.id)
         newFragment.arguments = bundle
 
         newFragment.show(fragmentManager, "timepicker")
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun takeDose(type: String, hourOfDay: Int, minute: Int) {
-        viewModel.takeDose(type, hourOfDay, minute)
+    fun takeDose(drugId: Long, hourOfDay: Int, minute: Int) {
+        viewModel.takeDose(drugId, hourOfDay, minute)
     }
 }

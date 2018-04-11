@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.rcraggs.doubledose.R
+import com.rcraggs.doubledose.model.Drug
 import kotlinx.android.synthetic.main.drug_card.view.*
 
 class DrugAdapter(private val items: List<DrugStatus>,
-                  private val doseAction: (String) -> Unit,
-                  private val doseChooseAction: (String) -> Unit
+                  private val doseAction: (Drug) -> Unit,
+                  private val doseChooseAction: (Drug) -> Unit
                   ): RecyclerView.Adapter<DrugAdapter.DrugHolder>() {
 
     override fun getItemCount() = items.size
@@ -26,25 +27,23 @@ class DrugAdapter(private val items: List<DrugStatus>,
 
     class DrugHolder(
             private val v: View,
-            private val doseAction: (String) -> Unit,
-            private val doseChooseAction: (String) -> Unit)
+            private val doseAction: (Drug) -> Unit,
+            private val doseChooseAction: (Drug) -> Unit)
         : RecyclerView.ViewHolder(v) {
 
         fun bindDrug(item: DrugStatus) {
-            v.tv_medicine_type.text = item.type
+            v.tv_medicine_type.text = item.drug.name
             v.tv_amount_taken.text = item.getNumberOfDosesInfo()
             v.tv_last_dose.text = item.getTimeOfLastDoseInfo()
             v.tv_next_dose.text = item.getTimeUnitNextDose()
 
             v.img_dose_now.setOnClickListener {
-                doseAction(item.type)
+                doseAction(item.drug)
             }
 
             v.img_dose_choose.setOnClickListener {
-                doseChooseAction(item.type)
+                doseChooseAction(item.drug)
             }
-
-
         }
     }
 }

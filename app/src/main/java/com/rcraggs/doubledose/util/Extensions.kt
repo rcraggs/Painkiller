@@ -2,6 +2,7 @@ package com.rcraggs.doubledose.util
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
+import org.threeten.bp.Instant
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -16,3 +17,6 @@ fun <T> LiveData<T>.blockingObserve(): T? {
     latch.await(2, TimeUnit.SECONDS)
     return value
 }
+
+
+fun Instant.dayAgo(): Instant = Instant.now().minusSeconds(60*60*24)

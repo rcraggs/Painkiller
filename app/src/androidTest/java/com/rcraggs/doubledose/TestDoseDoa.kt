@@ -7,6 +7,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.DoseDao
 import com.rcraggs.doubledose.model.Dose
+import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugStatus
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.blockingObserve
@@ -22,11 +23,6 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 @RunWith(AndroidJUnit4::class)
 class TestDoseDoa {
 
@@ -40,6 +36,8 @@ class TestDoseDoa {
 
     var db: AppDatabase by Delegates.notNull()
     var doseDao: DoseDao by Delegates.notNull()
+    val paracetamol = Drug("Paracetamol")
+    val ibroprufen = Drug("Ibroprufen")
 
     @Before
     fun createDB() {
@@ -47,15 +45,16 @@ class TestDoseDoa {
         db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build();
         doseDao = db.doseDao()
         AndroidThreeTen.init(context);
+
+        // Insert drugs into the DB for testing
+        paracetamol.id = db.drugDao().insert(paracetamol)
+        ibroprufen.id = db.drugDao().insert(ibroprufen)
     }
 
     @After
     fun closeDb(){
         db.close()
     }
-
-    private val paracetamol = "PARACETAMOL"
-    private val ibroprufen = "IBROPRUFEN"
 
     @Test
     fun testAddThenDeleteLeavesNone() {
@@ -76,7 +75,7 @@ class TestDoseDoa {
 
         val d = Dose(paracetamol)
         doseDao.insert(d)
-        val retrieved = doseDao.getLatest(paracetamol)
+        val retrieved = doseDao.getLatest(paracetamol.id)
         assertEquals(retrieved, d)
     }
 
@@ -122,7 +121,7 @@ class TestDoseDoa {
 
     @Test
     fun testNoDosesGivesNothingIn24Hours() {
-        val doses = doseDao.getDosesSince(paracetamol, get24HoursAgo())
+        val doses = doseDao.getDosesSince(paracetamol.id, get24HoursAgo())
         assertEquals(0, doses.size)
     }
 
@@ -130,8 +129,7 @@ class TestDoseDoa {
     fun testNoDosesOfSameTypeGivesNothingIn24Hours() {
 
         doseDao.insert(Dose(ibroprufen))
-
-        val doses = doseDao.getDosesSince(paracetamol, get24HoursAgo())
+        val doses = doseDao.getDosesSince(paracetamol.id, get24HoursAgo())
         assertEquals(0, doses.size)
     }
 
@@ -142,7 +140,7 @@ class TestDoseDoa {
         d.taken = get24HoursAgo().minusSeconds(10)
         doseDao.insert(d)
 
-        val doses = doseDao.getDosesSince(ibroprufen, get24HoursAgo())
+        val doses = doseDao.getDosesSince(ibroprufen.id, get24HoursAgo())
         assertEquals(0, doses.size)
     }
 
@@ -154,22 +152,35 @@ class TestDoseDoa {
         d.taken = get24HoursAgo().plusSeconds(10)
         doseDao.insert(d)
 
-        val doses = doseDao.getDosesSince(ibroprufen, get24HoursAgo())
+        val doses = doseDao.getDosesSince(ibroprufen.id, get24HoursAgo())
         assertEquals(1, doses.size)
     }
-
 
     @Test
     fun testLastDoseTakenYesterday(){
 
         val aTimeYesterday = Instant.now().minusSeconds(60*60*24)
-        val ld1: LocalDateTime = LocalDateTime.ofInstant(aTimeYesterday, ZoneId.systemDefault())
 
         val status = DrugStatus(paracetamol)
         status.timeOfLastDose = aTimeYesterday
 
         assertEquals(status.getTimeOfLastDoseInfo(), Constants.NONE_TODAY)
+    }
 
+    @Test
+    fun testDeletingDrugDeletesDoses() {
+
+        doseDao.insert(Dose(ibroprufen))
+        doseDao.insert(Dose(ibroprufen))
+        doseDao.insert(Dose(ibroprufen))
+        doseDao.insert(Dose(ibroprufen))
+
+        doseDao.insert(Dose(paracetamol))
+
+        db.drugDao().delete(ibroprufen)
+
+        val remainingDoses = doseDao.getAll()
+        assertEquals(1, remainingDoses.size)
     }
 
     @Test
