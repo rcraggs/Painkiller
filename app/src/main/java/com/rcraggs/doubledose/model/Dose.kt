@@ -19,7 +19,11 @@ class Dose() {
 
     constructor(drug: Drug) : this() {
         this.drugId = drug.id
+        this.drug = drug
     }
+
+    @Transient
+    lateinit var drug: Drug
 
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true) var id: Long = 0

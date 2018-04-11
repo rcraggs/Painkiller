@@ -14,9 +14,9 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
         val doseDao = repo.db.doseDao()
 
         doses = if (drugId == -1L){
-            doseDao.getAll()
+            repo.getDosesWithDrugs()
         }else{
-            doseDao.getAll(drugId)
+            repo.getDosesWithDrugs(drugId)
         }
     }
 }

@@ -2,6 +2,7 @@ package com.rcraggs.doubledose.database
 
 import android.arch.persistence.room.Room
 import android.content.Context
+import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugStatus
 import com.rcraggs.doubledose.util.dayAgo
@@ -31,5 +32,26 @@ class AppRepo(private val context: Context) {
 
         status.dosesIn24Hours = db.doseDao().getDosesSince(status.drug.id, Instant.now().dayAgo()).size
         status.timeOfLastDose = db.doseDao().getLatest(status.drug.id)?.taken
+    }
+
+    fun getDosesWithDrugs(): List<Dose> {
+        val doses = db.doseDao().getAll()
+        val drugs = db.drugDao().getAll()
+
+        doses.forEach { d ->
+            d.drug = drugs.find { drug -> drug.id == d.drugId }!!
+        }
+
+        return doses
+    }
+
+    fun getDosesWithDrugs(drugId: Long): List<Dose> {
+
+        val drug = db.drugDao().findById(drugId)
+        val doses = db.doseDao().getAll(drugId)
+
+        doses.forEach { d -> d.drug = drug }
+
+        return doses
     }
 }
