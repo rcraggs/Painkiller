@@ -1,12 +1,21 @@
 package com.rcraggs.doubledose.model
 
-data class Drug(
-        val maxDosesPer24Hours: Int = 4,
-        val hoursBetweenDoses: Long = 2
-) {
+import android.arch.persistence.room.*
 
-    companion object {
-        @Volatile private var INSTANCE: Drug? = null
-        fun getInstance(): Drug = Drug(4)
+@Entity(tableName = "drug")
+class Drug() {
+
+    @ColumnInfo(name = "name") var name: String = ""
+    @ColumnInfo(name = "perday") var dosesPerDay: Long = 4
+    @ColumnInfo(name = "gap") var gap: Long = 120
+
+    @Ignore
+    constructor(n: String, p: Long, g: Long): this() {
+        name = n
+        dosesPerDay = p
+        gap = g
     }
+
+    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true) var id: Long = 0
 }

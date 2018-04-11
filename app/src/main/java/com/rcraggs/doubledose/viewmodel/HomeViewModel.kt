@@ -4,70 +4,71 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
+import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugStatus
-import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import java.util.*
+import kotlin.collections.HashMap
 
-class HomeViewModel(repo: AppRepo): ViewModel() {
+class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
-    var setOfChangedDrugs = HashSet<Int>()
-
-    private lateinit var drugs: List<DrugStatus>
-    private lateinit var latestDose: LiveData<Dose>
     private val doseDao = repo.db.doseDao()
+    private val drugDao = repo.db.drugDao()
+
+    private var setOfChangedDrugs = HashSet<Drug>()
+
+    private lateinit var drugToStatusMap: Map<Drug, DrugStatus>
+    private lateinit var latestDose: LiveData<Dose>
 
     fun start() {
-        latestDose = doseDao.getLatest()
 
-        drugs = listOf(DrugStatus("Paracetamol"),
-                DrugStatus("Ibroprufen"))
+        // Get the drugs and create statuses for them based on doses
+        val drugs = drugDao.getAll()
+        drugToStatusMap = HashMap()
 
-        drugs.forEachIndexed { index, _ ->
-            updateDrugStatus(index)
+        drugs.forEach {
+            val status = repo.getDrugStatus(it)
+            (drugToStatusMap as HashMap<Drug, DrugStatus>)[it] = status
         }
+
+        latestDose = doseDao.getLatest()
     }
 
     fun getUpdate() = latestDose
 
     fun getDrugs(): List<DrugStatus>? {
-        return drugs
+        return drugToStatusMap.values.sortedBy { d -> d.drug.name }
     }
 
-    fun updateDrugStatus(pos: Int) {
-
-        // todo is this something that a mediator can deal with?
-        val drug = drugs[pos]
-        drug.dosesIn24Hours = doseDao.getDosesSince(drug.type, Instant.now().minusSeconds(60 * 60 * 24)).size
-        drug.timeOfLastDose = doseDao.getLatest(drug.type)?.taken
+    fun updateDrugStatus(drug: Drug) {
+        drugToStatusMap[drug]?.let { repo.refreshDrugStatus(it) }
     }
 
-    fun getChangesArray() = setOfChangedDrugs.toIntArray()
+    fun getChangesArray() = setOfChangedDrugs.toTypedArray()
 
     fun clearChanges() {
         setOfChangedDrugs.clear()
     }
 
-    fun takeDose(drugType: String) {
+    fun takeDose(drug: Drug) {
 
-        doseDao.insert(Dose(drugType))
-        setDrugTypeAsChanged(drugType)
+        doseDao.insert(Dose(drug))
+        setDrugTypeAsChanged(drug)
     }
 
-    fun takeDose(drugType: String, hourOfDay: Int, minute: Int) {
-        val dose = Dose(drugType)
+    fun takeDose(drugId: Long, hourOfDay: Int, minute: Int) {
+
+        val drug = drugDao.findById(drugId)
+        val dose = Dose(drug)
         val takenTime = LocalDateTime.now().withHour(hourOfDay).withMinute(minute)
         dose.taken = takenTime.atZone(ZoneId.systemDefault()).toInstant()
         doseDao.insert(dose)
-        setDrugTypeAsChanged(drugType)
+        setDrugTypeAsChanged(drug)
     }
 
-    private fun setDrugTypeAsChanged(drugType: String) {
-        val updatedDrug: DrugStatus? = drugs.find { it.type == drugType }
-        if (updatedDrug != null) {
-            setOfChangedDrugs.add(drugs.indexOf(updatedDrug)) // So when we update the view we know which to update
-        }
+    private fun setDrugTypeAsChanged(drug: Drug) {
+        setOfChangedDrugs.add(drug)
     }
 }
 

@@ -9,14 +9,14 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
 
     lateinit var doses: List<Dose>
 
-    fun start(type: String = "") {
+    fun start(drugId: Long = -1L) {
 
         val doseDao = repo.db.doseDao()
 
-        doses = if (type.isBlank()){
+        doses = if (drugId == -1L){
             doseDao.getAll()
         }else{
-            doseDao.getAll(type)
+            doseDao.getAll(drugId)
         }
     }
 }

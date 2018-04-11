@@ -8,8 +8,8 @@ import org.threeten.bp.Instant
 @Dao
 interface DoseDao {
 
-    @Query("SELECT * FROM dose WHERE type = :type ORDER BY taken desc LIMIT 1")
-    fun getLatest(type: String): Dose?
+    @Query("SELECT * FROM dose WHERE drug = :drugId ORDER BY taken desc LIMIT 1")
+    fun getLatest(drugId: Long): Dose?
 
     @Query("SELECT * FROM dose ORDER BY taken desc")
     fun getAll(): List<Dose>
@@ -26,9 +26,9 @@ interface DoseDao {
     @Query("SELECT * FROM dose ORDER BY taken desc LIMIT 1")
     fun getLatest(): LiveData<Dose>
 
-    @Query("SELECT * FROM dose WHERE type = :type AND taken > :date ORDER BY taken DESC")
-    fun getDosesSince(type: String, date: Instant): List<Dose>
+    @Query("SELECT * FROM dose WHERE drug = :drugId AND taken > :date ORDER BY taken DESC")
+    fun getDosesSince(drugId: Long, date: Instant): List<Dose>
 
-    @Query("SELECT * FROM dose WHERE type = :type ORDER BY taken desc")
-    fun getAll(type: String): List<Dose>
+    @Query("SELECT * FROM dose WHERE drug = :drugId ORDER BY taken desc")
+    fun getAll(drugId: Long): List<Dose>
 }

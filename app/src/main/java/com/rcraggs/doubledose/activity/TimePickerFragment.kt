@@ -14,15 +14,18 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
         const val ARG_DRUG_TYPE = "ARG_DRUG_TYPE"
     }
 
-    private lateinit var type: String
+    private var drugId: Long? = null
 
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-        (activity as MainActivity).takeDose(type, hourOfDay, minute)
+
+        if (drugId != null) {
+            (activity as MainActivity).takeDose(drugId!!, hourOfDay, minute)
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        type = arguments.getString(ARG_DRUG_TYPE)
+        drugId = arguments.getLong(ARG_DRUG_TYPE)
 
         // Use the current time as the default values for the picker
         val c = Calendar.getInstance()

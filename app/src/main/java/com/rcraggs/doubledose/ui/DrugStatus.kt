@@ -8,12 +8,12 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 
 
-class DrugStatus(val type: String ) {
+class DrugStatus(val drug: Drug) {
 
     var dosesIn24Hours: Int = 0
     var timeOfLastDose: Instant? = null
 
-    fun getNumberOfDosesInfo() = "$dosesIn24Hours/${Drug.getInstance().maxDosesPer24Hours}"
+    fun getNumberOfDosesInfo() = "$dosesIn24Hours/${drug.dosesPerDay}"
 
     fun getTimeUnitNextDose(): String {
 
@@ -25,16 +25,16 @@ class DrugStatus(val type: String ) {
         }
 
         // Taken more than 2 hours ago
-        if (timeOfLastDose
-                ?.plusSeconds(60*60*Drug.getInstance().hoursBetweenDoses)
-                ?.isAfter(Instant.now()) != false){
+        return if (timeOfLastDose
+                        ?.plusSeconds(60*drug.gap)
+                        ?.isAfter(Instant.now()) != false){
             val secondsSinceDose = Instant.now().epochSecond.minus(timeOfLastDose?.epochSecond ?: 0)
-            val secondsToNextDose = Drug.getInstance().hoursBetweenDoses * 60 * 60 - secondsSinceDose
-            return "${secondsToNextDose.div(60)}m"
+            val secondsToNextDose = drug.gap * 60 - secondsSinceDose
+            "${secondsToNextDose.div(60)}m"
             // todo replace that with the amount of hours
         }
         else{
-            return Constants.NEXT_DOSE_AVAILABLE
+            Constants.NEXT_DOSE_AVAILABLE
         }
     }
 
