@@ -48,21 +48,16 @@
                     android:padding="8dp"
                     android:layout_marginStart="20dp"
                     android:textColor="@color/white"
-                    android:textSize="20sp"/>
-                <TextView
-                    android:id="@+id/tv_last_dose"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    android:text="DUMMY"/>
                 <TextView
                     android:id="@+id/tv_next_dose"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
                     android:textColor="@color/white"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    android:text="DUMMY"/>
             </LinearLayout>
 
             <LinearLayout
@@ -71,13 +66,11 @@
                 android:layout_below="@id/ll_info"
                 android:orientation="horizontal"
                 android:padding="@dimen/card_button_margin">
-
                 <ImageView
                     android:id="@+id/img_dose_now"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:padding="8dp"
                     android:src="@drawable/ic_done_white_24dp" />
@@ -87,7 +80,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:padding="8dp"
                     android:src="@drawable/ic_access_time_white_24dp"
@@ -98,7 +90,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:padding="8dp"
                     android:src="@drawable/ic_favorite_border_black_24dp"
@@ -109,7 +100,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:padding="8dp"
                     android:src="@drawable/ic_favorite_border_black_24dp"

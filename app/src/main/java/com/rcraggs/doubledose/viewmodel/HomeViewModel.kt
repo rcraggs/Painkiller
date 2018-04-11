@@ -18,18 +18,18 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
     private var setOfChangedDrugs = HashSet<Drug>()
 
-    private lateinit var drugToStatusMap: Map<Drug, DrugStatus>
+    private lateinit var drugIdToStatusMap: Map<Long, DrugStatus>
     private lateinit var latestDose: LiveData<Dose>
 
     fun start() {
 
         // Get the drugs and create statuses for them based on doses
         val drugs = drugDao.getAll()
-        drugToStatusMap = HashMap()
+        drugIdToStatusMap = HashMap()
 
         drugs.forEach {
             val status = repo.getDrugStatus(it)
-            (drugToStatusMap as HashMap<Drug, DrugStatus>)[it] = status
+            (drugIdToStatusMap as HashMap<Long, DrugStatus>)[it.id] = status
         }
 
         latestDose = doseDao.getLatest()
@@ -38,11 +38,11 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     fun getUpdate() = latestDose
 
     fun getDrugs(): List<DrugStatus>? {
-        return drugToStatusMap.values.sortedBy { d -> d.drug.name }
+        return drugIdToStatusMap.values.sortedBy { d -> d.drug.name }
     }
 
     fun updateDrugStatus(drug: Drug) {
-        drugToStatusMap[drug]?.let { repo.refreshDrugStatus(it) }
+        drugIdToStatusMap[drug.id]?.let { repo.refreshDrugStatus(it) }
     }
 
     fun getChangesArray() = setOfChangedDrugs.toTypedArray()
