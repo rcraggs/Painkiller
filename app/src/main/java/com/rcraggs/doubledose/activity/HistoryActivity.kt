@@ -11,14 +11,24 @@ import org.koin.android.architecture.ext.viewModel
 
 class HistoryActivity : AppCompatActivity() {
 
+    companion object {
+        const val HISTORY_ACTIVITY_EXTRA_DRUG_ID = "HISTORY_ACTIVITY_EXTRA_DRUG_ID"
+    }
     private val viewModel by viewModel<HistoryViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
 
-        viewModel.start()
+        // Check if we have been started for a specific drug
+        val drugId = intent.getLongExtra(HISTORY_ACTIVITY_EXTRA_DRUG_ID, -1)
+        if (drugId > -1) {
+            viewModel.start(drugId)
+        }else{
+            viewModel.start()
+        }
 
+        this.title = "History: " + viewModel.drugName
         rv_history.adapter = DoseAdapter(viewModel.doses)
         rv_history.layoutManager = LinearLayoutManager(this)
     }

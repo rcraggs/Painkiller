@@ -54,4 +54,6 @@ class AppRepo(private val context: Context) {
 
         return doses
     }
+
+    fun getDrugWithId(drugId: Long): Drug? = db.drugDao().findById(drugId)
 }

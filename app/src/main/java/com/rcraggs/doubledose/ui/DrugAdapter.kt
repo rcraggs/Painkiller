@@ -10,14 +10,15 @@ import kotlinx.android.synthetic.main.drug_card.view.*
 
 class DrugAdapter(private val items: List<DrugStatus>,
                   private val doseAction: (Drug) -> Unit,
-                  private val doseChooseAction: (Drug) -> Unit
+                  private val doseChooseAction: (Drug) -> Unit,
+                  private val drugHistoryAction: (Drug) -> Unit
                   ): RecyclerView.Adapter<DrugAdapter.DrugHolder>() {
 
     override fun getItemCount() = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrugHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.drug_card, parent, false)
-        return DrugHolder(v, doseAction, doseChooseAction)
+        return DrugHolder(v, doseAction, doseChooseAction, drugHistoryAction)
     }
 
     override fun onBindViewHolder(holder: DrugHolder, position: Int) {
@@ -28,7 +29,8 @@ class DrugAdapter(private val items: List<DrugStatus>,
     class DrugHolder(
             private val v: View,
             private val doseAction: (Drug) -> Unit,
-            private val doseChooseAction: (Drug) -> Unit)
+            private val doseChooseAction: (Drug) -> Unit,
+            private val drugHistoryAction: (Drug) -> Unit)
         : RecyclerView.ViewHolder(v) {
 
         fun bindDrug(item: DrugStatus) {
@@ -43,6 +45,11 @@ class DrugAdapter(private val items: List<DrugStatus>,
             v.img_dose_choose.setOnClickListener {
                 doseChooseAction(item.drug)
             }
+
+            v.img_drug_history.setOnClickListener {
+                drugHistoryAction(item.drug)
+            }
+
         }
     }
 }

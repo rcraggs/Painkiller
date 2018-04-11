@@ -92,7 +92,7 @@
                     android:layout_weight="1"
                     android:clickable="true"
                     android:padding="8dp"
-                    android:src="@drawable/ic_favorite_border_black_24dp"
+                    android:src="@drawable/ic_format_list_bulleted_white_24dp"
                     android:focusable="true" />
 
                 <ImageView

@@ -8,15 +8,15 @@ import com.rcraggs.doubledose.model.Dose
 class HistoryViewModel(val repo: AppRepo): ViewModel(){
 
     lateinit var doses: List<Dose>
+    lateinit var drugName: String
 
     fun start(drugId: Long = -1L) {
 
-        val doseDao = repo.db.doseDao()
-
-        doses = if (drugId == -1L){
-            repo.getDosesWithDrugs()
-        }else{
-            repo.getDosesWithDrugs(drugId)
+        doses = when {
+            drugId != -1L -> repo.getDosesWithDrugs(drugId)
+            else -> repo.getDosesWithDrugs()
         }
+
+        drugName = repo.getDrugWithId(drugId)?.name ?: "All Drugs"
     }
 }

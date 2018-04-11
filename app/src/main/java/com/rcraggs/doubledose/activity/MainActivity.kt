@@ -28,7 +28,9 @@ class MainActivity : AppCompatActivity() {
 
         val adapter = DrugAdapter(viewModel.getDrugs() ?: ArrayList(),
                 viewModel::takeDose,
-                this::chooseDoseTime)
+                this::chooseDoseTime,
+                this::showDrugHistory
+                )
         rv_drugs.adapter = adapter
         rv_drugs.layoutManager = LinearLayoutManager(this)
 
@@ -40,6 +42,12 @@ class MainActivity : AppCompatActivity() {
                     }
                     viewModel.clearChanges()
                 })
+    }
+
+    private fun showDrugHistory(drug: Drug) {
+        val intent = Intent(this, HistoryActivity::class.java)
+        intent.putExtra( HistoryActivity.HISTORY_ACTIVITY_EXTRA_DRUG_ID, drug.id)
+        startActivity(intent)
     }
 
     private fun chooseDoseTime(drug: Drug) {
