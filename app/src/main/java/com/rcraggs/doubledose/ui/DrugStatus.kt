@@ -1,5 +1,6 @@
 package com.rcraggs.doubledose.ui
 
+import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.util.Constants
 import org.threeten.bp.Instant
@@ -10,8 +11,25 @@ import org.threeten.bp.format.DateTimeFormatter
 
 class DrugStatus(val drug: Drug) {
 
-    var dosesIn24Hours: Int = 0
+    // New Properties
+
+    private var dosesDescription: String = ""
+    private var nextDoseAvailability: String = ""
+
     var timeOfLastDose: Instant? = null
+
+
+    fun updateNextDoseAvailability() {
+
+    }
+
+
+    fun refreshData(doses: List<Dose>) {
+
+    }
+
+
+    var dosesIn24Hours: Int = 0
 
     fun getNumberOfDosesInfo() = "$dosesIn24Hours/${drug.dosesPerDay}"
 

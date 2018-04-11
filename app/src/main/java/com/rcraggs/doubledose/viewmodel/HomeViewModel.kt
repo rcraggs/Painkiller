@@ -10,6 +10,10 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import java.util.*
 import kotlin.collections.HashMap
+import android.arch.lifecycle.MutableLiveData
+import android.os.SystemClock
+import com.rcraggs.doubledose.util.Constants
+
 
 class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
@@ -20,6 +24,7 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
     private lateinit var drugIdToStatusMap: Map<Long, DrugStatus>
     private lateinit var latestDose: LiveData<Dose>
+    private val elapsedTime = MutableLiveData<Long>()
 
     fun start() {
 
@@ -33,6 +38,15 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
         }
 
         latestDose = doseDao.getLatest()
+
+
+        // Set up the timer to refresh the data every 30 seconds
+        val timer = Timer()
+        timer.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                elapsedTime.postValue(SystemClock.elapsedRealtime())
+            }
+        }, Constants.REFRESH_TIMER_MILLI, Constants.REFRESH_TIMER_MILLI)
     }
 
     fun getUpdate() = latestDose
@@ -70,5 +84,10 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     private fun setDrugTypeAsChanged(drug: Drug) {
         setOfChangedDrugs.add(drug)
     }
-}
 
+    fun getTimer() = elapsedTime
+
+    fun updateNextDoseStatusOfAll() {
+        true
+    }
+}
