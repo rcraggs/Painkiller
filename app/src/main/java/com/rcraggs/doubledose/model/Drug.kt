@@ -10,7 +10,7 @@ class Drug() {
     @ColumnInfo(name = "gap") var gap: Long = 120
 
     @Ignore
-    constructor(n: String, p: Long, g: Long): this() {
+    constructor(n: String, p: Long = 4, g: Long = 120): this() {
         name = n
         dosesPerDay = p
         gap = g
