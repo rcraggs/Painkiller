@@ -1,6 +1,7 @@
 package com.rcraggs.doubledose.viewmodel
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.ViewModel
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
@@ -12,6 +13,7 @@ import java.util.*
 import kotlin.collections.HashMap
 import android.arch.lifecycle.MutableLiveData
 import android.os.SystemClock
+import android.util.Log
 import com.rcraggs.doubledose.util.Constants
 
 
@@ -23,8 +25,7 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     private var setOfChangedDrugs = HashSet<Drug>()
 
     private lateinit var drugIdToStatusMap: Map<Long, DrugStatus>
-    private lateinit var latestDose: LiveData<Dose>
-    private val elapsedTime = MutableLiveData<Long>()
+    private var drugStatuses = MediatorLiveData<List<DrugStatus>>()
 
     fun start() {
 
@@ -37,19 +38,21 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
             (drugIdToStatusMap as HashMap<Long, DrugStatus>)[it.id] = status
         }
 
-        latestDose = doseDao.getLatest()
+        drugStatuses.addSource(doseDao.getAllLive(), {
+            Log.d("HomeViewModel", "Refreshing Live Database BC table changed")
+            updateAllDrugStatuses()
+            drugStatuses.value = drugIdToStatusMap.values.toList().sortedBy { d -> d.drug.name }
+        })
 
+        drugStatuses.addSource(repo.elapsedTime, {
+            updateAllDrugStatusesAvailability()
+            Log.d("HomeViewModel", "Refreshing Live Database BC timer tick")
+        })
 
-        // Set up the timer to refresh the data every 30 seconds
-        val timer = Timer()
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                elapsedTime.postValue(SystemClock.elapsedRealtime())
-            }
-        }, Constants.REFRESH_TIMER_MILLI, Constants.REFRESH_TIMER_MILLI)
     }
 
-    fun getUpdate() = latestDose
+
+    fun getStatuses() = drugStatuses
 
     fun getDrugs(): List<DrugStatus>? {
         return drugIdToStatusMap.values.sortedBy { d -> d.drug.name }
@@ -59,6 +62,14 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
         drugIdToStatusMap[drug.id]?.let { repo.refreshDrugStatus(it) }
     }
 
+    private fun updateAllDrugStatusesAvailability() {
+        drugIdToStatusMap.forEach { t, u -> u.updateNextDoseAvailability()  }
+    }
+
+    fun updateAllDrugStatuses() {
+        drugIdToStatusMap.forEach { t, u -> repo.refreshDrugStatus(u)  }
+    }
+
     fun getChangesArray() = setOfChangedDrugs.toTypedArray()
 
     fun clearChanges() {
@@ -66,7 +77,6 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     }
 
     fun takeDose(drug: Drug) {
-
         doseDao.insert(Dose(drug))
         setDrugTypeAsChanged(drug)
     }
@@ -84,8 +94,6 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     private fun setDrugTypeAsChanged(drug: Drug) {
         setOfChangedDrugs.add(drug)
     }
-
-    fun getTimer() = elapsedTime
 
     fun updateNextDoseStatusOfAll() {
         true

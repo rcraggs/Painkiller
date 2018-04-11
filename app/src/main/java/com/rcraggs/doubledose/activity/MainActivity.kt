@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         rv_drugs.adapter = adapter
         rv_drugs.layoutManager = LinearLayoutManager(this)
 
-        viewModel.getUpdate().observe(this,
+        viewModel.getStatuses().observe(this,
                 Observer {
                     viewModel.getChangesArray().forEach {
                         viewModel.updateDrugStatus(it)
@@ -43,11 +43,11 @@ class MainActivity : AppCompatActivity() {
                     viewModel.clearChanges()
                 })
 
-        viewModel.getTimer().observe(this, Observer {
-            viewModel.updateNextDoseStatusOfAll()
-            adapter.notifyDataSetChanged()
-            Log.d("MainActivity", "Timer Triggered")
-        })
+//        viewModel.getTimer().observe(this, Observer {
+//            viewModel.updateNextDoseStatusOfAll()
+//            adapter.notifyDataSetChanged()
+//            Log.d("MainActivity", "Timer Triggered")
+//        })
     }
 
     private fun showDrugHistory(drug: Drug) {

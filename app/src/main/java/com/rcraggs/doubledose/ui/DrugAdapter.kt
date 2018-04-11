@@ -36,7 +36,7 @@ class DrugAdapter(private val items: List<DrugStatus>,
         fun bindDrug(item: DrugStatus) {
             v.tv_medicine_type.text = item.drug.name
             v.tv_amount_taken.text = item.getNumberOfDosesInfo()
-            v.tv_next_dose.text = item.getTimeUnitNextDose()
+            v.tv_next_dose.text = item.getTimeUntilNextDose()
 
             v.img_dose_now.setOnClickListener {
                 doseAction(item.drug)

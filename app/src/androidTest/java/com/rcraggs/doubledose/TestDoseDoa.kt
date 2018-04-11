@@ -5,12 +5,14 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.rcraggs.doubledose.database.AppDatabase
+import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.database.DoseDao
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugStatus
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.blockingObserve
+import com.rcraggs.doubledose.util.dayAgo
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -41,6 +43,7 @@ class TestDoseDoa {
 
     @Before
     fun createDB() {
+
         val context = InstrumentationRegistry.getTargetContext();
         db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build();
         doseDao = db.doseDao()
@@ -194,6 +197,38 @@ class TestDoseDoa {
         val theTimeFormatterForTimeOnly = DrugStatus.doseTimeFormatter.format(ld1)
 
         assertEquals(status.getTimeOfLastDoseInfo(), theTimeFormatterForTimeOnly)
+    }
+
+
+    @Test
+    fun testDose2HoursAgoMeansAvailable(){
+
+        val d = Drug("Ibroprufen")
+
+        val status = DrugStatus(d)
+
+        val d1 = Dose(d)
+        d1.taken = Instant.now().minusSeconds(60*60*d.gap)
+
+        val doses = listOf(d1)
+        status.refreshData(doses)
+
+        assertEquals(Constants.NEXT_DOSE_AVAILABLE, status.getTimeUntilNextDose())
+    }
+
+
+    @Test
+    fun testDose1HourAgoMeansCountdown(){
+        val d = Drug("Ibroprufen")
+        val status = DrugStatus(d)
+
+        val d1 = Dose(d)
+        d1.taken = Instant.now().minusSeconds(60*60)
+
+        val doses = listOf(d1)
+        status.refreshData(doses)
+
+        assert(status.getTimeUntilNextDose().endsWith('s'))
     }
 
     private fun get24HoursAgo(): Instant {
