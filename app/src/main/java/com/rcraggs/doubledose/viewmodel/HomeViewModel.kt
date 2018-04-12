@@ -41,6 +41,7 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
         drugStatuses.addSource(repo.elapsedTime, {
             updateAllDrugStatusesAvailability()
+            drugStatuses.value = drugIdToStatusMap.values.toList().sortedBy { d -> d.drug.name }
             Log.d("HomeViewModel", "Refreshing Live Database BC timer tick")
         })
     }
@@ -51,22 +52,12 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
         return drugIdToStatusMap.values.sortedBy { d -> d.drug.name }
     }
 
-    fun updateDrugStatus(drug: Drug) {
-        drugIdToStatusMap[drug.id]?.let { repo.refreshDrugStatus(it) }
-    }
-
     private fun updateAllDrugStatusesAvailability() {
-        drugIdToStatusMap.forEach { t, u -> u.updateNextDoseAvailability()  }
+        drugIdToStatusMap.forEach { _, u -> u.updateNextDoseAvailability() }
     }
 
     fun updateAllDrugStatuses() {
-        drugIdToStatusMap.forEach { t, u -> repo.refreshDrugStatus(u)  }
-    }
-
-    fun getChangesArray() = setOfChangedDrugs.toTypedArray()
-
-    fun clearChanges() {
-        setOfChangedDrugs.clear()
+        drugIdToStatusMap.forEach { _, u -> repo.refreshDrugStatus(u)  }
     }
 
     fun takeDose(drug: Drug) {
