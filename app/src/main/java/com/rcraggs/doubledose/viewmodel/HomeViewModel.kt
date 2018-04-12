@@ -48,7 +48,7 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
     fun getStatuses() = drugStatuses
 
-    fun getDrugs(): List<DrugStatus>? {
+    fun getDrugs(): List<DrugStatus> {
         return drugIdToStatusMap.values.sortedBy { d -> d.drug.name }
     }
 
@@ -56,13 +56,12 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
         drugIdToStatusMap.forEach { _, u -> u.updateNextDoseAvailability() }
     }
 
-    fun updateAllDrugStatuses() {
+    private fun updateAllDrugStatuses() {
         drugIdToStatusMap.forEach { _, u -> repo.refreshDrugStatus(u)  }
     }
 
     fun takeDose(drug: Drug) {
         doseDao.insert(Dose(drug))
-        setDrugTypeAsChanged(drug)
     }
 
     fun takeDose(drugId: Long, hourOfDay: Int, minute: Int) {
@@ -72,10 +71,5 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
         val takenTime = LocalDateTime.now().withHour(hourOfDay).withMinute(minute)
         dose.taken = takenTime.atZone(ZoneId.systemDefault()).toInstant()
         doseDao.insert(dose)
-        setDrugTypeAsChanged(drug)
-    }
-
-    private fun setDrugTypeAsChanged(drug: Drug) {
-        setOfChangedDrugs.add(drug)
     }
 }

@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.start()
 
-        val adapter = DrugAdapter(viewModel.getDrugs() ?: ArrayList(),
+        val adapter = DrugAdapter(viewModel.getDrugs(),
                 viewModel::takeDose,
                 this::chooseDoseTime,
                 this::showDrugHistory

@@ -70,26 +70,6 @@ class DrugStatus(val drug: Drug) {
     fun getNumberOfDosesInfo() = dosesDescription
 
     fun getTimeUntilNextDose() = nextDoseAvailability
-//
-//    fun getTimeOfLastDoseInfo(): String {
-//
-//        // if there is no last dose then display a message
-//        if (timeOfLastDose == null){
-//            return Constants.NO_RECENT_DOSES
-//        }
-//
-//        // Convert to a local time so we can compare
-//        val doseLocalDateTime = LocalDateTime.ofInstant(timeOfLastDose, ZoneId.systemDefault())
-//        val nowDateTime = LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())
-//
-//        // First check if the last dose was today so we don't need to print the date
-//        return if (nowDateTime.dayOfYear == doseLocalDateTime.dayOfYear &&
-//                nowDateTime.year == doseLocalDateTime.year){
-//            doseTimeFormatter.format(doseLocalDateTime)
-//        }else{
-//            Constants.NONE_TODAY
-//        }
-//    }
 
     companion object {
         val doseTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")

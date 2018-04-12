@@ -49,4 +49,14 @@ dependencies {
     implementation 'org.koin:koin-android-architecture:0.9.1'
     androidTestImplementation 'org.koin:koin-test:0.9.1'
 
+
+//    androidTestImplementation 'org.mockito:mockito-core:2.8.9'
+    //noinspection GradleDependency
+    androidTestImplementation 'org.mockito:mockito-android:2.8.9'
+    androidTestImplementation('com.nhaarman:mockito-kotlin-kt1.1:1.5.0', {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
+    })
+    
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5"
+
 }

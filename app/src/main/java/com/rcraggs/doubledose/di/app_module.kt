@@ -1,7 +1,6 @@
 package com.rcraggs.doubledose.di
 
 import android.arch.persistence.room.Room
-import android.content.Context
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.AppDbCallback
 import com.rcraggs.doubledose.database.AppRepo
@@ -9,12 +8,14 @@ import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.viewmodel.HistoryViewModel
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import org.koin.android.architecture.ext.viewModel
+import org.koin.android.ext.koin.androidApplication
+import org.koin.dsl.context.Context
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.applicationContext
 
 val appModule : Module = applicationContext {
 
-    factory { AppRepo(get(), get()) }
+    factory { AppRepo(get()) }
 
     viewModel { HistoryViewModel(get()) }
     viewModel { HomeViewModel(get())}
@@ -22,21 +23,23 @@ val appModule : Module = applicationContext {
 
 
 val inMemoryDBModule : Module = applicationContext {
-    bean { createInMemoryAppDatabase(get())}
+    bean { }
+    bean { createInMemoryAppDatabase(this)}
 }
 
 val deviceDBModule : Module = applicationContext {
-    bean { createActualAppDatabase(get()) }
+    bean { createActualAppDatabase(this) }
 }
 
 
 fun createInMemoryAppDatabase(context: Context): AppDatabase {
-    return Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build();
+    return Room.inMemoryDatabaseBuilder(context.androidApplication(), AppDatabase::class.java)
+            .build();
 }
 
 fun createActualAppDatabase(context: Context): AppDatabase {
     return Room
-        .databaseBuilder(context, AppDatabase::class.java, Constants.PROD_DB_NAME)
+        .databaseBuilder(context.androidApplication(), AppDatabase::class.java, Constants.PROD_DB_NAME)
         .allowMainThreadQueries()
         .fallbackToDestructiveMigration()
         .addCallback(AppDbCallback())

@@ -14,7 +14,7 @@ import java.util.*
 
 // todo make db private and all queries go through methods on the repo
 
-class AppRepo(private val context: Context, val db: AppDatabase) {
+class AppRepo(val db: AppDatabase) {
 
     /**
      * For a drug, create the status based on the doses that have been taken
@@ -34,9 +34,11 @@ class AppRepo(private val context: Context, val db: AppDatabase) {
     }
 
     fun getDosesWithDrugs(): List<Dose> {
+
         val doses = db.doseDao().getAll()
         val drugs = db.drugDao().getAll()
 
+        // todo could this be done with embedded and relationships like SubjectView here - https://android.jlelse.eu/setting-android-room-in-real-project-58a77469737c?
         doses.forEach { d ->
             d.drug = drugs.find { drug -> drug.id == d.drugId }!!
         }
