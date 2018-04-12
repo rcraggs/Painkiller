@@ -1,8 +1,8 @@
 package com.rcraggs.doubledose.viewmodel
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
@@ -11,11 +11,6 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import java.util.*
 import kotlin.collections.HashMap
-import android.arch.lifecycle.MutableLiveData
-import android.os.SystemClock
-import android.util.Log
-import com.rcraggs.doubledose.util.Constants
-
 
 class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
@@ -48,9 +43,7 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
             updateAllDrugStatusesAvailability()
             Log.d("HomeViewModel", "Refreshing Live Database BC timer tick")
         })
-
     }
-
 
     fun getStatuses() = drugStatuses
 
@@ -93,9 +86,5 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
     private fun setDrugTypeAsChanged(drug: Drug) {
         setOfChangedDrugs.add(drug)
-    }
-
-    fun updateNextDoseStatusOfAll() {
-        true
     }
 }

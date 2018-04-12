@@ -160,17 +160,6 @@ class TestDoseDoa {
     }
 
     @Test
-    fun testLastDoseTakenYesterday(){
-
-        val aTimeYesterday = Instant.now().minusSeconds(60*60*24)
-
-        val status = DrugStatus(paracetamol)
-        status.timeOfLastDose = aTimeYesterday
-
-        assertEquals(status.getTimeOfLastDoseInfo(), Constants.NONE_TODAY)
-    }
-
-    @Test
     fun testDeletingDrugDeletesDoses() {
 
         doseDao.insert(Dose(ibroprufen))
@@ -186,18 +175,6 @@ class TestDoseDoa {
         assertEquals(1, remainingDoses.size)
     }
 
-    @Test
-    fun testLastDoseTakenToday(){
-
-        val aTimeToday = Instant.now()
-        val ld1: LocalDateTime = LocalDateTime.ofInstant(aTimeToday, ZoneId.systemDefault())
-
-        val status = DrugStatus(paracetamol)
-        status.timeOfLastDose = aTimeToday
-        val theTimeFormatterForTimeOnly = DrugStatus.doseTimeFormatter.format(ld1)
-
-        assertEquals(status.getTimeOfLastDoseInfo(), theTimeFormatterForTimeOnly)
-    }
 
 
     @Test

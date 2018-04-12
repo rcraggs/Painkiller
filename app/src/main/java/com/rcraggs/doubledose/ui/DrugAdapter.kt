@@ -1,11 +1,14 @@
 package com.rcraggs.doubledose.ui
 
+import android.graphics.Color
+import android.provider.SyncStateContract
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Drug
+import com.rcraggs.doubledose.util.Constants
 import kotlinx.android.synthetic.main.drug_card.view.*
 
 class DrugAdapter(private val items: List<DrugStatus>,
@@ -49,6 +52,13 @@ class DrugAdapter(private val items: List<DrugStatus>,
             v.img_drug_history.setOnClickListener {
                 drugHistoryAction(item.drug)
             }
+
+            if (item._minutesToNextDose > 0){
+                v.card_main.setCardBackgroundColor(Constants.UNAVAILABLE_DRUG_COLOR)
+            }else{
+                v.card_main.setCardBackgroundColor(Constants.AVAILABLE_DRUG_COLOR)
+            }
+
 
         }
     }
