@@ -1,7 +1,6 @@
 package com.rcraggs.doubledose.database
 
 import android.arch.lifecycle.MutableLiveData
-import android.arch.persistence.room.Room
 import android.content.Context
 import android.os.SystemClock
 import com.rcraggs.doubledose.model.Dose
@@ -13,15 +12,9 @@ import org.threeten.bp.Instant
 import java.util.*
 
 
-class AppRepo(private val context: Context) {
+// todo make db private and all queries go through methods on the repo
 
-    //todo not allow queries on main thread
-    val db by lazy { Room
-            .databaseBuilder(context, AppDatabase::class.java, "dose2.db")
-            .allowMainThreadQueries()
-            .fallbackToDestructiveMigration()
-            .addCallback(AppDbCallback())
-            .build() }
+class AppRepo(private val context: Context, val db: AppDatabase) {
 
     /**
      * For a drug, create the status based on the doses that have been taken

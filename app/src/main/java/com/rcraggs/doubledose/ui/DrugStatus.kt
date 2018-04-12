@@ -16,7 +16,7 @@ class DrugStatus(val drug: Drug) {
 
     var timeOfLastDose: Instant? = null
     var dosesIn24Hours = 0
-    var _minutesToNextDose = 0
+    var _minutesToNextDose = 0 // todo rename this when we remove the method below
 
     private fun getMinutesToNextDose(): Int {
 
@@ -49,7 +49,11 @@ class DrugStatus(val drug: Drug) {
     }
 
     fun refreshData(doses: List<Dose>) {
-        timeOfLastDose = doses.sortedBy { d -> d.taken }.last().taken
+
+        if (!doses.isEmpty()) {
+            timeOfLastDose = doses.sortedBy { d -> d.taken }.last().taken
+        }
+
         dosesIn24Hours = doses.size
         dosesDescription = "$dosesIn24Hours/${drug.dosesPerDay}"
         updateNextDoseAvailability()

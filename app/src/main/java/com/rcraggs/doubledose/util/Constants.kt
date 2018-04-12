@@ -9,6 +9,8 @@ object Constants {
     const val REFRESH_TIMER_MILLI = 1000L * 30
     const val NEXT_DOSE_TIME_UNIT = " mins"
 
+    const val PROD_DB_NAME = "dosesdb"
+
     val AVAILABLE_DRUG_COLOR = Color.parseColor("#D2AA3C")
     val UNAVAILABLE_DRUG_COLOR = Color.parseColor("#A03555")
 
