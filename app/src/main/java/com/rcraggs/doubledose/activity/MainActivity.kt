@@ -36,18 +36,13 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getStatuses().observe(this,
                 Observer {
-                    viewModel.getChangesArray().forEach {
-                        viewModel.updateDrugStatus(it)
-                        adapter.notifyDataSetChanged()
-                    }
-                    viewModel.clearChanges()
+                    adapter.notifyDataSetChanged()
+//                    viewModel.getChangesArray().forEach {
+//                        viewModel.updateDrugStatus(it)
+//                        adapter.notifyDataSetChanged()
+//                    }
+//                    viewModel.clearChanges()
                 })
-
-//        viewModel.getTimer().observe(this, Observer {
-//            viewModel.updateNextDoseStatusOfAll()
-//            adapter.notifyDataSetChanged()
-//            Log.d("MainActivity", "Timer Triggered")
-//        })
     }
 
     private fun showDrugHistory(drug: Drug) {

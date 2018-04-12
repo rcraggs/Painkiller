@@ -22,6 +22,10 @@ class Dose() {
         this.drug = drug
     }
 
+    constructor(drug: Drug, time: Instant): this(drug) {
+        this.taken = time
+    }
+
     @Transient
     lateinit var drug: Drug
 

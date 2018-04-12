@@ -1,12 +1,13 @@
 package com.rcraggs.doubledose.ui
 
+import android.util.Log
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.util.Constants
+import org.threeten.bp.Duration
 import org.threeten.bp.Instant
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
+import kotlin.math.max
 
 
 class DrugStatus(val drug: Drug) {
@@ -15,48 +16,55 @@ class DrugStatus(val drug: Drug) {
     private var nextDoseAvailability: String = ""
 
     var timeOfLastDose: Instant? = null
+    private var timeOfFirstDoseInThis24Hours: Instant? = null
     var dosesIn24Hours = 0
-    var _minutesToNextDose = 0 // todo rename this when we remove the method below
+    var minutesToNextDose = 0
 
-    private fun getMinutesToNextDose(): Int {
+    private fun returnMinutesToNextDose(currentTime: Instant): Int {
 
-        // None taken
+        // No doses, no minutes until a next dose
         if (timeOfLastDose == null){
             return 0
         }
 
-        val timeNextDoseIsAllowed = timeOfLastDose?.plusSeconds(60*drug.gap)
-                ?: Instant.now()
+        // If there are more doses in 24 hours then they can't dose until the time of the
+        // last relevant dose
+        val secSinceFirstDose = Duration.between(timeOfFirstDoseInThis24Hours, currentTime).seconds
+        var secMaxDosesClear: Long = 0
+        if (dosesIn24Hours >= drug.dosesPerDay) {
+            secMaxDosesClear = Constants.SECONDS_IN_A_DAY - secSinceFirstDose
+        }
 
-        // Taken more than 2 hours ago
-        if (timeNextDoseIsAllowed.isAfter(Instant.now())){
-            val secondsSinceDose = Instant.now().epochSecond.minus(timeOfLastDose?.epochSecond ?: 0)
-            val secondsToNextDose = drug.gap * 60 - secondsSinceDose
-            return secondsToNextDose.div(60).toInt()
-        }
-        else{
-            return 0
-        }
+        val secSinceLastDose = Duration.between(timeOfLastDose, currentTime).seconds
+        val secLastDoseClear = max(0, drug.gap * 60 - secSinceLastDose)
+
+        return max(secLastDoseClear, secMaxDosesClear).toInt().div(60)
     }
 
-    fun updateNextDoseAvailability() {
-        _minutesToNextDose = getMinutesToNextDose()
-        if (_minutesToNextDose > 0){
-            nextDoseAvailability = "${_minutesToNextDose}${Constants.NEXT_DOSE_TIME_UNIT}"
+    fun updateNextDoseAvailability(currentTime: Instant = Instant.now()) {
+        minutesToNextDose = returnMinutesToNextDose(currentTime)
+
+        Log.d("DrugStatus", "remaining for ${drug.name} is $minutesToNextDose")
+
+        if (minutesToNextDose > 0){
+            nextDoseAvailability = "${minutesToNextDose}${Constants.NEXT_DOSE_TIME_UNIT}"
         }else{
             nextDoseAvailability = Constants.NEXT_DOSE_AVAILABLE
         }
     }
 
-    fun refreshData(doses: List<Dose>) {
+    fun refreshData(doses: List<Dose>, currentTime: Instant = Instant.now()) {
 
+        // If there are doses then recall the first and last
         if (!doses.isEmpty()) {
-            timeOfLastDose = doses.sortedBy { d -> d.taken }.last().taken
+            val dosesSortedByDate = doses.sortedBy { d -> d.taken }
+            timeOfLastDose = dosesSortedByDate.last().taken
+            timeOfFirstDoseInThis24Hours = dosesSortedByDate.first().taken
         }
 
         dosesIn24Hours = doses.size
         dosesDescription = "$dosesIn24Hours/${drug.dosesPerDay}"
-        updateNextDoseAvailability()
+        updateNextDoseAvailability(currentTime)
     }
 
     fun getNumberOfDosesInfo() = dosesDescription

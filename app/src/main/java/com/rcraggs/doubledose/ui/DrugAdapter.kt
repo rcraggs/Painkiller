@@ -53,13 +53,11 @@ class DrugAdapter(private val items: List<DrugStatus>,
                 drugHistoryAction(item.drug)
             }
 
-            if (item._minutesToNextDose > 0){
+            if (item.minutesToNextDose > 0){
                 v.card_main.setCardBackgroundColor(Constants.UNAVAILABLE_DRUG_COLOR)
             }else{
                 v.card_main.setCardBackgroundColor(Constants.AVAILABLE_DRUG_COLOR)
             }
-
-
         }
     }
 }

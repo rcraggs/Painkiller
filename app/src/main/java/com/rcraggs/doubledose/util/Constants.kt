@@ -6,8 +6,9 @@ import org.threeten.bp.format.DateTimeFormatter
 object Constants {
 
     const val NEXT_DOSE_AVAILABLE = "Available!"
-    const val REFRESH_TIMER_MILLI = 1000L * 30
+    const val REFRESH_TIMER_MILLI = 1000L //* 30
     const val NEXT_DOSE_TIME_UNIT = " mins"
+    const val SECONDS_IN_A_DAY = 24 * 60 * 60
 
     const val PROD_DB_NAME = "dosesdb"
 
