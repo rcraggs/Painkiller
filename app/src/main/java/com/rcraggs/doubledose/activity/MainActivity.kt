@@ -13,6 +13,7 @@ import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugAdapter
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.*
 import org.koin.android.architecture.ext.viewModel
 import java.util.*
 
@@ -37,11 +38,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.getStatuses().observe(this,
                 Observer {
                     adapter.notifyDataSetChanged()
-//                    viewModel.getChangesArray().forEach {
-//                        viewModel.updateDrugStatus(it)
-//                        adapter.notifyDataSetChanged()
-//                    }
-//                    viewModel.clearChanges()
                 })
     }
 
