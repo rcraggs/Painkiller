@@ -5,6 +5,7 @@ import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.AppDbCallback
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.util.Constants
+import com.rcraggs.doubledose.viewmodel.DoseEditViewModel
 import com.rcraggs.doubledose.viewmodel.HistoryViewModel
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import org.koin.android.architecture.ext.viewModel
@@ -19,6 +20,7 @@ val appModule : Module = applicationContext {
 
     viewModel { HistoryViewModel(get()) }
     viewModel { HomeViewModel(get())}
+    viewModel { DoseEditViewModel(get())}
 }
 
 

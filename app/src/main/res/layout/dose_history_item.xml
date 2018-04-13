@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dose_history_item_layout"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
     <TextView
         android:id="@+id/tv_dose_history_text"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:padding="20dp"
-        android:layout_margin="1dp"
-        android:adjustViewBounds="true"/>
-</LinearLayout>
+        android:layout_marginTop="16dp"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/img_edit_dose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="10dp"
+        android:adjustViewBounds="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_edit_black_24dp" />
+
+</RelativeLayout>

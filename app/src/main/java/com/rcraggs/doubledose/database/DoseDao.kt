@@ -34,4 +34,7 @@ interface DoseDao {
 
     @Query("SELECT * FROM dose WHERE drug = :drugId ORDER BY taken desc")
     fun getAll(drugId: Long): List<Dose>
+
+    @Query("DELETE FROM dose WHERE id = :doseId")
+    fun delete(doseId: Long)
 }

@@ -18,4 +18,9 @@ class Drug() {
 
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true) var id: Long = 0
+
+    @Ignore
+    override fun toString(): String {
+        return name
+    }
 }
