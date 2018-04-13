@@ -211,4 +211,30 @@ class TestDoseDoa {
     private fun get24HoursAgo(): Instant {
         return Instant.now().minusSeconds(60 * 60 * 24)
     }
+
+    @Test
+    fun testCanGetDrugWithDoses() {
+
+        val d = Drug("testdrug")
+        d.id = db.drugDao().insert(d)
+
+        db.doseDao().insert(Dose(d))
+        db.doseDao().insert(Dose(d))
+        db.doseDao().insert(Dose(d))
+
+        val dd = db.drugDao().findWithDosesById(d.id)
+
+        assertEquals(3, dd.doses.size)
+    }
+
+    @Test
+    fun testCanGetDrugWithNoDoses() {
+
+        val d = Drug("testdrug")
+        d.id = db.drugDao().insert(d)
+        val dd = db.drugDao().findWithDosesById(d.id)
+
+        assertEquals(0, dd.doses.size)
+
+    }
 }
