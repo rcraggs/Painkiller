@@ -6,16 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Dose
-import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.util.Constants
 import kotlinx.android.synthetic.main.dose_history_item.view.*
-import kotlinx.android.synthetic.main.drug_card.view.*
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
-class DoseAdapter(private val items: List<Dose>, private val doseAction: (Dose) -> Unit): RecyclerView.Adapter<DoseAdapter.DoseHolder>() {
+class DoseAdapter(var items: List<Dose>, private val doseAction: (Dose) -> Unit): RecyclerView.Adapter<DoseAdapter.DoseHolder>() {
 
-    override fun getItemCount() = items.size
+    override fun getItemCount() = items?.size ?: 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DoseHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.dose_history_item, parent, false)
@@ -23,8 +21,10 @@ class DoseAdapter(private val items: List<Dose>, private val doseAction: (Dose) 
     }
 
     override fun onBindViewHolder(holder: DoseHolder, position: Int) {
-        val item = items[position]
-        holder.bindDose(item)
+
+        items?.let {
+            holder.bindDose(items[position])
+        }
     }
 
     class DoseHolder(private val v: View, private val doseAction: (Dose) -> Unit): RecyclerView.ViewHolder(v) {
@@ -32,7 +32,8 @@ class DoseAdapter(private val items: List<Dose>, private val doseAction: (Dose) 
         fun bindDose(item: Dose) {
             val ld1: LocalDateTime = LocalDateTime.ofInstant(item.taken, ZoneId.systemDefault())
             val takenTime = Constants.historyDoseTimeFormatter.format(ld1)
-            v.tv_dose_history_text.text = "${item.drug.name} @ $takenTime"
+            v.tv_dose_history_drug.text = "${item.drug.name}"
+            v.tv_dose_history_date.text =  "$takenTime"
 
             v.img_edit_dose.setOnClickListener {
                 doseAction(item)

@@ -6,11 +6,20 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/tv_dose_history_text"
+        android:id="@+id/tv_dose_history_drug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="18sp" />
+        android:layout_marginTop="0dp"
+        android:text="DRUG NAME"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_dose_history_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_dose_history_drug"
+        android:paddingTop="8dp"
+        android:text="Drug Date" />
 
     <ImageView
         android:id="@+id/img_edit_dose"

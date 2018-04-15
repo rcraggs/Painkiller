@@ -16,4 +16,5 @@ object Constants {
     val UNAVAILABLE_DRUG_COLOR = Color.parseColor("#A03555")
 
     val historyDoseTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("E d-MMM-yyyy h:mm a")
+    val doseDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("E d-MMM-yyyy a")
 }

@@ -17,6 +17,10 @@ interface DoseDao {
     @Query("SELECT * FROM dose ORDER BY taken desc")
     fun getAllLive(): LiveData<List<Dose>>
 
+
+    @Query("SELECT * FROM dose WHERE drug = :drugId ORDER BY taken desc")
+    fun getAllLive(drugId: Long): LiveData<List<Dose>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(d: Dose) : Long
 
@@ -37,4 +41,10 @@ interface DoseDao {
 
     @Query("DELETE FROM dose WHERE id = :doseId")
     fun delete(doseId: Long)
+
+    @Query("SELECT * FROM dose WHERE id = :doseId")
+    fun findDoseById(doseId: Long): Dose
+
+    @Update
+    fun update(dose: Dose)
 }

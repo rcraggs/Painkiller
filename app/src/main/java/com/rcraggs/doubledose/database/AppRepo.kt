@@ -1,5 +1,6 @@
 package com.rcraggs.doubledose.database
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.os.SystemClock
@@ -33,25 +34,24 @@ class AppRepo(val db: AppDatabase) {
         status.refreshData(doses)
     }
 
-    fun getDosesWithDrugs(): List<Dose> {
+    fun getDosesWithDrugs(): LiveData<List<Dose>> {
 
-        val doses = db.doseDao().getAll()
+        val doses = db.doseDao().getAllLive()
         val drugs = db.drugDao().getAll()
 
-        // todo could this be done with embedded and relationships like SubjectView here - https://android.jlelse.eu/setting-android-room-in-real-project-58a77469737c?
-        doses.forEach { d ->
+        doses.value?.forEach { d ->
             d.drug = drugs.find { drug -> drug.id == d.drugId }!!
         }
 
         return doses
     }
 
-    fun getDosesWithDrugs(drugId: Long): List<Dose> {
+    fun getDosesWithDrugs(drugId: Long): LiveData<List<Dose>> {
 
         val drug = db.drugDao().findById(drugId)
-        val doses = db.doseDao().getAll(drugId)
+        val doses = db.doseDao().getAllLive(drugId)
 
-        doses.forEach { d -> d.drug = drug }
+        doses.value?.forEach { d -> d.drug = drug }
         return doses
     }
 
