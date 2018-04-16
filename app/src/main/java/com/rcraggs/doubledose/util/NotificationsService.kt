@@ -17,7 +17,7 @@ class NotificationsService(repo: AppRepo, val alarmManager: AlarmManager) {
         // The notification object passed to be displayed
         val notification = NotificationCompat.Builder(context, Constants.CHANNEL_ID)
             .setContentTitle(context.getString(R.string.notification_title))
-            .setContentText(context.getString(R.string.notification_text) + drugStatus.drug.name)
+            .setContentText(context.getString(R.string.notification_text) + " " + drugStatus.drug.name)
             .setSmallIcon(R.drawable.abc_ic_star_black_16dp)
                 .build()
 

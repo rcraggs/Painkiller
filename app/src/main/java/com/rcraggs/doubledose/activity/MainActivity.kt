@@ -38,19 +38,23 @@ class MainActivity : AppCompatActivity() {
         rv_drugs.layoutManager = LinearLayoutManager(this)
 
         viewModel.getStatuses().observe(this,
-                Observer {
-                    adapter.notifyDataSetChanged()
+            Observer {
+                adapter.notifyDataSetChanged()
 
-                    // todo - this is updated every 20 seconds. Only really need it when the dose actually changes.
-                    // Possibly on the event handler?
+                // If doses have changed and we've noticed in the UI, and they have not yet
+                // been dealt with, update the notification scheduler.
 
+                if (viewModel.requiresDoseScheduling()){
                     val nextAvailableDrug = viewModel.getDrugNextAvailableInFuture()
                     if (nextAvailableDrug != null) {
                         notifications.scheduleNotification(this, nextAvailableDrug)
                     }else{
                         notifications.cancelNotifications(this)
                     }
-                })
+
+                    viewModel.doseReschedulingComplete() // flag this is has been dealt with
+                }
+            })
     }
 
     private fun showDrugHistory(drug: Drug) {

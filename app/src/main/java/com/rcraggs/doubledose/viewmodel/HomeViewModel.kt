@@ -1,5 +1,6 @@
 package com.rcraggs.doubledose.viewmodel
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
@@ -7,7 +8,6 @@ import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugStatus
-import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
@@ -18,6 +18,8 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
     private var drugIdToStatusMap: Map<Long, DrugStatus>
     private var drugStatuses = MediatorLiveData<List<DrugStatus>>()
+
+    private var requireNotificationUpdate = false
 
     init {
         // Get the drugs and create statuses for them based on doses
@@ -40,6 +42,8 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
             drugStatuses.value = drugIdToStatusMap.values.toList().sortedBy { d -> d.drug.name }
             Log.d("HomeViewModel", "Refreshing Live Database BC timer tick")
         })
+
+        requireNotificationUpdate = true
     }
 
     fun getStatuses() = drugStatuses
@@ -67,6 +71,8 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
     fun takeDose(drug: Drug) {
         doseDao.insert(Dose(drug))
+
+        requireNotificationUpdate = true
     }
 
     fun takeDose(drugId: Long, hourOfDay: Int, minute: Int) {
@@ -76,6 +82,8 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
         val takenTime = LocalDateTime.now().withHour(hourOfDay).withMinute(minute)
         dose.taken = takenTime.atZone(ZoneId.systemDefault()).toInstant()
         doseDao.insert(dose)
+
+        requireNotificationUpdate = true
     }
 
     fun getDrugNextAvailableInFuture(): DrugStatus? {
@@ -91,5 +99,10 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
         }
 
         return nextAvailableDrugStatus
+    }
+
+    fun requiresDoseScheduling() = requireNotificationUpdate
+    fun doseReschedulingComplete() {
+        requireNotificationUpdate = false
     }
 }
