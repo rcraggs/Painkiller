@@ -44,8 +44,6 @@ class DrugStatus(val drug: Drug) {
     fun updateNextDoseAvailability(currentTime: Instant = Instant.now()) {
         minutesToNextDose = returnMinutesToNextDose(currentTime)
 
-        Log.d("DrugStatus", "remaining for ${drug.name} is $minutesToNextDose")
-
         if (minutesToNextDose > 0){
             nextDoseAvailability = "${minutesToNextDose}${Constants.NEXT_DOSE_TIME_UNIT}"
         }else{

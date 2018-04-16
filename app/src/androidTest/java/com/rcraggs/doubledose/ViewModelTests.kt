@@ -6,6 +6,7 @@ import com.rcraggs.doubledose.di.appModule
 import com.rcraggs.doubledose.di.inMemoryDBModule
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
+import com.rcraggs.doubledose.util.blockingObserve
 import com.rcraggs.doubledose.viewmodel.HistoryViewModel
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import org.junit.After
@@ -41,7 +42,7 @@ class ViewModelTests : KoinTest {
     fun testHistoryGetsAllDosesWhenNone() {
 
         historyVM.start()
-        assertEquals(0, historyVM.doses.size)
+        assertEquals(0, historyVM.doses.blockingObserve()!!.size)
     }
 
     @Test
@@ -59,7 +60,7 @@ class ViewModelTests : KoinTest {
         repo.db.doseDao().insert(Dose(drug2))
 
         historyVM.start()
-        assertEquals(3, historyVM.doses.size)
+        assertEquals(3, historyVM.doses.blockingObserve()!!.size)
     }
 
     @Test
@@ -78,7 +79,7 @@ class ViewModelTests : KoinTest {
         repo.db.doseDao().insert(Dose(drug2))
 
         historyVM.start(drug.id)
-        assertEquals(1, historyVM.doses.size)
+        assertEquals(1, historyVM.doses.blockingObserve()!!.size)
     }
 
 
@@ -92,8 +93,6 @@ class ViewModelTests : KoinTest {
 
     @Test
     fun testGettingDrugsWhenNoneAreAdded() {
-
-        homeViewModel.start()
         assertEquals(0, homeViewModel.getDrugs().size)
     }
 
@@ -107,7 +106,6 @@ class ViewModelTests : KoinTest {
         val drug2 = Drug("Test2")
         drug2.id = repo.db.drugDao().insert(drug2)
 
-        homeViewModel.start()
         assertEquals(2, homeViewModel.getDrugs().size)
     }
 //
