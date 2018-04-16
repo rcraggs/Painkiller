@@ -20,13 +20,12 @@ val appModule : Module = applicationContext {
 
     factory { AppRepo(get()) }
 
-    bean {NotificationsService(get(), get())}
-
     viewModel { HistoryViewModel(get()) }
     viewModel { HomeViewModel(get())}
     viewModel { DoseEditViewModel(get())}
 
     bean { getAlarmManager(this)}
+    bean {NotificationsService(get(), get())}
 }
 
 
@@ -39,10 +38,12 @@ val deviceDBModule : Module = applicationContext {
     bean { createActualAppDatabase(this) }
 }
 
+fun getContext(context: Context): android.content.Context {
+    return context.androidApplication()
+}
 fun getAlarmManager(context: Context): AlarmManager {
-    val alarmManager = context.androidApplication()
+    return context.androidApplication()
             .getSystemService(android.content.Context.ALARM_SERVICE) as AlarmManager
-    return alarmManager
 }
 
 fun createInMemoryAppDatabase(context: Context): AppDatabase {

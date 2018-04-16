@@ -7,17 +7,15 @@ import android.content.Intent
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import com.rcraggs.doubledose.R
-import com.rcraggs.doubledose.database.AppRepo
-import com.rcraggs.doubledose.ui.DrugStatus
 
-class NotificationsService(repo: AppRepo, val alarmManager: AlarmManager) {
+class NotificationsService(private val context: Context, private val alarmManager: AlarmManager) {
 
-    fun scheduleNotification(context: Context, drugStatus: DrugStatus) {
+    fun scheduleNotification(minutesToAvailable: Int, drugName: String) {
 
         // The notification object passed to be displayed
         val notification = NotificationCompat.Builder(context, Constants.CHANNEL_ID)
             .setContentTitle(context.getString(R.string.notification_title))
-            .setContentText(context.getString(R.string.notification_text) + " " + drugStatus.drug.name)
+            .setContentText(context.getString(R.string.notification_text) + " " + drugName)
             .setSmallIcon(R.drawable.abc_ic_star_black_16dp)
                 .build()
 
@@ -36,20 +34,21 @@ class NotificationsService(repo: AppRepo, val alarmManager: AlarmManager) {
         //val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + drugStatus.minutesToNextDose * 60 * 1000,
+                System.currentTimeMillis() + minutesToAvailable * 60 * 1000,
                 pendingIntent
         )
 
-        Log.d(this.javaClass.name, "Scheduled notification for ${drugStatus.minutesToNextDose} time")
+        Log.d(this.javaClass.name, "Scheduled notification for ${minutesToAvailable} minutes")
     }
 
-    fun cancelNotifications(context: Context) {
+    fun cancelNotifications() {
 
         val myIntent = Intent(context, NotificationPublisher::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
                 context,
                 0,
                 myIntent,
+
                 PendingIntent.FLAG_UPDATE_CURRENT
         )
         alarmManager.cancel(pendingIntent)
