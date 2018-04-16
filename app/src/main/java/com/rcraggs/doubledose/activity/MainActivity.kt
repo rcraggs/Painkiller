@@ -11,15 +11,19 @@ import android.view.MenuItem
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugAdapter
+import com.rcraggs.doubledose.util.NotificationsService
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.*
 import org.koin.android.architecture.ext.viewModel
+import org.koin.android.ext.android.inject
+import org.threeten.bp.Instant
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<HomeViewModel>()
+    private val notifications: NotificationsService by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +40,16 @@ class MainActivity : AppCompatActivity() {
         viewModel.getStatuses().observe(this,
                 Observer {
                     adapter.notifyDataSetChanged()
+
+                    // todo - this is updated every 20 seconds. Only really need it when the dose actually changes.
+                    // Possibly on the event handler?
+
+                    val nextAvailableDrug = viewModel.getDrugNextAvailableInFuture()
+                    if (nextAvailableDrug != null) {
+                        notifications.scheduleNotification(this, nextAvailableDrug)
+                    }else{
+                        notifications.cancelNotifications(this)
+                    }
                 })
     }
 

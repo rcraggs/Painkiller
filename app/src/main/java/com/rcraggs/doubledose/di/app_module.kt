@@ -1,10 +1,12 @@
 package com.rcraggs.doubledose.di
 
+import android.app.AlarmManager
 import android.arch.persistence.room.Room
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.AppDbCallback
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.util.Constants
+import com.rcraggs.doubledose.util.NotificationsService
 import com.rcraggs.doubledose.viewmodel.DoseEditViewModel
 import com.rcraggs.doubledose.viewmodel.HistoryViewModel
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
@@ -18,9 +20,13 @@ val appModule : Module = applicationContext {
 
     factory { AppRepo(get()) }
 
+    bean {NotificationsService(get(), get())}
+
     viewModel { HistoryViewModel(get()) }
     viewModel { HomeViewModel(get())}
     viewModel { DoseEditViewModel(get())}
+
+    bean { getAlarmManager(this)}
 }
 
 
@@ -33,6 +39,11 @@ val deviceDBModule : Module = applicationContext {
     bean { createActualAppDatabase(this) }
 }
 
+fun getAlarmManager(context: Context): AlarmManager {
+    val alarmManager = context.androidApplication()
+            .getSystemService(android.content.Context.ALARM_SERVICE) as AlarmManager
+    return alarmManager
+}
 
 fun createInMemoryAppDatabase(context: Context): AppDatabase {
     return Room.inMemoryDatabaseBuilder(context.androidApplication(), AppDatabase::class.java)

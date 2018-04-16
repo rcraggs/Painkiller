@@ -7,10 +7,10 @@ class Drug() {
 
     @ColumnInfo(name = "name") var name: String = ""
     @ColumnInfo(name = "perday") var dosesPerDay: Long = 4
-    @ColumnInfo(name = "gap") var gap: Long = 120
+    @ColumnInfo(name = "gap") var gap: Long = 240
 
     @Ignore
-    constructor(n: String, p: Long = 4, g: Long = 120): this() {
+    constructor(n: String, p: Long = 4, g: Long = 240): this() {
         name = n
         dosesPerDay = p
         gap = g

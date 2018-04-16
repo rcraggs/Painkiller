@@ -7,19 +7,16 @@ import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugStatus
+import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
-import java.util.*
-import kotlin.collections.HashMap
 
 class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
     private val doseDao = repo.db.doseDao()
     private val drugDao = repo.db.drugDao()
 
-    private var setOfChangedDrugs = HashSet<Drug>()
-
-    private lateinit var drugIdToStatusMap: Map<Long, DrugStatus>
+    private var drugIdToStatusMap: Map<Long, DrugStatus>
     private var drugStatuses = MediatorLiveData<List<DrugStatus>>()
 
     init {
@@ -79,5 +76,20 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
         val takenTime = LocalDateTime.now().withHour(hourOfDay).withMinute(minute)
         dose.taken = takenTime.atZone(ZoneId.systemDefault()).toInstant()
         doseDao.insert(dose)
+    }
+
+    fun getDrugNextAvailableInFuture(): DrugStatus? {
+
+        var minutesToNextAvailableDose = Int.MAX_VALUE
+        var nextAvailableDrugStatus: DrugStatus? = null
+
+        drugStatuses.value?.forEach {
+            if (it.minutesToNextDose > 0 && it.minutesToNextDose < minutesToNextAvailableDose){
+                nextAvailableDrugStatus = it
+                minutesToNextAvailableDose = it.minutesToNextDose
+            }
+        }
+
+        return nextAvailableDrugStatus
     }
 }

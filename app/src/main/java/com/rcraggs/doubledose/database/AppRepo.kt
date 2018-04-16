@@ -33,27 +33,27 @@ class AppRepo(val db: AppDatabase) {
         val doses = db.doseDao().getDosesSince(status.drug.id, Instant.now().dayAgo())
         status.refreshData(doses)
     }
-
-    fun getDosesWithDrugs(): LiveData<List<Dose>> {
-
-        val doses = db.doseDao().getAllLive()
-        val drugs = db.drugDao().getAll()
-
-        doses.value?.forEach { d ->
-            d.drug = drugs.find { drug -> drug.id == d.drugId }!!
-        }
-
-        return doses
-    }
-
-    fun getDosesWithDrugs(drugId: Long): LiveData<List<Dose>> {
-
-        val drug = db.drugDao().findById(drugId)
-        val doses = db.doseDao().getAllLive(drugId)
-
-        doses.value?.forEach { d -> d.drug = drug }
-        return doses
-    }
+//
+//    fun getDosesWithDrugs(): LiveData<List<Dose>> {
+//
+//        val doses = db.doseDao().getAllLive()
+//        val drugs = db.drugDao().getAll()
+//
+//        doses.value?.forEach { d ->
+//            d.drug = drugs.find { drug -> drug.id == d.drugId }!!
+//        }
+//
+//        return doses
+//    }
+//
+//    fun getDosesWithDrugs(drugId: Long): LiveData<List<Dose>> {
+//
+//        val drug = db.drugDao().findById(drugId)
+//        val doses = db.doseDao().getAllLive(drugId)
+//
+//        doses.value?.forEach { d -> d.drug = drug }
+//        return doses
+//    }
 
     fun getDrugWithId(drugId: Long): Drug? = db.drugDao().findById(drugId)
 

@@ -30,7 +30,7 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
                 val drugs = repo.db.drugDao().getAll()
                 Transformations.map(repo.db.doseDao().getAllLive(), {
                     it.forEach {
-                        it.drug = drugs.find {it.id == drugId}!!
+                        it.drug = drugs.find {d -> it.drugId == d.id}!!
                     }
                     it
                 })
