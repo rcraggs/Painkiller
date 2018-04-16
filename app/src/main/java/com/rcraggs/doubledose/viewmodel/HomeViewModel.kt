@@ -1,6 +1,5 @@
 package com.rcraggs.doubledose.viewmodel
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
@@ -16,7 +15,7 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     private val doseDao = repo.db.doseDao()
     private val drugDao = repo.db.drugDao()
 
-    private var drugIdToStatusMap: Map<Long, DrugStatus>
+    private var drugIdToStatusMap: MutableList<DrugStatus>
     private var drugStatuses = MediatorLiveData<List<DrugStatus>>()
 
     private var requireNotificationUpdate = false
@@ -24,22 +23,22 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     init {
         // Get the drugs and create statuses for them based on doses
         val drugs = drugDao.getAll()
-        drugIdToStatusMap = HashMap()
+        drugIdToStatusMap = ArrayList()
 
         drugs.forEach {
             val status = repo.getDrugStatus(it)
-            (drugIdToStatusMap as HashMap<Long, DrugStatus>)[it.id] = status
+            drugIdToStatusMap.add(status)
         }
 
         drugStatuses.addSource(doseDao.getAllLive(), {
             Log.d("HomeViewModel", "Refreshing Live Database BC table changed")
             updateAllDrugStatuses()
-            drugStatuses.value = drugIdToStatusMap.values.toList().sortedBy { d -> d.drug.name }
+            drugStatuses.value = drugIdToStatusMap.sortedBy { d -> d.drug.name }
         })
 
         drugStatuses.addSource(repo.elapsedTime, {
             updateAllDrugStatusesAvailability()
-            drugStatuses.value = drugIdToStatusMap.values.toList().sortedBy { d -> d.drug.name }
+            drugStatuses.value = drugIdToStatusMap.sortedBy { d -> d.drug.name }
             Log.d("HomeViewModel", "Refreshing Live Database BC timer tick")
         })
 
@@ -49,29 +48,25 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     fun getStatuses() = drugStatuses
 
     fun getDrugs(): List<DrugStatus> {
-        return drugIdToStatusMap.values.sortedBy { d -> d.drug.name }
+        return drugIdToStatusMap.sortedBy { d -> d.drug.name }
     }
 
     private fun updateAllDrugStatusesAvailability() {
 
-        for (index in drugIdToStatusMap.keys){
-            drugIdToStatusMap[index]?.updateNextDoseAvailability()
+        for (ds in drugIdToStatusMap){
+            ds.updateNextDoseAvailability()
         }
     }
 
     private fun updateAllDrugStatuses() {
 
-        for (index in drugIdToStatusMap.keys){
-            val status: DrugStatus? = drugIdToStatusMap[index]
-            if (status != null) {
-                repo.refreshDrugStatus(status)
-            }
+        for (ds in drugIdToStatusMap){
+            repo.refreshDrugStatus(ds)
         }
     }
 
     fun takeDose(drug: Drug) {
         doseDao.insert(Dose(drug))
-
         requireNotificationUpdate = true
     }
 
