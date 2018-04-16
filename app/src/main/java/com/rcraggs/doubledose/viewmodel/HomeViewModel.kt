@@ -22,8 +22,7 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     private lateinit var drugIdToStatusMap: Map<Long, DrugStatus>
     private var drugStatuses = MediatorLiveData<List<DrugStatus>>()
 
-    fun start() {
-
+    init {
         // Get the drugs and create statuses for them based on doses
         val drugs = drugDao.getAll()
         drugIdToStatusMap = HashMap()
@@ -53,11 +52,20 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     }
 
     private fun updateAllDrugStatusesAvailability() {
-        drugIdToStatusMap.forEach { _, u -> u.updateNextDoseAvailability() }
+
+        for (index in drugIdToStatusMap.keys){
+            drugIdToStatusMap[index]?.updateNextDoseAvailability()
+        }
     }
 
     private fun updateAllDrugStatuses() {
-        drugIdToStatusMap.forEach { _, u -> repo.refreshDrugStatus(u)  }
+
+        for (index in drugIdToStatusMap.keys){
+            val status: DrugStatus? = drugIdToStatusMap[index]
+            if (status != null) {
+                repo.refreshDrugStatus(status)
+            }
+        }
     }
 
     fun takeDose(drug: Drug) {
