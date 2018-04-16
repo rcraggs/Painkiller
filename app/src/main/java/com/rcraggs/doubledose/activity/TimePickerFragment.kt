@@ -5,7 +5,6 @@ import android.app.DialogFragment
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.TimePicker
-import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import java.util.*
 
 class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
@@ -33,6 +32,6 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
         val minute = c.get(Calendar.MINUTE)
 
         // Create a new instance of TimePickerDialog and return it
-        return TimePickerDialog(activity,this, hour, minute,false)
+        return TimePickerDialog(activity,this, hour, minute,true)
     }
 }
