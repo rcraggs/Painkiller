@@ -1,17 +1,15 @@
 package com.rcraggs.doubledose.viewmodel
 
 import android.arch.lifecycle.ViewModel
-import android.provider.SyncStateContract
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.util.Constants
-import com.rcraggs.doubledose.util.NotificationsService
+import com.rcraggs.doubledose.util.INotificationsService
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 
-class DoseEditViewModel(private val repo: AppRepo, private val notifications: NotificationsService): ViewModel(){
+class DoseEditViewModel(private val repo: AppRepo, private val notifications: INotificationsService): ViewModel(){
 
     private var newHours: Int = 0
     private var newMinutes: Int = 0
@@ -24,10 +22,6 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: No
 
     private var drugList: List<Drug> = repo.db.drugDao().getAll()
     fun getDrugs() = drugList
-
-    fun deleteDose(doseId: Long) {
-        repo.db.doseDao().delete(doseId)
-    }
 
     fun setDose(doseId: Long) {
         dose = repo.db.doseDao().findDoseById(doseId)
@@ -71,6 +65,12 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: No
         newDrug = drug
     }
 
+
+    fun deleteDose() {
+        repo.db.doseDao().delete(dose.id)
+        repo.rescheduleNotifications()
+    }
+
     fun updateDose() {
         val newTaken = LocalDateTime.of(newYear, newMonth, newDay, newHours, newMinutes)
 
@@ -78,12 +78,6 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: No
         dose.taken = newTaken.atZone(ZoneId.systemDefault()).toInstant()
 
         repo.db.doseDao().update(dose)
-
-        val nextAvailableDrug = repo.getNextUnavailableDrugToBecomeAvailable()
-        if (nextAvailableDrug != null) {
-            notifications.scheduleNotification(nextAvailableDrug.secondsBeforeNextDoseAvailable, nextAvailableDrug.drug.name)
-        }else{
-            notifications.cancelNotifications()
-        }
+        repo.rescheduleNotifications()
     }
 }

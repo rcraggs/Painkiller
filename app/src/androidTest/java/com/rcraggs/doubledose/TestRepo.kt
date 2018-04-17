@@ -10,15 +10,17 @@ import com.rcraggs.doubledose.database.DoseDao
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
-import com.rcraggs.doubledose.ui.DrugAdapter
 import com.rcraggs.doubledose.ui.UiUtilities
 import com.rcraggs.doubledose.util.Constants
+import com.rcraggs.doubledose.util.MockNotificationsService
+import com.rcraggs.doubledose.util.NotificationsServiceImpl
 import com.rcraggs.doubledose.util.blockingObserve
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import kotlin.properties.Delegates
@@ -43,14 +45,15 @@ class TestRepo {
     val ibroprufen = Drug("Ibroprufen")
 
     @Before
-    fun createDB() {
+    fun setupRepo() {
 
         val context = InstrumentationRegistry.getTargetContext();
         db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build();
         doseDao = db.doseDao()
         AndroidThreeTen.init(context);
 
-        repo = AppRepo(db)
+        val notifications = MockNotificationsService()
+        repo = AppRepo(db, notifications)
 
         // Insert drugs into the DB for testing
         paracetamol.id = db.drugDao().insert(paracetamol)

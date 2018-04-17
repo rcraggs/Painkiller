@@ -7,11 +7,11 @@ import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
-import com.rcraggs.doubledose.util.NotificationsService
+import com.rcraggs.doubledose.util.INotificationsService
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
-class HomeViewModel(private val repo: AppRepo, private val notifications: NotificationsService): ViewModel() {
+class HomeViewModel(private val repo: AppRepo, private val notifications: INotificationsService): ViewModel() {
 
     private val doseDao = repo.db.doseDao()
     private val drugDao = repo.db.drugDao()
@@ -62,11 +62,6 @@ class HomeViewModel(private val repo: AppRepo, private val notifications: Notifi
     }
 
     private fun updateNotificationSchedule() {
-        val nextAvailableDrug = repo.getNextUnavailableDrugToBecomeAvailable(internalStatusList)
-        if (nextAvailableDrug != null) {
-            notifications.scheduleNotification(nextAvailableDrug.secondsBeforeNextDoseAvailable, nextAvailableDrug.drug.name)
-        }else{
-            notifications.cancelNotifications()
-        }
+        repo.rescheduleNotifications(internalStatusList)
     }
 }

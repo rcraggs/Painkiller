@@ -58,7 +58,7 @@ class DoseEditActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     }
 
     private fun deleteDose() {
-        viewModel.deleteDose(doseId)
+        viewModel.deleteDose()
         finish()
     }
 

@@ -6,13 +6,14 @@ import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
 import com.rcraggs.doubledose.ui.getNextDrugToBecomeAvailable
 import com.rcraggs.doubledose.util.Constants
+import com.rcraggs.doubledose.util.INotificationsService
 import com.rcraggs.doubledose.util.dayAgo
 import org.threeten.bp.Instant
 import java.util.*
 
 // todo make db private and all queries go through methods on the repo
 
-class AppRepo(val db: AppDatabase) {
+class AppRepo(val db: AppDatabase, private val notifications: INotificationsService) {
 
     /**
      * For a drug, create the status based on the doses that have been taken
@@ -63,6 +64,15 @@ class AppRepo(val db: AppDatabase) {
         }
 
         return list
+    }
+
+    fun rescheduleNotifications(list: List<DrugStatus>? = null) {
+        val nextAvailableDrug = getNextUnavailableDrugToBecomeAvailable(list)
+        if (nextAvailableDrug != null) {
+            notifications.scheduleNotification(nextAvailableDrug.secondsBeforeNextDoseAvailable, nextAvailableDrug.drug.name)
+        } else {
+            notifications.cancelNotifications()
+        }
     }
 
     fun getDrugWithId(drugId: Long): Drug? = db.drugDao().findById(drugId)

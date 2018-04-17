@@ -18,10 +18,12 @@ import org.threeten.bp.Instant
  */
 class UnitTests {
 
+    private val nowInstant: Instant = Instant.now()
+
     @Test
     fun testNoDosesMeansAvailable(){
         val status = DrugStatus(Drug("Ibroprufen"))
-        status.updateNextDoseAvailability(Instant.now())
+        status.updateNextDoseAvailability(nowInstant)
 
         val availString = UiUtilities.createDoseAvailableDesription(status.secondsBeforeNextDoseAvailable)
         assertEquals(Constants.NEXT_DOSE_AVAILABLE, availString)
@@ -32,7 +34,7 @@ class UnitTests {
         val status = DrugStatus(Drug("Ibroprufen"))
         val doses = ArrayList<Dose>()
 
-        status.refreshData(doses, Instant.now())
+        status.refreshData(doses, nowInstant)
 
         assertEquals(null, status.timeOfLastDose)
         assertEquals(0, status.secondsBeforeNextDoseAvailable)
@@ -104,15 +106,15 @@ class UnitTests {
     @Test
     fun testMultipleCausesOfUnavailDrugTakesLastCaust() {
 
-        val now = Instant.now()
+
 
         val d1 = Drug("D1", 3, 10)
         val ds1 = DrugStatus(d1)
 
         ds1.refreshData(listOf(
-                Dose(d1, now.minus(Duration.ofMinutes(5))),
-                Dose(d1, now.minus(Duration.ofMinutes(7)))
-        ), now)
+                Dose(d1, nowInstant.minus(Duration.ofMinutes(5))),
+                Dose(d1, nowInstant.minus(Duration.ofMinutes(7)))
+        ), nowInstant)
 
         val statusList = listOf(ds1)
         val ds = statusList.getNextDrugToBecomeAvailable()
@@ -125,7 +127,7 @@ class UnitTests {
     @Test
     fun testNextAvailOneReachedMaxAnotherPending() {
 
-        val now = Instant.now()
+
 
         val d1 = Drug("D1", 3, 10)
         val d2 = Drug("D2", 1, 10)
@@ -133,18 +135,43 @@ class UnitTests {
         val ds1 = DrugStatus(d1)
         val ds2 = DrugStatus(d2)
 
-        ds2.refreshData(listOf(Dose(d2, now))) // Max out of D2
+        ds2.refreshData(listOf(Dose(d2, nowInstant))) // Max out of D2
 
         ds1.refreshData(listOf(
-                Dose(d1, now.minus(Duration.ofMinutes(5))),
-                Dose(d1, now.minus(Duration.ofMinutes(7)))
-        ), now)
+                Dose(d1, nowInstant.minus(Duration.ofMinutes(5))),
+                Dose(d1, nowInstant.minus(Duration.ofMinutes(7)))
+        ), nowInstant)
 
         val statusList = listOf(ds1, ds2)
         val ds = statusList.getNextDrugToBecomeAvailable()
 
         assertEquals(ds1, ds)
         assertEquals(ds1.secondsBeforeNextDoseAvailable, 5 * 60)
+    }
+
+
+    @Test
+    fun testNextAvailWhenMultipleDosesOverTheMax(){
+
+        val d1 = Drug("D1", 4, 4 * 60)
+
+        val ds = DrugStatus(d1)
+
+        ds.refreshData(listOf(
+                Dose(d1, nowInstant.minus(Duration.ofHours(1))),
+                Dose(d1, nowInstant.minus(Duration.ofHours(19))),
+                Dose(d1, nowInstant.minus(Duration.ofHours(20))),
+                Dose(d1, nowInstant.minus(Duration.ofHours(21))),
+                Dose(d1, nowInstant.minus(Duration.ofHours(22))),
+                Dose(d1, nowInstant.minus(Duration.ofHours(23))),
+                Dose(d1, nowInstant.minus(Duration.ofHours(24)))
+                ))
+
+        // It's going to take 23 hours before enough of those doses to clear
+        assertEquals(10800, ds.secondsBeforeNextDoseAvailable)
+
+
+
     }
 
 }

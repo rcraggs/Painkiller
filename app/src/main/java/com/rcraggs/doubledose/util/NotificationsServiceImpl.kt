@@ -8,9 +8,23 @@ import android.support.v4.app.NotificationCompat
 import android.util.Log
 import com.rcraggs.doubledose.R
 
-class NotificationsService(private val context: Context, private val alarmManager: AlarmManager) {
 
-    fun scheduleNotification(secondsToAvailable: Int, drugName: String) {
+interface INotificationsService {
+    fun scheduleNotification(secondsToAvailable: Int, drugName: String)
+    fun cancelNotifications()
+}
+
+/**
+ * The places where we might have to re-schedule notifications
+ * - adding a dose through the main activity
+ * - editing a dose through the edit activity
+ * - deleting a dose through the edit activity
+ * - adjusting the properties of a drug
+ * - an existing notification has triggered
+ */
+class NotificationsServiceImpl(private val context: Context, private val alarmManager: AlarmManager) : INotificationsService {
+
+    override fun scheduleNotification(secondsToAvailable: Int, drugName: String) {
 
         // The notification object passed to be displayed
         val notification = NotificationCompat.Builder(context, Constants.CHANNEL_ID)
@@ -41,7 +55,7 @@ class NotificationsService(private val context: Context, private val alarmManage
         Log.d(this.javaClass.name, "Scheduled notification for $secondsToAvailable seconds")
     }
 
-    fun cancelNotifications() {
+    override fun cancelNotifications() {
 
         val myIntent = Intent(context, NotificationPublisher::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
@@ -55,4 +69,16 @@ class NotificationsService(private val context: Context, private val alarmManage
 
         Log.d(this.javaClass.name, "Cancelling notifications")
     }
+}
+
+
+open class MockNotificationsService: INotificationsService {
+    override fun scheduleNotification(secondsToAvailable: Int, drugName: String) {
+        Log.d("MockNotificationsSer", "Logging Mock notification setup $secondsToAvailable for $drugName")
+    }
+
+    override fun cancelNotifications() {
+        Log.d("MockNotificationsSer", "Cancelling all mock notifications")
+    }
+
 }

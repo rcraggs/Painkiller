@@ -6,7 +6,8 @@ import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.AppDbCallback
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.util.Constants
-import com.rcraggs.doubledose.util.NotificationsService
+import com.rcraggs.doubledose.util.INotificationsService
+import com.rcraggs.doubledose.util.NotificationsServiceImpl
 import com.rcraggs.doubledose.viewmodel.DoseEditViewModel
 import com.rcraggs.doubledose.viewmodel.HistoryViewModel
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
@@ -18,14 +19,14 @@ import org.koin.dsl.module.applicationContext
 
 val appModule : Module = applicationContext {
 
-    factory { AppRepo(get()) }
+    factory { AppRepo(get(), get()) }
 
     viewModel { HistoryViewModel(get()) }
     viewModel { HomeViewModel(get(), get())}
     viewModel { DoseEditViewModel(get(), get())}
 
     bean { getAlarmManager(this)}
-    bean {NotificationsService(get(), get())}
+    bean {NotificationsServiceImpl(get(), get()) as INotificationsService}
 }
 
 
