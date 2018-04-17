@@ -9,24 +9,23 @@ import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.database.DoseDao
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
-import com.rcraggs.doubledose.ui.DrugStatus
+import com.rcraggs.doubledose.model.DrugStatus
+import com.rcraggs.doubledose.ui.DrugAdapter
+import com.rcraggs.doubledose.ui.UiUtilities
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.blockingObserve
-import com.rcraggs.doubledose.util.dayAgo
 import org.junit.After
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.properties.Delegates
+import org.threeten.bp.Duration
 import org.threeten.bp.Instant
-import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
+import kotlin.properties.Delegates
 
 
 @RunWith(AndroidJUnit4::class)
-class TestDoseDoa {
+class TestRepo {
 
     @Test
     fun useAppContext() {
@@ -36,8 +35,10 @@ class TestDoseDoa {
         assertEquals("com.rcraggs.doubledose", appContext.packageName)
     }
 
-    var db: AppDatabase by Delegates.notNull()
-    var doseDao: DoseDao by Delegates.notNull()
+    private var db: AppDatabase by Delegates.notNull()
+    private var doseDao: DoseDao by Delegates.notNull()
+    private lateinit var repo: AppRepo
+
     val paracetamol = Drug("Paracetamol")
     val ibroprufen = Drug("Ibroprufen")
 
@@ -48,6 +49,8 @@ class TestDoseDoa {
         db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build();
         doseDao = db.doseDao()
         AndroidThreeTen.init(context);
+
+        repo = AppRepo(db)
 
         // Insert drugs into the DB for testing
         paracetamol.id = db.drugDao().insert(paracetamol)
@@ -190,7 +193,8 @@ class TestDoseDoa {
         val doses = listOf(d1)
         status.refreshData(doses)
 
-        assertEquals(Constants.NEXT_DOSE_AVAILABLE, status.getTimeUntilNextDose())
+        val availString = UiUtilities.createDoseAvailableDesription(status.secondsBeforeNextDoseAvailable)
+        assertEquals(Constants.NEXT_DOSE_AVAILABLE, availString)
     }
 
 
@@ -205,7 +209,8 @@ class TestDoseDoa {
         val doses = listOf(d1)
         status.refreshData(doses)
 
-        assert(status.getTimeUntilNextDose().endsWith('s'))
+        assertNotEquals(UiUtilities.createDoseAvailableDesription(status.secondsBeforeNextDoseAvailable),
+                Constants.NEXT_DOSE_AVAILABLE)
     }
 
     private fun get24HoursAgo(): Instant {
@@ -235,6 +240,70 @@ class TestDoseDoa {
         val dd = db.drugDao().findWithDosesById(d.id)
 
         assertEquals(0, dd.doses.size)
-
     }
+
+    @Test
+    fun testNextAvailableWithNoDoses() {
+        val emptyDSList = ArrayList<DrugStatus>()
+        val ds = repo.getNextUnavailableDrugToBecomeAvailable(emptyDSList)
+        assertNull(ds)
+    }
+
+    @Test
+    fun testNextAvailableWithAllDosesAreInThePast() {
+
+        val now = Instant.now()
+
+        val d1 = Drug("D1", 2, 10)
+        val d2 = Drug("D2", 2, 10)
+
+        val ds1 = DrugStatus(d1)
+        ds1.refreshData(listOf(Dose(d1, now.minus(Duration.ofMinutes(11)))))
+
+        val ds2 = DrugStatus(d2)
+        ds1.refreshData(listOf(Dose(d2, now.minus(Duration.ofMinutes(12)))))
+
+        val ds = repo.getNextUnavailableDrugToBecomeAvailable(listOf(ds1, ds2))
+        assertNull(ds)
+    }
+
+    @Test
+    fun testNextAvailableWithAllButOneDosesAreInThePast() {
+
+        val now = Instant.now()
+
+        val d1 = Drug("D1", 2, 10)
+        val d2 = Drug("D2", 2, 10)
+
+        val ds1 = DrugStatus(d1)
+        ds1.refreshData(listOf(Dose(d1, now.minus(Duration.ofMinutes(5)))), now)
+
+        val ds2 = DrugStatus(d2)
+        ds2.refreshData(listOf(Dose(d2, now.minus(Duration.ofMinutes(12)))), now)
+
+        val ds = repo.getNextUnavailableDrugToBecomeAvailable(listOf(ds1, ds2))
+        assertEquals(ds1, ds)
+    }
+
+    @Test
+    fun test2UnavailableDrugsGetsNearest() {
+
+        val now = Instant.now()
+
+        val d1 = Drug("D1", 2, 10)
+        val d2 = Drug("D2", 2, 10)
+
+        val ds1 = DrugStatus(d1)
+        ds1.refreshData(listOf(Dose(d1, now.minus(Duration.ofMinutes(5)))), now)
+
+        val ds2 = DrugStatus(d2)
+        ds2.refreshData(listOf(Dose(d2, now.minus(Duration.ofMinutes(6)))), now)
+
+        val ds = repo.getNextUnavailableDrugToBecomeAvailable(listOf(ds1, ds2))
+        assertEquals(ds2, ds)
+
+        assertEquals(ds2.secondsBeforeNextDoseAvailable, 4 * 60)
+    }
+
+
 }
