@@ -9,6 +9,8 @@ import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
 import com.rcraggs.doubledose.util.Constants
 import kotlinx.android.synthetic.main.drug_card.view.*
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 
 class DrugAdapter(private val items: List<DrugStatus>,
                   private val doseAction: (Drug) -> Unit,
@@ -36,12 +38,30 @@ class DrugAdapter(private val items: List<DrugStatus>,
         : RecyclerView.ViewHolder(v) {
 
         fun bindDrug(item: DrugStatus) {
+
+            // Set up UI
+
+            if (item.secondsBeforeNextDoseAvailable > 0){
+                v.card_main.setCardBackgroundColor(Constants.UNAVAILABLE_DRUG_COLOR)
+            }else{
+                v.card_main.setCardBackgroundColor(Constants.AVAILABLE_DRUG_COLOR)
+            }
+
             v.tv_medicine_type.text = item.drug.name
             v.tv_amount_taken.text = item.getNumberOfDosesInfo()
 
             val doseAvailText = UiUtilities.createDoseAvailableDesription(item.secondsBeforeNextDoseAvailable)
             v.tv_next_dose.text = doseAvailText
 
+            if (item.secondsBeforeNextDoseAvailable > 0) {
+                val timeOfNextDose =  LocalDateTime.ofInstant(item.timeNextDoseIsAvailable, ZoneId.systemDefault())
+                v.tv_next_dose_time.text = Constants.doseTimeFormatter.format(timeOfNextDose)
+                v.tv_next_dose_time.visibility = View.VISIBLE
+            }else{
+                v.tv_next_dose_time.visibility = View.GONE
+            }
+
+            // Event Handlers
             v.img_dose_now.setOnClickListener {
                 doseAction(item.drug)
             }
@@ -54,11 +74,6 @@ class DrugAdapter(private val items: List<DrugStatus>,
                 drugHistoryAction(item.drug)
             }
 
-            if (item.secondsBeforeNextDoseAvailable > 0){
-                v.card_main.setCardBackgroundColor(Constants.UNAVAILABLE_DRUG_COLOR)
-            }else{
-                v.card_main.setCardBackgroundColor(Constants.AVAILABLE_DRUG_COLOR)
-            }
         }
     }
 }

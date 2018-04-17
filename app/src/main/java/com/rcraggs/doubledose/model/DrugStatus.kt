@@ -1,6 +1,5 @@
 package com.rcraggs.doubledose.model
 
-import com.rcraggs.doubledose.util.Constants
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import org.threeten.bp.format.DateTimeFormatter
@@ -15,6 +14,7 @@ class DrugStatus(val drug: Drug) {
     private var timeOfDoseThatIsMax: Instant? = null // if we can have 4 doses per day, when is the 4th most recent dose
     private var dosesIn24Hours = 0
     var secondsBeforeNextDoseAvailable = 0
+    var timeNextDoseIsAvailable: Instant? = null
 
     private fun returnSecondsToNextDose(currentTime: Instant): Int {
 
@@ -34,7 +34,7 @@ class DrugStatus(val drug: Drug) {
         }
 
         val secSinceLastDose = Duration.between(timeOfLastDose, currentTime).seconds
-        val secLastDoseClear = max(0, drug.gap * 60 - secSinceLastDose)
+        val secLastDoseClear = max(0, drug.gapMinutes * 60 - secSinceLastDose)
 
         return max(secLastDoseClear, secMaxDosesClear).toInt()
     }
@@ -42,6 +42,7 @@ class DrugStatus(val drug: Drug) {
     fun updateNextDoseAvailability(currentTime: Instant = Instant.now()) {
 
         secondsBeforeNextDoseAvailable = returnSecondsToNextDose(currentTime)
+        timeNextDoseIsAvailable = currentTime.plusSeconds(secondsBeforeNextDoseAvailable.toLong())
     }
 
     fun refreshData(doses: List<Dose>, currentTime: Instant = Instant.now()) {
@@ -62,7 +63,7 @@ class DrugStatus(val drug: Drug) {
         updateNextDoseAvailability(currentTime)
     }
 
-    fun getNumberOfDosesInfo() = dosesDescription
+    fun getNumberOfDosesInfo() = dosesDescription //todo this should be two properties
 
     companion object {
         val doseTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")

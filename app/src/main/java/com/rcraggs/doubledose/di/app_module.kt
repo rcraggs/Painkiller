@@ -22,7 +22,7 @@ val appModule : Module = applicationContext {
     factory { AppRepo(get(), get()) }
 
     viewModel { HistoryViewModel(get()) }
-    viewModel { HomeViewModel(get(), get())}
+    viewModel { HomeViewModel(get())}
     viewModel { DoseEditViewModel(get(), get())}
 
     bean { getAlarmManager(this)}

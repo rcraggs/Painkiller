@@ -13,14 +13,12 @@ import com.rcraggs.doubledose.model.DrugStatus
 import com.rcraggs.doubledose.ui.UiUtilities
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.MockNotificationsService
-import com.rcraggs.doubledose.util.NotificationsServiceImpl
 import com.rcraggs.doubledose.util.blockingObserve
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import kotlin.properties.Delegates
@@ -191,7 +189,7 @@ class TestRepo {
         val status = DrugStatus(d)
 
         val d1 = Dose(d)
-        d1.taken = Instant.now().minusSeconds(60*60*d.gap)
+        d1.taken = Instant.now().minusSeconds(60*60*d.gapMinutes)
 
         val doses = listOf(d1)
         status.refreshData(doses)

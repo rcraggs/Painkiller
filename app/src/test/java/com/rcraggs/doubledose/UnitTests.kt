@@ -169,9 +169,20 @@ class UnitTests {
 
         // It's going to take 23 hours before enough of those doses to clear
         assertEquals(10800, ds.secondsBeforeNextDoseAvailable)
+    }
 
+    @Test
+    fun getTimeOfNextDoseAvailable() {
 
+        val pointInTime = Instant.parse("2020-01-01T00:00:00.00Z")
 
+        val d = Drug("D1", 4, 4 * 60)
+        val ds = DrugStatus(d)
+
+        // Add a dose which will clear in one hour
+        ds.refreshData(listOf(Dose(d, pointInTime.minus(Duration.ofMinutes(d.gapMinutes-60)))), pointInTime)
+
+        assertEquals(pointInTime.plusSeconds(Duration.ofHours(1).seconds), ds.timeNextDoseIsAvailable)
     }
 
 }

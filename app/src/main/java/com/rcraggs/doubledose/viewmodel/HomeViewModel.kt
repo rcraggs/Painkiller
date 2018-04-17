@@ -2,16 +2,14 @@ package com.rcraggs.doubledose.viewmodel
 
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
-import com.rcraggs.doubledose.util.INotificationsService
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
-class HomeViewModel(private val repo: AppRepo, private val notifications: INotificationsService): ViewModel() {
+class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
     private val doseDao = repo.db.doseDao()
     private val drugDao = repo.db.drugDao()
@@ -21,7 +19,6 @@ class HomeViewModel(private val repo: AppRepo, private val notifications: INotif
 
     init {
         drugStatusLiveData.addSource(doseDao.getAllLive(), {
-            Log.d("HomeViewModel", "Refreshing Live Database BC table changed")
             repo.updateAllDrugStatuses(internalStatusList)
             drugStatusLiveData.value = internalStatusList.sortedBy { d -> d.drug.name }
         })
@@ -29,7 +26,6 @@ class HomeViewModel(private val repo: AppRepo, private val notifications: INotif
         drugStatusLiveData.addSource(repo.elapsedTime, {
             updateAllDrugStatusesAvailability()
             drugStatusLiveData.value = internalStatusList.sortedBy { d -> d.drug.name }
-            Log.d("HomeViewModel", "Refreshing Live Database BC timer tick")
         })
 
         updateNotificationSchedule()
