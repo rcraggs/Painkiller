@@ -6,98 +6,67 @@ import android.util.Log
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
-import com.rcraggs.doubledose.ui.DrugStatus
+import com.rcraggs.doubledose.model.DrugStatus
+import com.rcraggs.doubledose.util.NotificationsService
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
-class HomeViewModel(private val repo: AppRepo): ViewModel() {
+class HomeViewModel(private val repo: AppRepo, private val notifications: NotificationsService): ViewModel() {
 
     private val doseDao = repo.db.doseDao()
     private val drugDao = repo.db.drugDao()
 
-    private var drugIdToStatusMap: MutableList<DrugStatus>
-    private var drugStatuses = MediatorLiveData<List<DrugStatus>>()
-
-    private var requireNotificationUpdate = false
+    private var internalStatusList: MutableList<DrugStatus> = repo.getDrugStatuses().toMutableList()
+    private var drugStatusLiveData = MediatorLiveData<List<DrugStatus>>()
 
     init {
-        // Get the drugs and create statuses for them based on doses
-        val drugs = drugDao.getAll()
-        drugIdToStatusMap = ArrayList()
-
-        drugs.forEach {
-            val status = repo.getDrugStatus(it)
-            drugIdToStatusMap.add(status)
-        }
-
-        drugStatuses.addSource(doseDao.getAllLive(), {
+        drugStatusLiveData.addSource(doseDao.getAllLive(), {
             Log.d("HomeViewModel", "Refreshing Live Database BC table changed")
-            updateAllDrugStatuses()
-            drugStatuses.value = drugIdToStatusMap.sortedBy { d -> d.drug.name }
+            repo.updateAllDrugStatuses(internalStatusList)
+            drugStatusLiveData.value = internalStatusList.sortedBy { d -> d.drug.name }
         })
 
-        drugStatuses.addSource(repo.elapsedTime, {
+        drugStatusLiveData.addSource(repo.elapsedTime, {
             updateAllDrugStatusesAvailability()
-            drugStatuses.value = drugIdToStatusMap.sortedBy { d -> d.drug.name }
+            drugStatusLiveData.value = internalStatusList.sortedBy { d -> d.drug.name }
             Log.d("HomeViewModel", "Refreshing Live Database BC timer tick")
         })
 
-        requireNotificationUpdate = true
+        updateNotificationSchedule()
     }
 
-    fun getStatuses() = drugStatuses
+    fun getStatuses() = drugStatusLiveData
 
     fun getDrugs(): List<DrugStatus> {
-        return drugIdToStatusMap.sortedBy { d -> d.drug.name }
+        return internalStatusList.sortedBy { d -> d.drug.name }
     }
 
     private fun updateAllDrugStatusesAvailability() {
 
-        for (ds in drugIdToStatusMap){
+        for (ds in internalStatusList){
             ds.updateNextDoseAvailability()
-        }
-    }
-
-    private fun updateAllDrugStatuses() {
-
-        for (ds in drugIdToStatusMap){
-            repo.refreshDrugStatus(ds)
         }
     }
 
     fun takeDose(drug: Drug) {
         doseDao.insert(Dose(drug))
-        requireNotificationUpdate = true
+        updateNotificationSchedule()
     }
 
     fun takeDose(drugId: Long, hourOfDay: Int, minute: Int) {
-
         val drug = drugDao.findById(drugId)
         val dose = Dose(drug)
         val takenTime = LocalDateTime.now().withHour(hourOfDay).withMinute(minute)
         dose.taken = takenTime.atZone(ZoneId.systemDefault()).toInstant()
-        doseDao.insert(dose)
-
-        requireNotificationUpdate = true
+        this.takeDose(drug)
     }
 
-    fun getDrugNextAvailableInFuture(): DrugStatus? {
-
-        var minutesToNextAvailableDose = Int.MAX_VALUE
-        var nextAvailableDrugStatus: DrugStatus? = null
-
-        drugStatuses.value?.forEach {
-            if (it.minutesToNextDose > 0 && it.minutesToNextDose < minutesToNextAvailableDose){
-                nextAvailableDrugStatus = it
-                minutesToNextAvailableDose = it.minutesToNextDose
-            }
+    private fun updateNotificationSchedule() {
+        val nextAvailableDrug = repo.getNextUnavailableDrugToBecomeAvailable(internalStatusList)
+        if (nextAvailableDrug != null) {
+            notifications.scheduleNotification(nextAvailableDrug.secondsBeforeNextDoseAvailable, nextAvailableDrug.drug.name)
+        }else{
+            notifications.cancelNotifications()
         }
-
-        return nextAvailableDrugStatus
-    }
-
-    fun requiresDoseScheduling() = requireNotificationUpdate
-    fun doseReschedulingComplete() {
-        requireNotificationUpdate = false
     }
 }

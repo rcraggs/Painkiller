@@ -21,8 +21,8 @@ val appModule : Module = applicationContext {
     factory { AppRepo(get()) }
 
     viewModel { HistoryViewModel(get()) }
-    viewModel { HomeViewModel(get())}
-    viewModel { DoseEditViewModel(get())}
+    viewModel { HomeViewModel(get(), get())}
+    viewModel { DoseEditViewModel(get(), get())}
 
     bean { getAlarmManager(this)}
     bean {NotificationsService(get(), get())}

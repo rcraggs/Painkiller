@@ -10,7 +10,7 @@ import com.rcraggs.doubledose.R
 
 class NotificationsService(private val context: Context, private val alarmManager: AlarmManager) {
 
-    fun scheduleNotification(minutesToAvailable: Int, drugName: String) {
+    fun scheduleNotification(secondsToAvailable: Int, drugName: String) {
 
         // The notification object passed to be displayed
         val notification = NotificationCompat.Builder(context, Constants.CHANNEL_ID)
@@ -34,11 +34,11 @@ class NotificationsService(private val context: Context, private val alarmManage
         //val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + minutesToAvailable * 60 * 1000,
+                System.currentTimeMillis() + secondsToAvailable * 1000,
                 pendingIntent
         )
 
-        Log.d(this.javaClass.name, "Scheduled notification for ${minutesToAvailable} minutes")
+        Log.d(this.javaClass.name, "Scheduled notification for $secondsToAvailable seconds")
     }
 
     fun cancelNotifications() {

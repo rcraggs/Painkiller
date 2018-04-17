@@ -1,8 +1,5 @@
-package com.rcraggs.doubledose.ui
+package com.rcraggs.doubledose.model
 
-import android.util.Log
-import com.rcraggs.doubledose.model.Dose
-import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.util.Constants
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
@@ -13,14 +10,13 @@ import kotlin.math.max
 class DrugStatus(val drug: Drug) {
 
     private var dosesDescription: String = ""
-    private var nextDoseAvailability: String = ""
 
     var timeOfLastDose: Instant? = null
     private var timeOfFirstDoseInThis24Hours: Instant? = null
-    var dosesIn24Hours = 0
-    var minutesToNextDose = 0
+    private var dosesIn24Hours = 0
+    var secondsBeforeNextDoseAvailable = 0
 
-    private fun returnMinutesToNextDose(currentTime: Instant): Int {
+    private fun returnSecondsToNextDose(currentTime: Instant): Int {
 
         // No doses, no minutes until a next dose
         if (timeOfLastDose == null){
@@ -38,17 +34,12 @@ class DrugStatus(val drug: Drug) {
         val secSinceLastDose = Duration.between(timeOfLastDose, currentTime).seconds
         val secLastDoseClear = max(0, drug.gap * 60 - secSinceLastDose)
 
-        return max(secLastDoseClear, secMaxDosesClear).toInt().div(60)
+        return max(secLastDoseClear, secMaxDosesClear).toInt()
     }
 
     fun updateNextDoseAvailability(currentTime: Instant = Instant.now()) {
-        minutesToNextDose = returnMinutesToNextDose(currentTime)
 
-        if (minutesToNextDose > 0){
-            nextDoseAvailability = "${minutesToNextDose}${Constants.NEXT_DOSE_TIME_UNIT}"
-        }else{
-            nextDoseAvailability = Constants.NEXT_DOSE_AVAILABLE
-        }
+        secondsBeforeNextDoseAvailable = returnSecondsToNextDose(currentTime)
     }
 
     fun refreshData(doses: List<Dose>, currentTime: Instant = Instant.now()) {
@@ -66,8 +57,6 @@ class DrugStatus(val drug: Drug) {
     }
 
     fun getNumberOfDosesInfo() = dosesDescription
-
-    fun getTimeUntilNextDose() = nextDoseAvailability
 
     companion object {
         val doseTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")

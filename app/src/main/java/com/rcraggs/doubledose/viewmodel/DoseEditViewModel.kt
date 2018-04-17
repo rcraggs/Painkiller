@@ -6,11 +6,12 @@ import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.util.Constants
+import com.rcraggs.doubledose.util.NotificationsService
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 
-class DoseEditViewModel(val repo: AppRepo): ViewModel(){
+class DoseEditViewModel(private val repo: AppRepo, private val notifications: NotificationsService): ViewModel(){
 
     private var newHours: Int = 0
     private var newMinutes: Int = 0
@@ -77,5 +78,12 @@ class DoseEditViewModel(val repo: AppRepo): ViewModel(){
         dose.taken = newTaken.atZone(ZoneId.systemDefault()).toInstant()
 
         repo.db.doseDao().update(dose)
+
+        val nextAvailableDrug = repo.getNextUnavailableDrugToBecomeAvailable()
+        if (nextAvailableDrug != null) {
+            notifications.scheduleNotification(nextAvailableDrug.secondsBeforeNextDoseAvailable, nextAvailableDrug.drug.name)
+        }else{
+            notifications.cancelNotifications()
+        }
     }
 }
