@@ -20,11 +20,11 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: IN
 
     lateinit var dose: Dose
 
-    private var drugList: List<Drug> = repo.db.drugDao().getAll()
+    private var drugList: List<Drug> = repo.getAllDrugs()
     fun getDrugs() = drugList
 
     fun setDose(doseId: Long) {
-        dose = repo.db.doseDao().findDoseById(doseId)
+        dose = repo.findDoseById(doseId)
 
         val ldt = dose.taken.atZone(ZoneId.systemDefault())
         newDay = ldt.dayOfMonth
@@ -33,7 +33,7 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: IN
         newHours = ldt.hour
         newMinutes = ldt.minute
 
-        newDrug = repo.db.drugDao().findById(dose.drugId)
+        newDrug = repo.findDrugById(dose.drugId)
     }
 
     fun getDoseDateSeconds() = dose.taken.epochSecond
@@ -67,8 +67,7 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: IN
 
 
     fun deleteDose() {
-        repo.db.doseDao().delete(dose.id)
-        repo.rescheduleNotifications()
+        repo.deleteDose(dose.id)
     }
 
     fun updateDose() {
@@ -77,7 +76,6 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: IN
         dose.drugId = newDrug!!.id
         dose.taken = newTaken.atZone(ZoneId.systemDefault()).toInstant()
 
-        repo.db.doseDao().update(dose)
-        repo.rescheduleNotifications()
+        repo.updateDose(dose)
     }
 }

@@ -30,7 +30,6 @@ class ViewModelTests : KoinTest {
     fun before() {
         closeKoin()
         startKoin(listOf(inMemoryDBModule, appModule)) with mock(Application::class.java)
-
     }
 
     @After
@@ -49,15 +48,15 @@ class ViewModelTests : KoinTest {
     fun testHistoryGetsAllDosesTwoDifferentDrugs() {
 
         val drug = Drug("Test1")
-        drug.id = repo.db.drugDao().insert(drug)
+        repo.insertDrug(drug)
 
         val drug2 = Drug("Test2")
-        drug2.id = repo.db.drugDao().insert(drug2)
+        repo.insertDrug(drug2)
 
         // Add doses to the DB
-        repo.db.doseDao().insert(Dose(drug))
-        repo.db.doseDao().insert(Dose(drug2))
-        repo.db.doseDao().insert(Dose(drug2))
+        repo.insertDose(Dose(drug))
+        repo.insertDose(Dose(drug2))
+        repo.insertDose(Dose(drug2))
 
         historyVM.start()
         assertEquals(3, historyVM.doses.blockingObserve()!!.size)
@@ -67,16 +66,15 @@ class ViewModelTests : KoinTest {
     fun testHistoryGetsAllDosesFor1Drug() {
 
         val drug = Drug("Test1")
-        drug.id = repo.db.drugDao().insert(drug)
+        repo.insertDrug(drug)
 
         val drug2 = Drug("Test2")
-        drug2.id = repo.db.drugDao().insert(drug2)
-
+        repo.insertDrug(drug2)
 
         // Add doses to the DB
-        repo.db.doseDao().insert(Dose(drug))
-        repo.db.doseDao().insert(Dose(drug2))
-        repo.db.doseDao().insert(Dose(drug2))
+        repo.insertDose(Dose(drug))
+        repo.insertDose(Dose(drug2))
+        repo.insertDose(Dose(drug2))
 
         historyVM.start(drug.id)
         assertEquals(1, historyVM.doses.blockingObserve()!!.size)
@@ -101,10 +99,10 @@ class ViewModelTests : KoinTest {
     fun testGettingDrugsWhen2AreAdded() {
 
         val drug = Drug("Test1")
-        drug.id = repo.db.drugDao().insert(drug)
+        repo.insertDrug(drug)
 
         val drug2 = Drug("Test2")
-        drug2.id = repo.db.drugDao().insert(drug2)
+        repo.insertDrug(drug2)
 
         assertEquals(2, homeViewModel.getDrugs().size)
     }
@@ -113,7 +111,7 @@ class ViewModelTests : KoinTest {
 //    fun testTakingADoseNotifiesObserver() {
 //
 //        val drug = Drug("Test1")
-//        drug.id = repo.db.drugDao().insert(drug)
+//        repo.insertDrug(drug)
 //
 //        val observer = mock<Observer<List<DrugStatus>>>()
 //

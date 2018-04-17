@@ -17,8 +17,8 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
         doses = when {
             drugId != -1L -> {
 
-                val drug = repo.db.drugDao().findById(drugId)
-                Transformations.map(repo.db.doseDao().getAllLive(drugId), {
+                val drug = repo.findDrugById(drugId)
+                Transformations.map(repo.getAllDosesLive(drugId), {
                         it.forEach {
                             it.drug = drug
                         }
@@ -27,8 +27,8 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
                 )
             }
             else -> {
-                val drugs = repo.db.drugDao().getAll()
-                Transformations.map(repo.db.doseDao().getAllLive(), {
+                val drugs = repo.getAllDrugs()
+                Transformations.map(repo.getAllDosesLive(), {
                     it.forEach {
                         it.drug = drugs.find {d -> it.drugId == d.id}!!
                     }

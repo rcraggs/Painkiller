@@ -11,14 +11,11 @@ import org.threeten.bp.ZoneId
 
 class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
-    private val doseDao = repo.db.doseDao()
-    private val drugDao = repo.db.drugDao()
-
     private var internalStatusList: MutableList<DrugStatus> = repo.getDrugStatuses().toMutableList()
     private var drugStatusLiveData = MediatorLiveData<List<DrugStatus>>()
 
     init {
-        drugStatusLiveData.addSource(doseDao.getAllLive(), {
+        drugStatusLiveData.addSource(repo.getAllDosesLive(), {
             repo.updateAllDrugStatuses(internalStatusList)
             drugStatusLiveData.value = internalStatusList.sortedBy { d -> d.drug.name }
         })
@@ -45,12 +42,12 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     }
 
     fun takeDose(drug: Drug) {
-        doseDao.insert(Dose(drug))
+        repo.insertDose(Dose(drug))
         updateNotificationSchedule()
     }
 
     fun takeDose(drugId: Long, hourOfDay: Int, minute: Int) {
-        val drug = drugDao.findById(drugId)
+        val drug = repo.findDrugById(drugId)
         val dose = Dose(drug)
         val takenTime = LocalDateTime.now().withHour(hourOfDay).withMinute(minute)
         dose.taken = takenTime.atZone(ZoneId.systemDefault()).toInstant()

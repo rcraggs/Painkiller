@@ -7,6 +7,7 @@ import com.rcraggs.doubledose.database.AppDbCallback
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.INotificationsService
+import com.rcraggs.doubledose.util.MockNotificationsService
 import com.rcraggs.doubledose.util.NotificationsServiceImpl
 import com.rcraggs.doubledose.viewmodel.DoseEditViewModel
 import com.rcraggs.doubledose.viewmodel.HistoryViewModel
@@ -24,19 +25,19 @@ val appModule : Module = applicationContext {
     viewModel { HistoryViewModel(get()) }
     viewModel { HomeViewModel(get())}
     viewModel { DoseEditViewModel(get(), get())}
-
-    bean { getAlarmManager(this)}
-    bean {NotificationsServiceImpl(get(), get()) as INotificationsService}
+    bean {getAlarmManager(this)}
 }
 
 
 val inMemoryDBModule : Module = applicationContext {
-    bean { }
+
+    bean { createMockNotificationService() as INotificationsService}
     bean { createInMemoryAppDatabase(this)}
 }
 
 val deviceDBModule : Module = applicationContext {
     bean { createActualAppDatabase(this) }
+    bean {NotificationsServiceImpl(get(), get()) as INotificationsService}
 }
 
 fun getContext(context: Context): android.content.Context {
@@ -46,6 +47,13 @@ fun getAlarmManager(context: Context): AlarmManager {
     return context.androidApplication()
             .getSystemService(android.content.Context.ALARM_SERVICE) as AlarmManager
 }
+
+
+fun createMockNotificationService(): INotificationsService {
+    return MockNotificationsService()
+}
+
+
 
 fun createInMemoryAppDatabase(context: Context): AppDatabase {
     return Room.inMemoryDatabaseBuilder(context.androidApplication(), AppDatabase::class.java)

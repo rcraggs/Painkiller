@@ -18,6 +18,7 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.ArgumentMatcher.*
 import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.eq
 import org.mockito.Mockito.times
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
@@ -40,7 +41,6 @@ class NotificationsTests {
     @Test
     fun testNoNotificationsWhenThereAreNoDrugs() {
 
-        repo.rescheduleNotifications()
         verifyZeroInteractions(ns)
     }
 
@@ -70,12 +70,10 @@ class NotificationsTests {
         val now = Instant.now()
 
         val d1 = Drug("D1", 3, 10)
-        d1.id = repo.db.drugDao().insert(d1)
+        repo.insertDrug(d1)
 
         val dose = Dose(d1, now.minus(Duration.ofMinutes(5)))
-        repo.db.doseDao().insert(dose)
-
-        repo.rescheduleNotifications()
+        repo.insertDose(dose)
 
         verify(ns, times(1)).scheduleNotification(5 * 60, "D1")
     }
@@ -86,19 +84,18 @@ class NotificationsTests {
         val now = Instant.now()
 
         val d1 = Drug("D1", 3, 10)
-        d1.id = repo.db.drugDao().insert(d1)
+        repo.insertDrug(d1)
 
         val d2 = Drug("D2", 1, 10)
-        d2.id = repo.db.drugDao().insert(d2)
+        repo.insertDrug(d2)
 
         val dose2 = Dose(d2, now.minus(Duration.ofMinutes(12)))
-        repo.db.doseDao().insert(dose2)
+        repo.insertDose(dose2)
 
         val dose = Dose(d1, now.minus(Duration.ofMinutes(5)))
-        repo.db.doseDao().insert(dose)
+        repo.insertDose(dose)
 
-        repo.rescheduleNotifications()
-
+        verify(ns, times(2)).scheduleNotification(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString())
         verify(ns, times(1)).scheduleNotification(5 * 60, "D1")
     }
 }

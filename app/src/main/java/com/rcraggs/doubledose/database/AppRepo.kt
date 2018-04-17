@@ -1,7 +1,9 @@
 package com.rcraggs.doubledose.database
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.os.SystemClock
+import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
 import com.rcraggs.doubledose.ui.getNextDrugToBecomeAvailable
@@ -13,7 +15,7 @@ import java.util.*
 
 // todo make db private and all queries go through methods on the repo
 
-class AppRepo(val db: AppDatabase, private val notifications: INotificationsService) {
+class AppRepo(private val db: AppDatabase, private val notifications: INotificationsService) {
 
     /**
      * For a drug, create the status based on the doses that have been taken
@@ -76,6 +78,39 @@ class AppRepo(val db: AppDatabase, private val notifications: INotificationsServ
     }
 
     fun getDrugWithId(drugId: Long): Drug? = db.drugDao().findById(drugId)
+
+    fun getAllDosesLive() = db.doseDao().getAllLive()
+
+    fun getAllDosesLive(drugId: Long) = db.doseDao().getAllLive(drugId)
+
+    fun insertDose(dose: Dose) {
+        db.doseDao().insert(dose)
+        rescheduleNotifications()
+    }
+
+    fun findDrugById(drugId: Long): Drug {
+        return db.drugDao().findById(drugId)
+    }
+
+    fun getAllDrugs() = db.drugDao().getAll()
+
+    fun findDoseById(doseId: Long) = db.doseDao().findDoseById(doseId)
+
+    fun deleteDose(id: Long) {
+        db.doseDao().delete(id)
+        rescheduleNotifications()
+    }
+
+    fun updateDose(dose: Dose) {
+        db.doseDao().update(dose)
+        rescheduleNotifications()
+    }
+
+    fun insertDrug(drug: Drug) {
+        drug.id = db.drugDao().insert(drug)
+    }
+
+
 
     private var _elapsedTime: MutableLiveData<Long>? = null
 
