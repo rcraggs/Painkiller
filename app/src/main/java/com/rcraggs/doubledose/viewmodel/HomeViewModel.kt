@@ -43,7 +43,6 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
     fun takeDose(drug: Drug) {
         repo.insertDose(Dose(drug))
-        updateNotificationSchedule()
     }
 
     fun takeDose(drugId: Long, hourOfDay: Int, minute: Int) {

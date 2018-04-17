@@ -7,6 +7,7 @@ import android.content.Intent
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import com.rcraggs.doubledose.R
+import com.rcraggs.doubledose.activity.MainActivity
 
 
 interface INotificationsService {
@@ -14,24 +15,21 @@ interface INotificationsService {
     fun cancelNotifications()
 }
 
-/**
- * The places where we might have to re-schedule notifications
- * - adding a dose through the main activity
- * - editing a dose through the edit activity
- * - deleting a dose through the edit activity
- * - adjusting the properties of a drug
- * - an existing notification has triggered
- */
 class NotificationsServiceImpl(private val context: Context, private val alarmManager: AlarmManager) : INotificationsService {
 
     override fun scheduleNotification(secondsToAvailable: Int, drugName: String) {
+
+        val intent = Intent(context, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val actionIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
         // The notification object passed to be displayed
         val notification = NotificationCompat.Builder(context, Constants.CHANNEL_ID)
             .setContentTitle(context.getString(R.string.notification_title))
             .setContentText(context.getString(R.string.notification_text) + " " + drugName)
             .setSmallIcon(R.drawable.abc_ic_star_black_16dp)
-                .build()
+            .setContentIntent(actionIntent)
+            .build()
 
         // The intent that wraps up the notification that the alarm will broadcast
         val notificationIntent = Intent(context, NotificationPublisher::class.java)
@@ -71,7 +69,6 @@ class NotificationsServiceImpl(private val context: Context, private val alarmMa
     }
 }
 
-
 open class MockNotificationsService: INotificationsService {
     override fun scheduleNotification(secondsToAvailable: Int, drugName: String) {
         Log.d("MockNotificationsSer", "Logging Mock notification setup $secondsToAvailable for $drugName")
@@ -80,5 +77,4 @@ open class MockNotificationsService: INotificationsService {
     override fun cancelNotifications() {
         Log.d("MockNotificationsSer", "Cancelling all mock notifications")
     }
-
 }
