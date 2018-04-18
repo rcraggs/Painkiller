@@ -66,6 +66,11 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> {
                 true
             }
+            R.id.action_update_drugs -> {
+                val intent = Intent(this, DrugAdminActivity::class.java)
+                startActivity(intent)
+                true
+            }
             R.id.action_show_history -> {
                 val intent = Intent(this, HistoryActivity::class.java)
                 startActivity(intent)

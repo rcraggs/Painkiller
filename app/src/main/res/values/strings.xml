@@ -7,4 +7,6 @@
     <string name="channel_description">Double Dose Channel Description</string>
     <string name="notification_title">Painkiller Time!</string>
     <string name="notification_text">You can take some </string>
+    <string name="title_activity_drug_admin">DrugAdminActivity</string>
+    <string name="action_update_drugs">Update Drugs</string>
 </resources>
