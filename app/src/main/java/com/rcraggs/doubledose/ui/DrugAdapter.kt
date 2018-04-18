@@ -48,14 +48,13 @@ class DrugAdapter(private val items: List<DrugStatus>,
             }
 
             v.tv_medicine_type.text = item.drug.name
-            v.tv_amount_taken.text = item.getNumberOfDosesInfo()
+            v.tv_amount_taken.text = "${item.dosesIn24Hours}/${item.drug.dosesPerDay}"
 
             val doseAvailText = UiUtilities.createDoseAvailableDesription(item.secondsBeforeNextDoseAvailable)
             v.tv_next_dose.text = doseAvailText
 
             if (item.secondsBeforeNextDoseAvailable > 0) {
-                val timeOfNextDose =  LocalDateTime.ofInstant(item.timeNextDoseIsAvailable, ZoneId.systemDefault())
-                v.tv_next_dose_time.text = Constants.doseTimeFormatter.format(timeOfNextDose)
+                v.tv_next_dose_time.text = UiUtilities.createTextForNextDoseTime(item.timeNextDoseIsAvailable)
                 v.tv_next_dose_time.visibility = View.VISIBLE
             }else{
                 v.tv_next_dose_time.visibility = View.GONE

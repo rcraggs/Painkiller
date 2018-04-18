@@ -1,6 +1,8 @@
 package com.rcraggs.doubledose.ui
 
 import com.rcraggs.doubledose.model.DrugStatus
+import com.rcraggs.doubledose.util.Constants
+import org.threeten.bp.*
 
 object UiUtilities {
 
@@ -12,8 +14,22 @@ object UiUtilities {
             minsTilAvail.toString() + " mins"
         }
     }
-}
 
+    fun createTextForNextDoseTime(timeNextDoseIsAvailable: Instant?): String {
+
+        val timeOfNextDose = LocalDateTime.ofInstant(timeNextDoseIsAvailable, ZoneId.systemDefault())
+        var nextTimeString = Constants.doseTimeFormatter.format(timeOfNextDose)
+
+        val todayMidnight =
+                LocalDateTime.of(LocalDate.now(ZoneId.systemDefault()).plusDays(1), LocalTime.MIDNIGHT)
+
+        if (timeOfNextDose.isAfter(todayMidnight)){
+            nextTimeString = "Tomorrow ${nextTimeString}"
+        }
+
+        return nextTimeString
+    }
+}
 
 fun List<DrugStatus>.getNextDrugToBecomeAvailable(): DrugStatus? {
 

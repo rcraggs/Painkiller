@@ -20,6 +20,11 @@ class UnitTests {
 
     private val nowInstant: Instant = Instant.now()
 
+    private val d1: Drug by lazy {
+        val d = Drug("D1", 4, 4 * 60)
+        d
+    }
+
     @Test
     fun testNoDosesMeansAvailable(){
         val status = DrugStatus(Drug("Ibroprufen"))
@@ -91,16 +96,11 @@ class UnitTests {
         val drug = Drug("Ibroprufen", g = 60, p = 1)
         val status = DrugStatus(drug)
 
-        // Set up a dose which is one hour ago but we are only allowed one per 24 hours
-        val currentTimeSeconds = 10000L
-        val secondAgoLastDose = 10L * 60L // one hour go
-        val doseTime = Instant.ofEpochSecond(currentTimeSeconds - secondAgoLastDose)
-        val currentTime = Instant.ofEpochSecond(currentTimeSeconds)
-        val doses = listOf(Dose(drug, doseTime))
+        // Dose 1 hour ago
+        status.refreshData(listOf(Dose(drug, nowInstant.minus(Duration.ofHours(1)))), nowInstant)
 
-        status.refreshData(doses, currentTime)
-
-        assertEquals(status.secondsBeforeNextDoseAvailable, ((60 * 24 * 60) - secondAgoLastDose).toInt())
+        // There should be 23 hours before the next dose
+        assertEquals(Duration.ofHours(23).seconds.toInt(), status.secondsBeforeNextDoseAvailable)
     }
 
     @Test
@@ -150,10 +150,11 @@ class UnitTests {
     }
 
 
+
+
+
     @Test
     fun testNextAvailWhenMultipleDosesOverTheMax(){
-
-        val d1 = Drug("D1", 4, 4 * 60)
 
         val ds = DrugStatus(d1)
 
@@ -176,13 +177,31 @@ class UnitTests {
 
         val pointInTime = Instant.parse("2020-01-01T00:00:00.00Z")
 
-        val d = Drug("D1", 4, 4 * 60)
-        val ds = DrugStatus(d)
+        val ds = DrugStatus(d1)
 
         // Add a dose which will clear in one hour
-        ds.refreshData(listOf(Dose(d, pointInTime.minus(Duration.ofMinutes(d.gapMinutes-60)))), pointInTime)
+        ds.refreshData(listOf(Dose(d1, pointInTime.minus(Duration.ofMinutes(d1.gapMinutes-60)))), pointInTime)
 
         assertEquals(pointInTime.plusSeconds(Duration.ofHours(1).seconds), ds.timeNextDoseIsAvailable)
     }
 
+    @Test
+    fun testDosesIn24HoursReducesWithTime() {
+
+        // Create a drug with 5 doses in 24 hours. One of which expires in 1 hour
+        val ds = DrugStatus(d1)
+        ds.refreshData(listOf(
+            Dose(d1, nowInstant.minus(Duration.ofHours(23))),
+                Dose(d1, nowInstant),
+                Dose(d1, nowInstant),
+                Dose(d1, nowInstant),
+                Dose(d1, nowInstant)
+        ))
+
+        assertEquals(5, ds.dosesIn24Hours) // right now
+
+        ds.updateNextDoseAvailability(nowInstant.plus(Duration.ofHours(1)))
+
+        assertEquals(4, ds.dosesIn24Hours) // in 1 hour's time
+    }
 }
