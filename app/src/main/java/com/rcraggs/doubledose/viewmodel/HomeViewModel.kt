@@ -24,8 +24,6 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
             updateAllDrugStatusesAvailability()
             drugStatusLiveData.value = internalStatusList.sortedBy { d -> d.drug.name }
         })
-
-        updateNotificationSchedule()
     }
 
     fun getStatuses() = drugStatusLiveData
