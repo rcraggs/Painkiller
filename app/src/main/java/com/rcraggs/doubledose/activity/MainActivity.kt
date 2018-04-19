@@ -9,7 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Drug
-import com.rcraggs.doubledose.ui.DrugAdapter
+import com.rcraggs.doubledose.ui.DrugCardAdapter
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.architecture.ext.viewModel
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val adapter = DrugAdapter(viewModel.getDrugs(),
+        val adapter = DrugCardAdapter(viewModel.getDrugs(),
                 viewModel::takeDose,
                 this::chooseDoseTime,
                 this::showDrugHistory

@@ -57,7 +57,7 @@ class NotificationsTests {
         ), now)
 
         val statusList = listOf(ds1)
-        val ds = statusList.getNextDrugToBecomeAvailable()
+        statusList.getNextDrugToBecomeAvailable()
 
         repo.rescheduleNotifications(statusList)
         verify(ns, times(1)).scheduleNotification(5 * 60, "D1")

@@ -9,14 +9,12 @@ import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
 import com.rcraggs.doubledose.util.Constants
 import kotlinx.android.synthetic.main.drug_card.view.*
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
 
-class DrugAdapter(private val items: List<DrugStatus>,
-                  private val doseAction: (Drug) -> Unit,
-                  private val doseChooseAction: (Drug) -> Unit,
-                  private val drugHistoryAction: (Drug) -> Unit
-                  ): RecyclerView.Adapter<DrugAdapter.DrugHolder>() {
+class DrugCardAdapter(private val items: List<DrugStatus>,
+                      private val doseAction: (Drug) -> Unit,
+                      private val doseChooseAction: (Drug) -> Unit,
+                      private val drugHistoryAction: (Drug) -> Unit
+                  ): RecyclerView.Adapter<DrugCardAdapter.DrugHolder>() {
 
     override fun getItemCount() = items.size
 
