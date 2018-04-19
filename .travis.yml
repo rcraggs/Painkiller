@@ -18,6 +18,7 @@ android:
     - build-tools-27.0.3
     - android-26
     - sys-img-armeabi-v7a-android-27 # the image for the emulator
+    - sys-img-armeabi-v7a-android-25
 
 #before_install: # apparently required for contraint layout
 #- mkdir "$ANDROID_HOME/licenses" || true
