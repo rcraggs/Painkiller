@@ -12,14 +12,11 @@ import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
 import com.rcraggs.doubledose.ui.getNextDrugToBecomeAvailable
 import com.rcraggs.doubledose.util.INotificationsService
-import com.rcraggs.doubledose.util.MockNotificationsService
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.ArgumentMatcher.*
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.eq
+import org.mockito.Mockito
 import org.mockito.Mockito.times
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
@@ -32,9 +29,9 @@ class NotificationsTests {
     @Before
     fun setupRepo() {
 
-        val context = InstrumentationRegistry.getTargetContext();
-        val db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build();
-        AndroidThreeTen.init(context);
+        val context = InstrumentationRegistry.getTargetContext()
+        val db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build()
+        AndroidThreeTen.init(context)
 
         repo = AppRepo(db, ns)
     }
