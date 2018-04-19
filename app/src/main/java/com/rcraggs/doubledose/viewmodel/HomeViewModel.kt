@@ -40,7 +40,10 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     }
 
     fun takeDose(drug: Drug) {
-        repo.insertDose(Dose(drug))
+        launch(UI) {
+            repo.insertDose(Dose(drug))
+        }
+        Log.d(this.javaClass.canonicalName, "Finished take dose thread")
     }
 
     fun takeDose(drugId: Long, hourOfDay: Int, minute: Int) {

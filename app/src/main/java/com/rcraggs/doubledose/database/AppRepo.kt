@@ -3,6 +3,7 @@ package com.rcraggs.doubledose.database
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.os.SystemClock
+import android.util.Log
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
@@ -10,6 +11,8 @@ import com.rcraggs.doubledose.ui.getNextDrugToBecomeAvailable
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.INotificationsService
 import com.rcraggs.doubledose.util.dayAgo
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import org.threeten.bp.Instant
 import java.util.*
 
@@ -75,6 +78,8 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
         } else {
             notifications.cancelNotifications()
         }
+
+        Log.d(this.javaClass.canonicalName, "Finished scheduling notifications")
     }
 
     fun getDrugWithId(drugId: Long): Drug? = db.drugDao().findById(drugId)
@@ -83,9 +88,14 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
 
     fun getAllDosesLive(drugId: Long) = db.doseDao().getAllLive(drugId)
 
-    fun insertDose(dose: Dose) {
+    suspend fun insertDose(dose: Dose) {
         db.doseDao().insert(dose)
-        rescheduleNotifications()
+        Log.d(this.javaClass.canonicalName, "Added dose to DB")
+        val job = launch(CommonPool) {
+            rescheduleNotifications()
+        }
+
+        job.join()
     }
 
     fun findDrugById(drugId: Long): Drug {
