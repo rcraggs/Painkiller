@@ -12,13 +12,11 @@ import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
 import com.rcraggs.doubledose.ui.getNextDrugToBecomeAvailable
 import com.rcraggs.doubledose.util.INotificationsService
-import com.rcraggs.doubledose.util.MockNotificationsService
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.ArgumentMatcher.*
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.eq
+import org.mockito.Mockito
 import org.mockito.Mockito.times
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
@@ -31,9 +29,9 @@ class NotificationsTests {
     @Before
     fun setupRepo() {
 
-        val context = InstrumentationRegistry.getTargetContext();
-        val db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build();
-        AndroidThreeTen.init(context);
+        val context = InstrumentationRegistry.getTargetContext()
+        val db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build()
+        AndroidThreeTen.init(context)
 
         repo = AppRepo(db, ns)
     }
@@ -73,8 +71,9 @@ class NotificationsTests {
         repo.insertDrug(d1)
 
         val dose = Dose(d1, now.minus(Duration.ofMinutes(5)))
-        repo.insertDose(dose)
-
+        runBlocking {
+            repo.insertDose(dose)
+        }
         verify(ns, times(1)).scheduleNotification(5 * 60, "D1")
     }
 
@@ -89,11 +88,14 @@ class NotificationsTests {
         val d2 = Drug("D2", 1, 10)
         repo.insertDrug(d2)
 
-        val dose2 = Dose(d2, now.minus(Duration.ofMinutes(12)))
-        repo.insertDose(dose2)
 
+        val dose2 = Dose(d2, now.minus(Duration.ofMinutes(12)))
         val dose = Dose(d1, now.minus(Duration.ofMinutes(5)))
-        repo.insertDose(dose)
+
+        runBlocking {
+            repo.insertDose(dose2)
+            repo.insertDose(dose)
+        }
 
         verify(ns, times(2)).scheduleNotification(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString())
         verify(ns, times(1)).scheduleNotification(5 * 60, "D1")
