@@ -9,6 +9,7 @@ import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.util.blockingObserve
 import com.rcraggs.doubledose.viewmodel.HistoryViewModel
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -54,10 +55,11 @@ class ViewModelTests : KoinTest {
         repo.insertDrug(drug2)
 
         // Add doses to the DB
-        repo.insertDose(Dose(drug))
-        repo.insertDose(Dose(drug2))
-        repo.insertDose(Dose(drug2))
-
+        runBlocking {
+            repo.insertDose(Dose(drug))
+            repo.insertDose(Dose(drug2))
+            repo.insertDose(Dose(drug2))
+        }
         historyVM.start()
         assertEquals(3, historyVM.doses.blockingObserve()!!.size)
     }
@@ -72,14 +74,15 @@ class ViewModelTests : KoinTest {
         repo.insertDrug(drug2)
 
         // Add doses to the DB
-        repo.insertDose(Dose(drug))
-        repo.insertDose(Dose(drug2))
-        repo.insertDose(Dose(drug2))
+        runBlocking {
+            repo.insertDose(Dose(drug))
+            repo.insertDose(Dose(drug2))
+            repo.insertDose(Dose(drug2))
+        }
 
         historyVM.start(drug.id)
         assertEquals(1, historyVM.doses.blockingObserve()!!.size)
     }
-
 
     /**
     start

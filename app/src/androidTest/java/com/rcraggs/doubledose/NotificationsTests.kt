@@ -74,8 +74,9 @@ class NotificationsTests {
         repo.insertDrug(d1)
 
         val dose = Dose(d1, now.minus(Duration.ofMinutes(5)))
-        repo.insertDose(dose)
-
+        runBlocking {
+            repo.insertDose(dose)
+        }
         verify(ns, times(1)).scheduleNotification(5 * 60, "D1")
     }
 

@@ -2,10 +2,13 @@ package com.rcraggs.doubledose.viewmodel
 
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
