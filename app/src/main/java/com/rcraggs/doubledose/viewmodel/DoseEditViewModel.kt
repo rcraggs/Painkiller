@@ -6,6 +6,7 @@ import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.INotificationsService
+import kotlinx.coroutines.experimental.*
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
@@ -20,20 +21,26 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: IN
 
     lateinit var dose: Dose
 
-    private var drugList: List<Drug> = repo.getAllDrugs()
+    private var drugList: List<Drug> = runBlocking { repo.getAllDrugs() }
     fun getDrugs() = drugList
 
     fun setDose(doseId: Long) {
-        dose = repo.findDoseById(doseId)
 
-        val ldt = dose.taken.atZone(ZoneId.systemDefault())
-        newDay = ldt.dayOfMonth
-        newMonth = ldt.monthValue
-        newYear = ldt.year
-        newHours = ldt.hour
-        newMinutes = ldt.minute
+        val d: Deferred<Dose> = async(CommonPool) {
+            repo.findDoseById(doseId)
+        }
 
-        newDrug = repo.findDrugById(dose.drugId)
+        runBlocking {
+            dose = d.await()
+
+            val ldt = dose.taken.atZone(ZoneId.systemDefault())
+            newDay = ldt.dayOfMonth
+            newMonth = ldt.monthValue
+            newYear = ldt.year
+            newHours = ldt.hour
+            newMinutes = ldt.minute
+            newDrug = repo.findDrugById(dose.drugId)
+        }
     }
 
     fun getDoseDateSeconds() = dose.taken.epochSecond
@@ -67,7 +74,9 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: IN
 
 
     fun deleteDose() {
-        repo.deleteDose(dose.id)
+        launch(CommonPool) {
+            repo.deleteDose(dose.id)
+        }
     }
 
     fun updateDose() {
@@ -76,6 +85,8 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: IN
         dose.drugId = newDrug!!.id
         dose.taken = newTaken.atZone(ZoneId.systemDefault()).toInstant()
 
-        repo.updateDose(dose)
+        launch(CommonPool) {
+            repo.updateDose(dose)
+        }
     }
 }

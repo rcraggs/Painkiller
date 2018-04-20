@@ -2,15 +2,9 @@ package com.rcraggs.doubledose.database
 
 import android.arch.persistence.room.*
 import com.rcraggs.doubledose.model.Drug
-import com.rcraggs.doubledose.model.DrugWithDoses
 
 @Dao
 interface DrugDao {
-
-    // todo live data to update the UI when drugs are changed
-
-    @Query("SELECT * FROM drug WHERE id = :drugId LIMIT 1")
-    fun findWithDosesById(drugId: Long): DrugWithDoses
 
     @Query("SELECT * FROM drug ORDER BY name desc")
     fun getAll(): List<Drug>

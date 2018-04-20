@@ -1,6 +1,5 @@
 package com.rcraggs.doubledose.database
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.os.SystemClock
 import android.util.Log
@@ -12,7 +11,9 @@ import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.INotificationsService
 import com.rcraggs.doubledose.util.dayAgo
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.runBlocking
 import org.threeten.bp.Instant
 import java.util.*
 
@@ -23,21 +24,23 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
     /**
      * For a drug, create the status based on the doses that have been taken
      */
-    private fun getDrugStatus(drug: Drug): DrugStatus {
+    private suspend fun getDrugStatus(drug: Drug): DrugStatus {
 
         val ds = DrugStatus(drug)
         refreshDrugStatus(ds)
         return ds
     }
 
-    private fun refreshDrugStatus(status: DrugStatus) {
+    private suspend fun refreshDrugStatus(status: DrugStatus) {
 
         // get the doses that are relevant to updating the status of this drug
-        val doses = db.doseDao().getDosesSince(status.drug.id, Instant.now().dayAgo())
-        status.refreshData(doses)
+        val d = async(CommonPool){
+            db.doseDao().getDosesSince(status.drug.id, Instant.now().dayAgo())
+        }
+        status.refreshData(d.await())
     }
 
-    fun getNextUnavailableDrugToBecomeAvailable(statuses: List<DrugStatus>? = null ): DrugStatus? {
+    suspend fun getNextUnavailableDrugToBecomeAvailable(statuses: List<DrugStatus>? = null ): DrugStatus? {
 
         val statusList: List<DrugStatus>?
 
@@ -52,18 +55,22 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
         return statusList.getNextDrugToBecomeAvailable()
     }
 
-    fun updateAllDrugStatuses(statuses: List<DrugStatus>) {
-        for (ds in statuses){
+    suspend fun updateAllDrugStatuses(statuses: List<DrugStatus>) {
+
+        for (ds in statuses) {
             refreshDrugStatus(ds)
         }
     }
 
-    fun getDrugStatuses(): List<DrugStatus> {
+    suspend fun getDrugStatuses(): List<DrugStatus> {
 
-        val drugs = db.drugDao().getAll()
+        val d = async(CommonPool){
+            db.drugDao().getAll()
+        }
+
         val list = ArrayList<DrugStatus>()
 
-        drugs.forEach {
+        d.await().forEach {
             val status = getDrugStatus(it)
             list.add(status)
         }
@@ -71,7 +78,7 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
         return list
     }
 
-    fun rescheduleNotifications(list: List<DrugStatus>? = null) {
+    suspend fun rescheduleNotifications(list: List<DrugStatus>? = null) {
         val nextAvailableDrug = getNextUnavailableDrugToBecomeAvailable(list)
         if (nextAvailableDrug != null) {
             notifications.scheduleNotification(nextAvailableDrug.secondsBeforeNextDoseAvailable, nextAvailableDrug.drug.name)
@@ -82,45 +89,48 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
         Log.d(this.javaClass.canonicalName, "Finished scheduling notifications")
     }
 
-    fun getDrugWithId(drugId: Long): Drug? = db.drugDao().findById(drugId)
+    suspend fun getDrugWithId(drugId: Long): Drug? = async { db.drugDao().findById(drugId) }.await()
 
     fun getAllDosesLive() = db.doseDao().getAllLive()
 
     fun getAllDosesLive(drugId: Long) = db.doseDao().getAllLive(drugId)
 
     suspend fun insertDose(dose: Dose) {
-        db.doseDao().insert(dose)
+
         Log.d(this.javaClass.canonicalName, "Added dose to DB")
         val job = launch(CommonPool) {
+            db.doseDao().insert(dose)
             rescheduleNotifications()
         }
 
         job.join()
     }
 
-    fun findDrugById(drugId: Long): Drug {
-        return db.drugDao().findById(drugId)
+    suspend fun findDrugById(drugId: Long): Drug {
+
+        val d=  async(CommonPool) { db.drugDao().findById(drugId) }
+        return d.await()
     }
 
-    fun getAllDrugs() = db.drugDao().getAll()
+    suspend fun getAllDrugs() = async(CommonPool){db.drugDao().getAll()}.await()
 
-    fun findDoseById(doseId: Long) = db.doseDao().findDoseById(doseId)
+    suspend fun findDoseById(doseId: Long) = async(CommonPool) {db.doseDao().findDoseById(doseId)}.await()
 
-    fun deleteDose(id: Long) {
+    suspend fun deleteDose(id: Long) {
         db.doseDao().delete(id)
         rescheduleNotifications()
     }
 
-    fun updateDose(dose: Dose) {
+    suspend fun updateDose(dose: Dose) {
         db.doseDao().update(dose)
         rescheduleNotifications()
     }
 
     fun insertDrug(drug: Drug) {
-        drug.id = db.drugDao().insert(drug)
+        launch(CommonPool) {
+            drug.id = db.drugDao().insert(drug)
+        }
     }
-
-
 
     private var _elapsedTime: MutableLiveData<Long>? = null
 

@@ -63,7 +63,7 @@ fun createInMemoryAppDatabase(context: Context): AppDatabase {
 fun createActualAppDatabase(context: Context): AppDatabase {
     return Room
         .databaseBuilder(context.androidApplication(), AppDatabase::class.java, Constants.PROD_DB_NAME)
-        .allowMainThreadQueries()
+        //.allowMainThreadQueries()
         .fallbackToDestructiveMigration()
         .addCallback(AppDbCallback())
         .build()

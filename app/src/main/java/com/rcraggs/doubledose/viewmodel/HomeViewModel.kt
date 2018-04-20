@@ -7,27 +7,44 @@ import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugStatus
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.runBlocking
+import org.jetbrains.anko.custom.async
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
 class HomeViewModel(private val repo: AppRepo): ViewModel() {
 
-    private var internalStatusList: MutableList<DrugStatus> = repo.getDrugStatuses().toMutableList()
+    private lateinit var internalStatusList: MutableList<DrugStatus>
     private var drugStatusLiveData = MediatorLiveData<List<DrugStatus>>()
 
-    init {
+    fun start() {
+
+        val d = async(CommonPool) { repo.getDrugStatuses() }
+
+        runBlocking {
+            internalStatusList = d.await().toMutableList()
+        }
+
+
         drugStatusLiveData.addSource(repo.getAllDosesLive(), {
-            repo.updateAllDrugStatuses(internalStatusList)
-            drugStatusLiveData.value = internalStatusList.sortedBy { d -> d.drug.name }
+            launch(CommonPool) {
+                repo.updateAllDrugStatuses(internalStatusList)
+                drugStatusLiveData.postValue(internalStatusList.sortedBy { d -> d.drug.name }) // todo postvalue?
+            }
         })
 
         drugStatusLiveData.addSource(repo.elapsedTime, {
-            updateAllDrugStatusesAvailability()
-            drugStatusLiveData.value = internalStatusList.sortedBy { d -> d.drug.name }
+            launch(CommonPool) {
+                updateAllDrugStatusesAvailability()
+                drugStatusLiveData.postValue(internalStatusList.sortedBy { d -> d.drug.name })
+            }
         })
     }
+
 
     fun getStatuses() = drugStatusLiveData
 
@@ -50,14 +67,13 @@ class HomeViewModel(private val repo: AppRepo): ViewModel() {
     }
 
     fun takeDose(drugId: Long, hourOfDay: Int, minute: Int) {
-        val drug = repo.findDrugById(drugId)
-        val dose = Dose(drug)
-        val takenTime = LocalDateTime.now().withHour(hourOfDay).withMinute(minute)
-        dose.taken = takenTime.atZone(ZoneId.systemDefault()).toInstant()
-        this.takeDose(drug)
-    }
 
-    private fun updateNotificationSchedule() {
-        repo.rescheduleNotifications(internalStatusList)
+        launch(UI) {
+            val drug = repo.findDrugById(drugId)
+            val dose = Dose(drug)
+            val takenTime = LocalDateTime.now().withHour(hourOfDay).withMinute(minute)
+            dose.taken = takenTime.atZone(ZoneId.systemDefault()).toInstant()
+            takeDose(drug)
+        }
     }
 }

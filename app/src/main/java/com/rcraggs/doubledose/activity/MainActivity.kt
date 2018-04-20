@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        viewModel.start()
+
         val adapter = DrugCardAdapter(viewModel.getDrugs(),
                 viewModel::takeDose,
                 this::chooseDoseTime,

@@ -5,6 +5,7 @@ import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
+import kotlinx.coroutines.experimental.runBlocking
 
 @Suppress("MemberVisibilityCanBePrivate")
 class HistoryViewModel(val repo: AppRepo): ViewModel(){
@@ -17,7 +18,8 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
         doses = when {
             drugId != -1L -> {
 
-                val drug = repo.findDrugById(drugId)
+
+                val drug = runBlocking { repo.findDrugById(drugId)}
                 Transformations.map(repo.getAllDosesLive(drugId), {
                         it.forEach {
                             it.drug = drug
@@ -27,7 +29,7 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
                 )
             }
             else -> {
-                val drugs = repo.getAllDrugs()
+                val drugs = runBlocking {  repo.getAllDrugs() }
                 Transformations.map(repo.getAllDosesLive(), {
                     it.forEach {
                         it.drug = drugs.find {d -> it.drugId == d.id}!!
@@ -37,6 +39,6 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
             }
         }
 
-        drugName = repo.getDrugWithId(drugId)?.name ?: "All Drugs"
+        drugName = runBlocking { repo.getDrugWithId(drugId)?.name ?: "All Drugs" }
     }
 }
