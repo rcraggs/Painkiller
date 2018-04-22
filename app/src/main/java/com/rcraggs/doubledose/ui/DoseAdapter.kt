@@ -27,6 +27,9 @@ class DoseAdapter(var items: List<Dose>, private val doseAction: (Dose) -> Unit)
         }
     }
 
+    override fun getItemId(position: Int): Long {
+        return items[position].id
+    }
     class DoseHolder(private val v: View, private val doseAction: (Dose) -> Unit): RecyclerView.ViewHolder(v) {
 
         fun bindDose(item: Dose) {

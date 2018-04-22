@@ -35,8 +35,17 @@ class HistoryActivity : AppCompatActivity() {
         viewModel.doses.observe(this, Observer {
 
             if (rv_history.adapter == null){
-                adapter = DoseAdapter(it ?: ArrayList(), this::editDose) // todo: Pass this straight in as lambda
+
+                adapter = DoseAdapter(it ?: ArrayList()){
+                    startActivity(intentFor<DoseEditActivity>(
+                            DoseEditActivity.DOSE_EDIT_ACTIVITY_EXTRA_DOSE_ID to it.id))
+                }.apply {
+                    setHasStableIds(true)
+                }
+
                 rv_history.adapter = adapter
+                rv_history.setHasFixedSize(true)
+
             }else{
                 adapter.items = it ?: ArrayList() // todo do a list diff or similar?
                 rv_history.adapter.notifyDataSetChanged()
@@ -45,9 +54,5 @@ class HistoryActivity : AppCompatActivity() {
 
         this.title = "History: " + viewModel.drugName
         rv_history.layoutManager = LinearLayoutManager(this)
-    }
-
-    private fun editDose(dose: Dose) {
-        startActivity(intentFor<DoseEditActivity>(DoseEditActivity.DOSE_EDIT_ACTIVITY_EXTRA_DOSE_ID to dose.id))
     }
 }

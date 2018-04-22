@@ -46,7 +46,7 @@ fun getAlarmManager(context: Context): AlarmManager {
     return context.androidApplication()
             .getSystemService(android.content.Context.ALARM_SERVICE) as AlarmManager
 }
-    
+
 fun createMockNotificationService(): INotificationsService {
     return MockNotificationsService()
 }
