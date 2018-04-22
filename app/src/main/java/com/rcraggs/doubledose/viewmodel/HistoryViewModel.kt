@@ -18,7 +18,6 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
         doses = when {
             drugId != -1L -> {
 
-
                 val drug = runBlocking { repo.findDrugById(drugId)}
                 Transformations.map(repo.getAllDosesLive(drugId), {
                         it.forEach {

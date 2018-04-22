@@ -1,19 +1,34 @@
 package com.rcraggs.doubledose.model
 
+import android.arch.persistence.room.Embedded
+import android.arch.persistence.room.Ignore
+import android.arch.persistence.room.Relation
+import com.rcraggs.doubledose.util.dayAgo
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
-import org.threeten.bp.format.DateTimeFormatter
 import kotlin.math.max
 
+class DrugWithDoses() {
 
-class DrugStatus(val drug: Drug) {
+    @Embedded
+    var drug: Drug = Drug("")
 
-    var timeOfLastDose: Instant? = null
-    private var timeOfDoseThatIsMax: Instant? = null // if we can have 4 doses per day, when is the 4th most recent dose
-    var dosesIn24Hours: Int = 0
-    var secondsBeforeNextDoseAvailable: Int = 0
-    var timeNextDoseIsAvailable: Instant? = null
-    var listOfDosesIn24HoursSinceRefresh: List<Dose>? = null
+    @Relation(
+            parentColumn = "id",
+            entityColumn = "drug",
+            entity = Dose::class)
+    var doses: List<Dose> = listOf()
+
+    constructor(d: Drug) : this() {
+        drug = d
+    }
+
+    @Ignore var timeOfLastDose: Instant? = null
+    @Ignore private var timeOfDoseThatIsMax: Instant? = null // if we can have 4 doses per day, when is the 4th most recent dose
+    @Ignore var dosesIn24Hours: Int = 0
+    @Ignore var secondsBeforeNextDoseAvailable: Int = 0
+    @Ignore var timeNextDoseIsAvailable: Instant? = null
+    @Ignore lateinit var listOfDosesIn24HoursSinceRefresh: List<Dose>
 
     private fun returnSecondsToNextDose(currentTime: Instant): Int {
 
@@ -43,21 +58,24 @@ class DrugStatus(val drug: Drug) {
         // Recalculate how many doses we've had in the last 24 hours
         dosesIn24Hours = listOfDosesIn24HoursSinceRefresh?.count {
             it.taken > currentTime.minus(Duration.ofHours(24))
-        } ?: 0
+        }
 
         secondsBeforeNextDoseAvailable = returnSecondsToNextDose(currentTime)
         timeNextDoseIsAvailable = currentTime.plusSeconds(secondsBeforeNextDoseAvailable.toLong())
     }
 
-    fun refreshData(doses: List<Dose>, currentTime: Instant = Instant.now()) {
+    fun refreshData(currentTime: Instant = Instant.now()) {
 
-        listOfDosesIn24HoursSinceRefresh = doses
-        val dosesIn24Hours= doses.size
+        listOfDosesIn24HoursSinceRefresh = doses.filter { d ->
+            d.taken >= Instant.now().dayAgo()
+        }
+
+        val dosesIn24Hours= listOfDosesIn24HoursSinceRefresh.size
 
         // If there are doses then recall the first and last
-        if (!doses.isEmpty()) {
+        if (!listOfDosesIn24HoursSinceRefresh.isEmpty()) {
 
-            val dosesSortedByDate = doses.sortedBy { d -> d.taken }
+            val dosesSortedByDate = listOfDosesIn24HoursSinceRefresh.sortedBy { d -> d.taken }
             timeOfLastDose = dosesSortedByDate.last().taken
 
             if (dosesIn24Hours >= drug.dosesPerDay) {

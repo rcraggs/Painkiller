@@ -1,6 +1,6 @@
 package com.rcraggs.doubledose.ui
 
-import com.rcraggs.doubledose.model.DrugStatus
+import com.rcraggs.doubledose.model.DrugWithDoses
 import com.rcraggs.doubledose.util.Constants
 import org.threeten.bp.*
 
@@ -30,8 +30,23 @@ object UiUtilities {
         return nextTimeString
     }
 }
+//
+//fun List<DrugStatus>.getNextDrugToBecomeAvailable(): DrugStatus? {
+//
+//    // Done ineligantly because filters seemed to not give the correct result each time
+//    val unavailableDrugs = this.filter { ds ->
+//        ds.secondsBeforeNextDoseAvailable > 0
+//    }
+//
+//    val sortedUnavailable = unavailableDrugs.sortedBy {
+//        it.secondsBeforeNextDoseAvailable
+//    }
+//
+//    return sortedUnavailable.firstOrNull()
+//}
 
-fun List<DrugStatus>.getNextDrugToBecomeAvailable(): DrugStatus? {
+
+fun List<DrugWithDoses>.getNextDrugToBecomeAvailable(): DrugWithDoses? {
 
     // Done ineligantly because filters seemed to not give the correct result each time
     val unavailableDrugs = this.filter { ds ->

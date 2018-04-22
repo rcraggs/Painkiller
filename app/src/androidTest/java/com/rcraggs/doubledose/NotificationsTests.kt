@@ -2,6 +2,7 @@ package com.rcraggs.doubledose
 
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
+import android.util.Log
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.verifyZeroInteractions
@@ -9,9 +10,10 @@ import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
-import com.rcraggs.doubledose.model.DrugStatus
+import com.rcraggs.doubledose.model.DrugWithDoses
 import com.rcraggs.doubledose.ui.getNextDrugToBecomeAvailable
 import com.rcraggs.doubledose.util.INotificationsService
+import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -48,11 +50,9 @@ class NotificationsTests {
         val now = Instant.now()
 
         val d1 = Drug("D1", 3, 10)
-        val ds1 = DrugStatus(d1)
-
-        ds1.refreshData(listOf(
-                Dose(d1, now.minus(Duration.ofMinutes(5)))
-        ), now)
+        val ds1 = DrugWithDoses(d1)
+        ds1.doses = listOf(Dose(d1, now.minus(Duration.ofMinutes(5))))
+        ds1.refreshData(now)
 
         val statusList = listOf(ds1)
         statusList.getNextDrugToBecomeAvailable()
@@ -81,14 +81,11 @@ class NotificationsTests {
     fun testNotificationIsSetWhen1DrugIsPendingAndAnotherIsMaxedDao() {
 
         val now = Instant.now()
-
         val d1 = Drug("D1", 3, 10)
-        repo.insertDrug(d1)
-
         val d2 = Drug("D2", 1, 10)
+
+        repo.insertDrug(d1)
         repo.insertDrug(d2)
-
-
         val dose2 = Dose(d2, now.minus(Duration.ofMinutes(12)))
         val dose = Dose(d1, now.minus(Duration.ofMinutes(5)))
 

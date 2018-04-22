@@ -23,11 +23,10 @@ val appModule : Module = applicationContext {
     factory { AppRepo(get(), get()) }
 
     viewModel { HistoryViewModel(get()) }
-    viewModel { HomeViewModel(get())}
+    viewModel { HomeViewModel(get(), get())}
     viewModel { DoseEditViewModel(get(), get())}
     bean {getAlarmManager(this)}
 }
-
 
 val inMemoryDBModule : Module = applicationContext {
 
@@ -47,13 +46,10 @@ fun getAlarmManager(context: Context): AlarmManager {
     return context.androidApplication()
             .getSystemService(android.content.Context.ALARM_SERVICE) as AlarmManager
 }
-
-
+    
 fun createMockNotificationService(): INotificationsService {
     return MockNotificationsService()
 }
-
-
 
 fun createInMemoryAppDatabase(context: Context): AppDatabase {
     return Room.inMemoryDatabaseBuilder(context.androidApplication(), AppDatabase::class.java)

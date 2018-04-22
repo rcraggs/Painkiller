@@ -86,11 +86,14 @@ class ViewModelTests : KoinTest {
 
     @Test
     fun testGettingDrugsWhenNoneAreAdded() {
-        assertEquals(0, homeViewModel.getDrugs().size)
+        homeViewModel.start()
+        assertEquals(0, homeViewModel.drugWithDoses.blockingObserve()?.size)
     }
 
     @Test
     fun testGettingDrugsWhen2AreAdded() {
+
+        homeViewModel.start()
 
         val drug = Drug("Test1")
         repo.insertDrug(drug)
@@ -98,6 +101,6 @@ class ViewModelTests : KoinTest {
         val drug2 = Drug("Test2")
         repo.insertDrug(drug2)
 
-        assertEquals(2, homeViewModel.getDrugs().size)
+        assertEquals(2, homeViewModel.drugWithDoses.blockingObserve()?.size)
     }
 }

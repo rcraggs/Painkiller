@@ -14,7 +14,6 @@ import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.architecture.ext.viewModel
 
-
 class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<HomeViewModel>()
@@ -25,15 +24,21 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.start()
 
-        val adapter = DrugCardAdapter(viewModel.getDrugs(),
+        val adapter = DrugCardAdapter(viewModel.drugWithDoses,
                 viewModel::takeDose,
                 this::chooseDoseTime,
                 this::showDrugHistory
                 )
+
         rv_drugs.adapter = adapter
         rv_drugs.layoutManager = LinearLayoutManager(this)
 
-        viewModel.getStatuses().observe(this,
+        viewModel.drugWithDoses.observe(this,
+            Observer {
+                adapter.notifyDataSetChanged()
+            })
+
+        viewModel.timer.observe(this,
             Observer {
                 adapter.notifyDataSetChanged()
             })

@@ -9,7 +9,7 @@ import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.database.DoseDao
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
-import com.rcraggs.doubledose.model.DrugStatus
+import com.rcraggs.doubledose.model.DrugWithDoses
 import com.rcraggs.doubledose.ui.UiUtilities
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.MockNotificationsService
@@ -39,16 +39,16 @@ class TestRepo {
     private var doseDao: DoseDao by Delegates.notNull()
     private lateinit var repo: AppRepo
 
-    val paracetamol = Drug("Paracetamol")
-    val ibroprufen = Drug("Ibroprufen")
+    private val paracetamol = Drug("Paracetamol")
+    private val ibroprufen = Drug("Ibroprufen")
 
     @Before
     fun setupRepo() {
 
-        val context = InstrumentationRegistry.getTargetContext();
-        db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build();
+        val context = InstrumentationRegistry.getTargetContext()
+        db = Room.inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java).build()
         doseDao = db.doseDao()
-        AndroidThreeTen.init(context);
+        AndroidThreeTen.init(context)
 
         val notifications = MockNotificationsService()
         repo = AppRepo(db, notifications)
@@ -186,13 +186,13 @@ class TestRepo {
 
         val d = Drug("Ibroprufen")
 
-        val status = DrugStatus(d)
+        val status = DrugWithDoses(d)
 
         val d1 = Dose(d)
         d1.taken = Instant.now().minusSeconds(60*60*d.gapMinutes)
 
-        val doses = listOf(d1)
-        status.refreshData(doses)
+        status.doses = listOf(d1)
+        status.refreshData()
 
         val availString = UiUtilities.createDoseAvailableDesription(status.secondsBeforeNextDoseAvailable)
         assertEquals(Constants.NEXT_DOSE_AVAILABLE, availString)
@@ -202,13 +202,13 @@ class TestRepo {
     @Test
     fun testDose1HourAgoMeansCountdown(){
         val d = Drug("Ibroprufen")
-        val status = DrugStatus(d)
+        val status = DrugWithDoses(d)
 
         val d1 = Dose(d)
         d1.taken = Instant.now().minusSeconds(60*60)
 
-        val doses = listOf(d1)
-        status.refreshData(doses)
+        status.doses = listOf(d1)
+        status.refreshData()
 
         assertNotEquals(UiUtilities.createDoseAvailableDesription(status.secondsBeforeNextDoseAvailable),
                 Constants.NEXT_DOSE_AVAILABLE)
@@ -245,7 +245,7 @@ class TestRepo {
 
     @Test
     fun testNextAvailableWithNoDoses() {
-        val emptyDSList = ArrayList<DrugStatus>()
+        val emptyDSList = ArrayList<DrugWithDoses>()
         val ds = repo.getNextUnavailableDrugToBecomeAvailable(emptyDSList)
         assertNull(ds)
     }
@@ -258,11 +258,13 @@ class TestRepo {
         val d1 = Drug("D1", 2, 10)
         val d2 = Drug("D2", 2, 10)
 
-        val ds1 = DrugStatus(d1)
-        ds1.refreshData(listOf(Dose(d1, now.minus(Duration.ofMinutes(11)))))
+        val ds1 = DrugWithDoses(d1)
+        ds1.doses = listOf(Dose(d1, now.minus(Duration.ofMinutes(11))))
+        ds1.refreshData()
 
-        val ds2 = DrugStatus(d2)
-        ds1.refreshData(listOf(Dose(d2, now.minus(Duration.ofMinutes(12)))))
+        val ds2 = DrugWithDoses(d2)
+        ds1.doses = listOf(Dose(d2, now.minus(Duration.ofMinutes(12))))
+        ds1.refreshData()
 
         val ds = repo.getNextUnavailableDrugToBecomeAvailable(listOf(ds1, ds2))
         assertNull(ds)
@@ -276,11 +278,13 @@ class TestRepo {
         val d1 = Drug("D1", 2, 10)
         val d2 = Drug("D2", 2, 10)
 
-        val ds1 = DrugStatus(d1)
-        ds1.refreshData(listOf(Dose(d1, now.minus(Duration.ofMinutes(5)))), now)
+        val ds1 = DrugWithDoses(d1)
+        ds1.doses = listOf(Dose(d1, now.minus(Duration.ofMinutes(5))))
+        ds1.refreshData(now)
 
-        val ds2 = DrugStatus(d2)
-        ds2.refreshData(listOf(Dose(d2, now.minus(Duration.ofMinutes(12)))), now)
+        val ds2 = DrugWithDoses(d2)
+        ds2.doses = listOf(Dose(d2, now.minus(Duration.ofMinutes(12))))
+        ds2.refreshData(now)
 
         val ds = repo.getNextUnavailableDrugToBecomeAvailable(listOf(ds1, ds2))
         assertEquals(ds1, ds)
@@ -294,17 +298,17 @@ class TestRepo {
         val d1 = Drug("D1", 2, 10)
         val d2 = Drug("D2", 2, 10)
 
-        val ds1 = DrugStatus(d1)
-        ds1.refreshData(listOf(Dose(d1, now.minus(Duration.ofMinutes(5)))), now)
+        val ds1 = DrugWithDoses(d1)
+        ds1.doses = listOf(Dose(d1, now.minus(Duration.ofMinutes(5))))
+        ds1.refreshData(now)
 
-        val ds2 = DrugStatus(d2)
-        ds2.refreshData(listOf(Dose(d2, now.minus(Duration.ofMinutes(6)))), now)
+        val ds2 = DrugWithDoses(d2)
+        ds2.doses = listOf(Dose(d2, now.minus(Duration.ofMinutes(6))))
+        ds2.refreshData(now)
 
         val ds = repo.getNextUnavailableDrugToBecomeAvailable(listOf(ds1, ds2))
         assertEquals(ds2, ds)
 
         assertEquals(ds2.secondsBeforeNextDoseAvailable, 4 * 60)
     }
-
-
 }

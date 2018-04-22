@@ -1,22 +1,23 @@
 package com.rcraggs.doubledose.ui
 
+import android.arch.lifecycle.LiveData
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Drug
-import com.rcraggs.doubledose.model.DrugStatus
+import com.rcraggs.doubledose.model.DrugWithDoses
 import com.rcraggs.doubledose.util.Constants
 import kotlinx.android.synthetic.main.drug_card.view.*
 
-class DrugCardAdapter(private val items: List<DrugStatus>,
+class DrugCardAdapter(private val items: LiveData<List<DrugWithDoses>>,
                       private val doseAction: (Drug) -> Unit,
                       private val doseChooseAction: (Drug) -> Unit,
                       private val drugHistoryAction: (Drug) -> Unit
                   ): RecyclerView.Adapter<DrugCardAdapter.DrugHolder>() {
 
-    override fun getItemCount() = items.size
+    override fun getItemCount() = items.value?.size ?: 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrugHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.drug_card, parent, false)
@@ -24,7 +25,7 @@ class DrugCardAdapter(private val items: List<DrugStatus>,
     }
 
     override fun onBindViewHolder(holder: DrugHolder, position: Int) {
-        val item = items[position]
+        val item = items.value?.get(position)
         holder.bindDrug(item)
     }
 
@@ -35,8 +36,11 @@ class DrugCardAdapter(private val items: List<DrugStatus>,
             private val drugHistoryAction: (Drug) -> Unit)
         : RecyclerView.ViewHolder(v) {
 
-        fun bindDrug(item: DrugStatus) {
+        fun bindDrug(item: DrugWithDoses?) {
 
+            if (item == null){
+                return
+            }
             // Set up UI
 
             if (item.secondsBeforeNextDoseAvailable > 0){
