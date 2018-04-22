@@ -4,12 +4,11 @@ import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.ui.DrugListAdapter
 import com.rcraggs.doubledose.viewmodel.DrugAdminViewModel
 import kotlinx.android.synthetic.main.activity_drug_admin.*
-import kotlinx.android.synthetic.main.activity_history.*
-import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.intentFor
 import org.koin.android.architecture.ext.viewModel
 
@@ -47,10 +46,9 @@ class DrugAdminActivity : AppCompatActivity() {
 
 //        setSupportActionBar(toolbar)
 
-//        fab.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show()
-//        }
+        fab_add_drug.setOnClickListener { view ->
+            Log.d(javaClass.name, "FAB Click Listener")
+        }
 //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
