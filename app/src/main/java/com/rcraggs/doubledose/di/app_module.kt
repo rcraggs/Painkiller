@@ -10,6 +10,7 @@ import com.rcraggs.doubledose.util.INotificationsService
 import com.rcraggs.doubledose.util.MockNotificationsService
 import com.rcraggs.doubledose.util.NotificationsServiceImpl
 import com.rcraggs.doubledose.viewmodel.DoseEditViewModel
+import com.rcraggs.doubledose.viewmodel.DrugAdminViewModel
 import com.rcraggs.doubledose.viewmodel.HistoryViewModel
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import org.koin.android.architecture.ext.viewModel
@@ -25,6 +26,7 @@ val appModule : Module = applicationContext {
     viewModel { HistoryViewModel(get()) }
     viewModel { HomeViewModel(get(), get())}
     viewModel { DoseEditViewModel(get(), get())}
+    viewModel { DrugAdminViewModel(get(), get())}
     bean {getAlarmManager(this)}
 }
 

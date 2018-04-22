@@ -73,6 +73,8 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
 //        }
 //    }
 
+    fun getAllDrugsLive() = db.drugDao().getAllLive()
+
     fun getAllDrugWithDosesLive(): LiveData<List<DrugWithDoses>> {
         return db.drugDao().getAllDrugsWithDoses()
     }

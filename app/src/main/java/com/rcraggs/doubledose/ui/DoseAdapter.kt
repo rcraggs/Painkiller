@@ -21,8 +21,7 @@ class DoseAdapter(var items: List<Dose>, private val doseAction: (Dose) -> Unit)
     }
 
     override fun onBindViewHolder(holder: DoseHolder, position: Int) {
-
-        items?.let {
+        items.let {
             holder.bindDose(items[position])
         }
     }
