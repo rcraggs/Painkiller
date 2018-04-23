@@ -56,7 +56,7 @@ class DrugWithDoses() {
     fun updateNextDoseAvailability(currentTime: Instant = Instant.now()) {
 
         // Recalculate how many doses we've had in the last 24 hours
-        dosesIn24Hours = listOfDosesIn24HoursSinceRefresh?.count {
+        dosesIn24Hours = listOfDosesIn24HoursSinceRefresh.count {
             it.taken > currentTime.minus(Duration.ofHours(24))
         }
 
@@ -67,7 +67,7 @@ class DrugWithDoses() {
     fun refreshData(currentTime: Instant = Instant.now()) {
 
         listOfDosesIn24HoursSinceRefresh = doses.filter { d ->
-            d.taken >= Instant.now().dayAgo()
+            d.taken >= currentTime.dayAgo()
         }
 
         val dosesIn24Hours= listOfDosesIn24HoursSinceRefresh.size

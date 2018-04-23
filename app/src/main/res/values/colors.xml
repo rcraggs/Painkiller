@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3f51b5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#4ECDC4</color>
+    <color name="colorPrimaryDark">#39968F</color>
+    <color name="colorAccent">#FF6B6B</color>
+
     <color name="cardview_initial_background">#71C3DE</color>
     <color name="white">#FFFFFF</color>
     <color name="card_title">#941d13</color>
-    <color name="main_background">#EEEEEE</color>
+    <color name="main_background">#f7fff7</color>
 
     <color name="titleLabelList">#4285f4</color>
+    <color name="inputLabelTextColor">#133D43</color>
+
+    <color name="deleteButtonColor">#ef5350</color>
 </resources>

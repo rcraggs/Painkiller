@@ -35,7 +35,7 @@ kotlin {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:support-v4:27.1.1'
@@ -59,7 +59,6 @@ dependencies {
     implementation 'org.koin:koin-android-architecture:0.9.1'
     androidTestImplementation 'org.koin:koin-test:0.9.1'
 
-//    androidTestImplementation 'org.mockito:mockito-core:2.8.9'
     //noinspection GradleDependency
     androidTestImplementation 'org.mockito:mockito-android:2.8.9'
     androidTestImplementation('com.nhaarman:mockito-kotlin-kt1.1:1.5.0', {

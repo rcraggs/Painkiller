@@ -3,6 +3,7 @@ package com.rcraggs.doubledose
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import android.util.Log
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.rcraggs.doubledose.database.AppDatabase
 import com.rcraggs.doubledose.database.AppRepo
@@ -14,6 +15,7 @@ import com.rcraggs.doubledose.ui.UiUtilities
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.MockNotificationsService
 import com.rcraggs.doubledose.util.blockingObserve
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -311,4 +313,24 @@ class TestRepo {
 
         assertEquals(ds2.secondsBeforeNextDoseAvailable, 4 * 60)
     }
+
+
+    @Test
+    fun insertingDrugThenDoseDaoDoesNotCauseKeyProblems() {
+
+        var exceptionThrown = false
+        val d = Drug("f1", 1, 1)
+
+        try {
+            repo.insertDrug(d)
+            val dose = Dose(d, Instant.now())
+            repo.insertDose(dose)
+        }catch(e: Exception){
+            Log.d(TestRepo::javaClass.name, e.message)
+            exceptionThrown = true
+        }
+
+        assertFalse("Inserting drug then dose did not throw exception", exceptionThrown)
+    }
+
 }

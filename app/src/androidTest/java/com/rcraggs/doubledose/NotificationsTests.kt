@@ -84,12 +84,13 @@ class NotificationsTests {
         val d1 = Drug("D1", 3, 10)
         val d2 = Drug("D2", 1, 10)
 
-        repo.insertDrug(d1)
-        repo.insertDrug(d2)
+
         val dose2 = Dose(d2, now.minus(Duration.ofMinutes(12)))
         val dose = Dose(d1, now.minus(Duration.ofMinutes(5)))
 
         runBlocking {
+            repo.insertDrug(d1)
+            repo.insertDrug(d2)
             repo.insertDose(dose2)
             repo.insertDose(dose)
         }

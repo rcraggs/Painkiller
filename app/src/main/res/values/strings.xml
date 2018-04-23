@@ -9,4 +9,21 @@
     <string name="notification_text">You can take some </string>
     <string name="title_activity_drug_admin">DrugAdminActivity</string>
     <string name="action_update_drugs">Update Drugs</string>
+    <string name="drug_name_hint">Drug Name</string>
+    <string name="drug_gap_hint">Minutes between doses</string>
+    <string name="drug_per_hint">How many does are allowed in 24 hours</string>
+    <string name="title_text_drug">Drug</string>
+    <string name="input_title_text_time">Time</string>
+    <string name="input_title_date">Date</string>
+    <string name="button_text_update">Update</string>
+    <string name="button_text_delete">Delete</string>
+    <string name="button_text_date_chooser">Date…</string>
+    <string name="drug_name">The name of the drug</string>
+    <string name="button_text_add">Add</string>
+    <string name="doses_per_24_hours">Doses Per 24 Hours</string>
+    <string name="minutes_between_doses">Minutes between doses</string>
+    <string name="error_msg_requires_number">You must enter a number here</string>
+    <string name="doses_allowed_each_day">Number of doses allowed each day</string>
+    <string name="doses_gap">Minutes between each dose</string>
+    <string name="error_msg_requires_string">You must enter a value here</string>
 </resources>

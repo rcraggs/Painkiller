@@ -3,7 +3,8 @@
     android:id="@+id/rl_drug_list_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:elevation="@dimen/card_recycler_elevation">
 
     <TextView
         android:id="@+id/tv_drug_list_name"

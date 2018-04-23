@@ -1,5 +1,7 @@
 package com.rcraggs.doubledose.ui
 
+import com.rcraggs.doubledose.model.Dose
+import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugWithDoses
 import com.rcraggs.doubledose.util.Constants
 import org.threeten.bp.*
@@ -58,4 +60,18 @@ fun List<DrugWithDoses>.getNextDrugToBecomeAvailable(): DrugWithDoses? {
     }
 
     return sortedUnavailable.firstOrNull()
+}
+
+
+fun Drug.createWithDoses(doses: List<Instant> = ArrayList(), time: Instant? = null):DrugWithDoses {
+
+    val dd = DrugWithDoses(this)
+    dd.doses = doses.map { Dose(this, it) }
+
+    // If a time is passed in, refresh the DD
+    if (time!=null){
+        dd.refreshData(time)
+    }
+
+    return dd
 }

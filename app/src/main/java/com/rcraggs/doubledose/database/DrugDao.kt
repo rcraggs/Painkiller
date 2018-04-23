@@ -17,9 +17,10 @@ interface DrugDao {
     @Query("SELECT * FROM drug ORDER BY name desc")
     fun getAll(): List<Drug>
 
-    @Query("SELECT * FROM drug ORDER BY name desc")
+    @Query("SELECT * FROM drug ORDER BY name asc")
     fun getAllLive(): LiveData<List<Drug>>
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(d: Drug) : Long
 
@@ -32,4 +33,6 @@ interface DrugDao {
     @Query("SELECT * FROM drug WHERE id = :id LIMIT 1")
     fun findWithDosesById(id: Long): DrugWithDoses
 
+    @Update
+    fun update(drug: Drug)
 }

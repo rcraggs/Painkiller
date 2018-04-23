@@ -27,8 +27,8 @@ class DrugAdminActivity : AppCompatActivity() {
             if (rv_dose_admin.adapter == null){
 
                 adapter = DrugListAdapter(it ?: ArrayList()){
-                    startActivity(intentFor<DoseEditActivity>(
-                            DoseEditActivity.DOSE_EDIT_ACTIVITY_EXTRA_DOSE_ID to it.id))
+                    startActivity(intentFor<DrugAddEditActivity>(
+                            DrugAddEditActivity.EXTRA_DRUG_ID to it.id))
                 }.apply {
                     setHasStableIds(true)
                 }
@@ -44,12 +44,8 @@ class DrugAdminActivity : AppCompatActivity() {
 
         rv_dose_admin.layoutManager = LinearLayoutManager(this)
 
-//        setSupportActionBar(toolbar)
-
         fab_add_drug.setOnClickListener { view ->
-            Log.d(javaClass.name, "FAB Click Listener")
+            startActivity(intentFor<DrugAddEditActivity>())
         }
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-
 }

@@ -9,28 +9,33 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/painkiller">
+
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.HistoryActivity"
             android:parentActivityName=".activity.MainActivity" />
+
         <activity android:name=".activity.DoseEditActivity" />
+
         <activity
             android:name=".activity.DrugAdminActivity"
             android:label="@string/title_activity_drug_admin"
             android:parentActivityName=".activity.MainActivity">
-            <!--android:theme="@style/AppTheme.NoActionBar">-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.rcraggs.doubledose.activity.MainActivity" />
         </activity>
 
+
         <receiver android:name=".util.NotificationPublisher" />
+        <activity android:name=".activity.DrugAddEditActivity" />
     </application>
 
 </manifest>

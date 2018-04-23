@@ -19,4 +19,4 @@ fun <T> LiveData<T>.blockingObserve(): T? {
 }
 
 
-fun Instant.dayAgo(): Instant = Instant.now().minusSeconds(60*60*24)
+fun Instant.dayAgo(): Instant = this.minusSeconds(60*60*24)

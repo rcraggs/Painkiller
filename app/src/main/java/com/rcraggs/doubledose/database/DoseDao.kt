@@ -21,6 +21,7 @@ interface DoseDao {
     @Query("SELECT * FROM dose WHERE drug = :drugId ORDER BY taken desc")
     fun getAllLive(drugId: Long): LiveData<List<Dose>>
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(d: Dose) : Long
 

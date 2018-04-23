@@ -15,28 +15,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import java.util.*
 
-// todo make db private and all queries go through methods on the repo
-
 class AppRepo(private val db: AppDatabase, private val notifications: INotificationsService) {
-//
-//    /**
-//     * For a drug, create the status based on the doses that have been taken
-//     */
-//    private suspend fun getDrugStatus(drug: Drug): DrugStatus {
-//
-//        val ds = DrugStatus(drug)
-//        refreshDrugStatus(ds)
-//        return ds
-//    }
-//
-//    private suspend fun refreshDrugStatus(status: DrugStatus) {
-//
-//        // get the doses that are relevant to updating the status of this drug
-//        val d = async(CommonPool){
-//            db.doseDao().getDosesSince(status.drug.id, Instant.now().dayAgo())
-//        }
-//        status.refreshData(d.await())
-//    }
 
     fun getNextUnavailableDrugToBecomeAvailable(drugs: List<DrugWithDoses>? = null ): DrugWithDoses? {
 
@@ -53,47 +32,11 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
         return statusList.getNextDrugToBecomeAvailable()
     }
 
-//
-//    suspend fun updateAllDrugStatuses(statuses: List<DrugStatus>) {
-//
-//        for (ds in statuses) {
-//            refreshDrugStatus(ds)
-//        }
-//    }
-//
-//     fun getDrugStatusesLive(): LiveData<MutableList<DrugStatus>>? {
-//
-//        return Transformations.switchMap(db.drugDao().getAllLive()){
-//            val list = MutableLiveData<MutableList<DrugStatus>>()
-//            it.forEach {
-//
-//                list.value?.add(DrugStatus(it))
-//            }
-//            list
-//        }
-//    }
-
     fun getAllDrugsLive() = db.drugDao().getAllLive()
 
     fun getAllDrugWithDosesLive(): LiveData<List<DrugWithDoses>> {
         return db.drugDao().getAllDrugsWithDoses()
     }
-//
-//    private suspend fun getDrugStatuses(): List<DrugStatus> {
-//
-//        val d = async(CommonPool){
-//            db.drugDao().getAll()
-//        }
-//
-//        val list = ArrayList<DrugStatus>()
-//
-//        d.await().forEach {
-//            val status = getDrugStatus(it)
-//            list.add(status)
-//        }
-//
-//        return list
-//    }
 
     fun rescheduleNotifications(list: List<DrugWithDoses>? = null) {
         val nextAvailableDrug = getNextUnavailableDrugToBecomeAvailable(list)
@@ -110,14 +53,12 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
 
     fun getAllDosesLive(drugId: Long) = db.doseDao().getAllLive(drugId)
 
-    suspend fun insertDose(dose: Dose) {
+    fun insertDose(dose: Dose) {
 
-        val job = launch(CommonPool) {
+        launch(CommonPool) {
             db.doseDao().insert(dose)
             rescheduleNotifications()
         }
-
-        job.join()
     }
 
     suspend fun findDrugById(drugId: Long): Drug {
@@ -131,23 +72,39 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
     suspend fun findDoseById(doseId: Long) = async(CommonPool) {db.doseDao().findDoseById(doseId)}.await()
 
     fun deleteDose(id: Long) {
-        db.doseDao().delete(id)
-        rescheduleNotifications()
+        launch {
+            db.doseDao().delete(id)
+            rescheduleNotifications()
+        }
     }
 
     fun updateDose(dose: Dose) {
-        db.doseDao().update(dose)
-        rescheduleNotifications()
+        launch {
+            db.doseDao().update(dose)
+            rescheduleNotifications()
+        }
     }
-//
-//    fun insertDrug(drug: Drug) {
-//        launch(CommonPool) {
-//            drug.id = db.drugDao().insert(drug)
-//        }
-//    }
 
     fun insertDrug(drug: Drug) {
-        drug.id = db.drugDao().insert(drug)
+
+        launch(CommonPool) {
+            drug.id = db.drugDao().insert(drug)
+            rescheduleNotifications()
+        }
+    }
+
+    fun deleteDrug(drug: Drug) {
+        launch(CommonPool) {
+            db.drugDao().delete(drug)
+            rescheduleNotifications()
+        }
+    }
+
+    fun updateDrug(drug: Drug) {
+        launch {
+            db.drugDao().update(drug)
+            rescheduleNotifications()
+        }
     }
 
     private var _elapsedTime: MutableLiveData<Long>? = null
