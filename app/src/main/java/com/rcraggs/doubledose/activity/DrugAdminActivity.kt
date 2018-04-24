@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import com.rcraggs.doubledose.R
+import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugListAdapter
+import com.rcraggs.doubledose.util.setUpVerticalFixedWidthWithRule
 import com.rcraggs.doubledose.viewmodel.DrugAdminViewModel
 import kotlinx.android.synthetic.main.activity_drug_admin.*
 import org.jetbrains.anko.intentFor
@@ -26,15 +28,7 @@ class DrugAdminActivity : AppCompatActivity() {
 
             if (rv_dose_admin.adapter == null){
 
-                adapter = DrugListAdapter(it ?: ArrayList()){
-                    startActivity(intentFor<DrugAddEditActivity>(
-                            DrugAddEditActivity.EXTRA_DRUG_ID to it.id))
-                }.apply {
-                    setHasStableIds(true)
-                }
-
-                rv_dose_admin.adapter = adapter
-                rv_dose_admin.setHasFixedSize(true)
+                setupRecyclerview(it)
 
             }else{
                 adapter.items = it ?: ArrayList() // todo do a list diff or similar?
@@ -47,5 +41,18 @@ class DrugAdminActivity : AppCompatActivity() {
         fab_add_drug.setOnClickListener { view ->
             startActivity(intentFor<DrugAddEditActivity>())
         }
+    }
+
+    private fun setupRecyclerview(it: List<Drug>?) {
+        adapter = DrugListAdapter(it ?: ArrayList()) {
+            startActivity(intentFor<DrugAddEditActivity>(
+                    DrugAddEditActivity.EXTRA_DRUG_ID to it.id))
+        }.apply {
+            setHasStableIds(true)
+        }
+
+        rv_dose_admin.adapter = adapter
+        rv_dose_admin.setHasFixedSize(true)
+        rv_dose_admin.setUpVerticalFixedWidthWithRule()
     }
 }

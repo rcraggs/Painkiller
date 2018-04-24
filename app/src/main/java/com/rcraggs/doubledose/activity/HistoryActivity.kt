@@ -3,15 +3,17 @@ package com.rcraggs.doubledose.activity
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.ui.DoseAdapter
+import com.rcraggs.doubledose.util.setUpVerticalFixedWidthWithRule
 import com.rcraggs.doubledose.viewmodel.HistoryViewModel
 import kotlinx.android.synthetic.main.activity_history.*
 import org.jetbrains.anko.intentFor
 import org.koin.android.architecture.ext.viewModel
+
 
 class HistoryActivity : AppCompatActivity() {
 
@@ -32,20 +34,11 @@ class HistoryActivity : AppCompatActivity() {
         }else{
             viewModel.start()
         }
+
         viewModel.doses.observe(this, Observer {
 
             if (rv_history.adapter == null){
-
-                adapter = DoseAdapter(it ?: ArrayList()){
-                    startActivity(intentFor<DoseEditActivity>(
-                            DoseEditActivity.DOSE_EDIT_ACTIVITY_EXTRA_DOSE_ID to it.id))
-                }.apply {
-                    setHasStableIds(true)
-                }
-
-                rv_history.adapter = adapter
-                rv_history.setHasFixedSize(true)
-
+                setUpRecyclerView(it)
             }else{
                 adapter.items = it ?: ArrayList() // todo do a list diff or similar?
                 rv_history.adapter.notifyDataSetChanged()
@@ -54,5 +47,17 @@ class HistoryActivity : AppCompatActivity() {
 
         this.title = "History: " + viewModel.drugName
         rv_history.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun setUpRecyclerView(it: List<Dose>?) {
+        adapter = DoseAdapter(it ?: ArrayList()) {
+            startActivity(intentFor<DoseEditActivity>(
+                    DoseEditActivity.DOSE_EDIT_ACTIVITY_EXTRA_DOSE_ID to it.id))
+        }.apply {
+            setHasStableIds(true)
+        }
+
+        rv_history.adapter = adapter
+        rv_history.setUpVerticalFixedWidthWithRule()
     }
 }
