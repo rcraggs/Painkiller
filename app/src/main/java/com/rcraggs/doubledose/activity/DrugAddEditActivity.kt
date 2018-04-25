@@ -21,8 +21,11 @@ class DrugAddEditActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drug_add_edit)
+        setSupportActionBar(drug_edit_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // If a drug was passed in, show the values
         if (intent.hasExtra(EXTRA_DRUG_ID)){

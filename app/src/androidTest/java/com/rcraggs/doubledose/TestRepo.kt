@@ -56,8 +56,10 @@ class TestRepo {
         repo = AppRepo(db, notifications)
 
         // Insert drugs into the DB for testing
-        paracetamol.id = db.drugDao().insert(paracetamol)
-        ibroprufen.id = db.drugDao().insert(ibroprufen)
+        runBlocking {
+            paracetamol.id = db.drugDao().insert(paracetamol)
+            ibroprufen.id = db.drugDao().insert(ibroprufen)
+        }
     }
 
     @After
@@ -314,7 +316,6 @@ class TestRepo {
         assertEquals(ds2.secondsBeforeNextDoseAvailable, 4 * 60)
     }
 
-
     @Test
     fun insertingDrugThenDoseDaoDoesNotCauseKeyProblems() {
 
@@ -322,15 +323,15 @@ class TestRepo {
         val d = Drug("f1", 1, 1)
 
         try {
-            repo.insertDrug(d)
-            val dose = Dose(d, Instant.now())
-            repo.insertDose(dose)
+            runBlocking {
+                repo.insertDrug(d)
+                val dose = Dose(d, Instant.now())
+                repo.insertDose(dose)
+            }
         }catch(e: Exception){
             Log.d(TestRepo::javaClass.name, e.message)
             exceptionThrown = true
         }
-
         assertFalse("Inserting drug then dose did not throw exception", exceptionThrown)
     }
-
 }

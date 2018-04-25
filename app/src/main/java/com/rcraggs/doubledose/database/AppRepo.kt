@@ -38,7 +38,13 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
         return db.drugDao().getAllDrugsWithDoses()
     }
 
+    /**
+     * Schedule an android notification using the [INotificationsService] supplied as a
+     * parameter to this class. If a list of drugs is provided use them, otherwise
+     * fetch them from the DB within the "getNext..." method.
+     */
     fun rescheduleNotifications(list: List<DrugWithDoses>? = null) {
+
         val nextAvailableDrug = getNextUnavailableDrugToBecomeAvailable(list)
         if (nextAvailableDrug != null) {
             notifications.scheduleNotification(nextAvailableDrug.secondsBeforeNextDoseAvailable, nextAvailableDrug.drug.name)
@@ -53,12 +59,11 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
 
     fun getAllDosesLive(drugId: Long) = db.doseDao().getAllLive(drugId)
 
-    fun insertDose(dose: Dose) {
-
-        launch(CommonPool) {
+    suspend fun insertDose(dose: Dose) {
+        async(CommonPool) {
             db.doseDao().insert(dose)
             rescheduleNotifications()
-        }
+        }.await()
     }
 
     suspend fun findDrugById(drugId: Long): Drug {
@@ -85,12 +90,12 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
         }
     }
 
-    fun insertDrug(drug: Drug) {
+    suspend fun insertDrug(drug: Drug) {
 
-        launch(CommonPool) {
+        async{
             drug.id = db.drugDao().insert(drug)
             rescheduleNotifications()
-        }
+        }.await()
     }
 
     fun deleteDrug(drug: Drug) {

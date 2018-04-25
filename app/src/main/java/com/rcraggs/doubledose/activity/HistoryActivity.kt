@@ -3,7 +3,6 @@ package com.rcraggs.doubledose.activity
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Dose
@@ -24,8 +23,11 @@ class HistoryActivity : AppCompatActivity() {
     private lateinit var adapter: DoseAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
+        setSupportActionBar(history_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Check if we have been started for a specific drug
         val drugId = intent.getLongExtra(HISTORY_ACTIVITY_EXTRA_DRUG_ID, -1)
@@ -36,7 +38,6 @@ class HistoryActivity : AppCompatActivity() {
         }
 
         viewModel.doses.observe(this, Observer {
-
             if (rv_history.adapter == null){
                 setUpRecyclerView(it)
             }else{
@@ -45,7 +46,7 @@ class HistoryActivity : AppCompatActivity() {
             }
         })
 
-        this.title = "History: " + viewModel.drugName
+        this.title = getString(R.string.activity_title_history) + ": " + viewModel.drugName
         rv_history.layoutManager = LinearLayoutManager(this)
     }
 
@@ -56,7 +57,6 @@ class HistoryActivity : AppCompatActivity() {
         }.apply {
             setHasStableIds(true)
         }
-
         rv_history.adapter = adapter
         rv_history.setUpVerticalFixedWidthWithRule()
     }

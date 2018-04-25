@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(main_toolbar)
 
         viewModel.start()
 
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_update_drugs -> {
-                val intent = Intent(this, DrugAdminActivity::class.java)
+                val intent = Intent(this, DrugListActivity::class.java)
                 startActivity(intent)
                 true
             }

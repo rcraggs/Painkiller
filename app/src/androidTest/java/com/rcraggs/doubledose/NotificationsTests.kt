@@ -13,7 +13,10 @@ import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugWithDoses
 import com.rcraggs.doubledose.ui.getNextDrugToBecomeAvailable
 import com.rcraggs.doubledose.util.INotificationsService
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -68,12 +71,11 @@ class NotificationsTests {
         val now = Instant.now()
 
         val d1 = Drug("D1", 3, 10)
-        repo.insertDrug(d1)
+        runBlocking {repo.insertDrug(d1)}
 
         val dose = Dose(d1, now.minus(Duration.ofMinutes(5)))
-        runBlocking {
-            repo.insertDose(dose)
-        }
+        runBlocking { repo.insertDose(dose) }
+
         verify(ns, times(1)).scheduleNotification(5 * 60, "D1")
     }
 
@@ -84,18 +86,24 @@ class NotificationsTests {
         val d1 = Drug("D1", 3, 10)
         val d2 = Drug("D2", 1, 10)
 
-
         val dose2 = Dose(d2, now.minus(Duration.ofMinutes(12)))
         val dose = Dose(d1, now.minus(Duration.ofMinutes(5)))
 
-        runBlocking {
+        val j = launch {
             repo.insertDrug(d1)
             repo.insertDrug(d2)
+        }
+
+        val j2 = launch {
+            j.join()
             repo.insertDose(dose2)
             repo.insertDose(dose)
         }
 
-        verify(ns, times(2)).scheduleNotification(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString())
-        verify(ns, times(1)).scheduleNotification(5 * 60, "D1")
+        launch {
+            j2.join()
+            verify(ns, times(2)).scheduleNotification(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString())
+            verify(ns, times(1)).scheduleNotification(5 * 60, "D1")
+        }
     }
 }

@@ -24,6 +24,8 @@ class DoseEditActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dose_edit)
+        setSupportActionBar(dose_edit_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         doseId = intent.getLongExtra(DOSE_EDIT_ACTIVITY_EXTRA_DOSE_ID, -1)
 

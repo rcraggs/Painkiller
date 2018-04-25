@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_drug_admin.*
 import org.jetbrains.anko.intentFor
 import org.koin.android.architecture.ext.viewModel
 
-class DrugAdminActivity : AppCompatActivity() {
+class DrugListActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<DrugAdminViewModel>()
     private lateinit var adapter: DrugListAdapter
@@ -23,13 +23,13 @@ class DrugAdminActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drug_admin)
+        setSupportActionBar(drug_admin_toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewModel.drugs.observe(this, Observer {
 
             if (rv_dose_admin.adapter == null){
-
                 setupRecyclerview(it)
-
             }else{
                 adapter.items = it ?: ArrayList() // todo do a list diff or similar?
                 rv_dose_admin.adapter.notifyDataSetChanged()

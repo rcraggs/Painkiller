@@ -41,8 +41,7 @@ class DrugAdminViewModel(val repo: AppRepo, application: Application) : AndroidV
         val per24Int = Integer.parseInt(per24).toLong()
         val gapInt = Integer.parseInt(gap).toLong()
 
-        repo.insertDrug(Drug(name, per24Int, gapInt ))
-
+        runBlocking { repo.insertDrug(Drug(name, per24Int, gapInt )) }
     }
 
     fun updateDrug(name: String, per24: String, gap: String) {

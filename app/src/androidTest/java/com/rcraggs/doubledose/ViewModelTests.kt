@@ -49,10 +49,10 @@ class ViewModelTests : KoinTest {
     fun testHistoryGetsAllDosesTwoDifferentDrugs() {
 
         val drug = Drug("Test1")
-        repo.insertDrug(drug)
+        runBlocking { repo.insertDrug(drug) }
 
         val drug2 = Drug("Test2")
-        repo.insertDrug(drug2)
+        runBlocking { repo.insertDrug(drug2) }
 
         // Add doses to the DB
         runBlocking {
@@ -68,10 +68,10 @@ class ViewModelTests : KoinTest {
     fun testHistoryGetsAllDosesFor1Drug() {
 
         val drug = Drug("Test1")
-        repo.insertDrug(drug)
+        runBlocking { repo.insertDrug(drug)}
 
         val drug2 = Drug("Test2")
-        repo.insertDrug(drug2)
+        runBlocking { repo.insertDrug(drug2)}
 
         // Add doses to the DB
         runBlocking {
@@ -96,10 +96,10 @@ class ViewModelTests : KoinTest {
         homeViewModel.start()
 
         val drug = Drug("Test1")
-        repo.insertDrug(drug)
+        runBlocking { repo.insertDrug(drug) }
 
         val drug2 = Drug("Test2")
-        repo.insertDrug(drug2)
+        runBlocking { repo.insertDrug(drug2) }
 
         assertEquals(2, homeViewModel.drugWithDoses.blockingObserve()?.size)
     }
