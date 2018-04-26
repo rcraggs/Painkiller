@@ -18,21 +18,35 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <TextView
-        android:id="@+id/tv_drug_edit_name_title"
-        style="@style/InputLabelTextView"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/drug_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/drug_edit_toolbar" />
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/default_main_container_margin"
+        app:layout_constraintTop_toBottomOf="@+id/drug_edit_toolbar">
+
+        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".activity.DrugAddEditActivity">
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_drug_edit_name_title"-->
+        <!--style="@style/InputLabelTextView"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:text="@string/drug_name"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/drug_edit_toolbar" />-->
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_drug_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_drug_edit_name_title"
-        app:errorEnabled="false">
+        app:layout_constraintTop_toTopOf="parent"
+        app:errorEnabled="false"
+        app:hintAnimationEnabled="false">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/ed_drug_name"
@@ -43,19 +57,19 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <TextView
-        android:id="@+id/tv_drug_edit_per_title"
-        style="@style/InputLabelTextView"
-        android:layout_marginTop="16dp"
-        android:text="@string/doses_per_24_hours"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_drug_name" />
+    <!--<TextView-->
+        <!--android:id="@+id/tv_drug_edit_per_title"-->
+        <!--style="@style/InputLabelTextView"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:text="@string/doses_per_24_hours"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/til_drug_name" />-->
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_p24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_drug_edit_per_title"
+        app:layout_constraintTop_toBottomOf="@+id/til_drug_name"
         app:errorEnabled="false">
 
         <android.support.design.widget.TextInputEditText
@@ -67,21 +81,21 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <TextView
-        android:id="@+id/tv_drug_edit_gap_title"
-        android:layout_marginTop="16dp"
-        style="@style/InputLabelTextView"
-        android:elevation="@dimen/text_margin_very_small"
-        android:text="@string/minutes_between_doses"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_p24"
-        />
+    <!--<TextView-->
+        <!--android:id="@+id/tv_drug_edit_gap_title"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--style="@style/InputLabelTextView"-->
+        <!--android:elevation="@dimen/text_margin_very_small"-->
+        <!--android:text="@string/minutes_between_doses"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/til_p24"-->
+        <!--/>-->
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_gap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_drug_edit_gap_title"
+        app:layout_constraintTop_toBottomOf="@+id/til_p24"
         app:errorEnabled="false">
 
         <android.support.design.widget.TextInputEditText
@@ -130,7 +144,10 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:text="@string/button_text_add" />
-
     </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
 
 </android.support.constraint.ConstraintLayout>

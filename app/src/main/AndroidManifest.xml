@@ -34,6 +34,7 @@
             android:parentActivityName=".activity.MainActivity" />
         <activity
             android:name=".activity.DrugAddEditActivity"
+            android:label="@string/activity_title_drug_edit"
             android:parentActivityName=".activity.DrugListActivity" />
     </application>
 
