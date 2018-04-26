@@ -12,9 +12,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:label="@string/activity_title_main"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        android:label="@string/activity_title_main" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

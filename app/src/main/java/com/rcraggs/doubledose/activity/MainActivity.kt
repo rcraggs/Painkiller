@@ -3,6 +3,7 @@ package com.rcraggs.doubledose.activity
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
+import android.support.annotation.CallSuper
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
@@ -62,7 +63,9 @@ class MainActivity : AppCompatActivity() {
         newFragment.show(fragmentManager, "timepicker")
     }
 
+    @CallSuper
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }

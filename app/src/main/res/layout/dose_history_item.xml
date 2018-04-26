@@ -3,7 +3,7 @@
     android:id="@+id/dose_history_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="@dimen/default_inner_container_margin">
 
     <TextView
         android:id="@+id/tv_dose_history_drug"
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:text="DRUG NAME"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size_dose_history_drug_title" />
 
     <TextView
         android:id="@+id/tv_dose_history_date"
@@ -19,12 +19,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_dose_history_drug"
         android:paddingTop="8dp"
-        android:text="Drug Date" />
+        android:text="Drug Date"
+        android:textSize="@dimen/text_size_list_detail"/>
 
     <ImageView
         android:id="@+id/img_edit_dose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/touch_target_width"
+        android:layout_height="@dimen/touch_target_height"
+        android:padding="6dp"
+        android:layout_margin="8dp"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="10dp"

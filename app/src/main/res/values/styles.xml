@@ -1,11 +1,13 @@
 <resources>
 
-    <style name="painkiller" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-        <!--<item name="colorAccent">@color/colorAccent</item>-->
-        <!--<item name="android:windowBackground">@color/main_background</item>-->
-        <item name="android:layout_margin">@dimen/default_layout_margin</item>
+
+    <style name="Painkiller" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/primaryLightColor</item>
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <item name="android:textColorSecondary">@color/primaryTextColor</item>
+        <item name="android:windowBackground">@color/main_background</item>
     </style>
 
     <style name="InputLabelTextView" parent="@android:style/TextAppearance.Small">

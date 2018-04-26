@@ -13,14 +13,14 @@
         android:layout_marginStart="@dimen/main_card_margin_horizontal"
         android:layout_marginTop="@dimen/main_card_margin_vertical"
         android:layout_weight="1"
-        card_view:cardBackgroundColor="@color/card_title"
         card_view:cardCornerRadius="@dimen/card_recycler_corner_radius"
-        card_view:cardElevation="9dp">
+        card_view:cardElevation="@dimen/drug_card_elevation">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!--todo card text to come from a style not explicit-->
             <TextView
                 android:id="@+id/tv_medicine_type"
                 style="@style/TextAppearance.AppCompat.Large"

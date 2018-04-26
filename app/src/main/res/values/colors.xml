@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4ECDC4</color>
-    <color name="colorPrimaryDark">#39968F</color>
-    <color name="colorAccent">#FF6B6B</color>
+    <color name="primaryColor">#ce93d8</color>
+    <color name="primaryLightColor">#ffc4ff</color>
+    <color name="primaryDarkColor">#9c64a6</color>
+    <color name="primaryTextColor">#000000</color>
 
-    <color name="cardview_initial_background">#71C3DE</color>
     <color name="white">#FFFFFF</color>
-    <color name="card_title">#941d13</color>
-    <color name="main_background">#f7fff7</color>
+    <color name="main_background">#ffffff</color>
 
     <color name="titleLabelList">#4285f4</color>
     <color name="inputLabelTextColor">#133D43</color>

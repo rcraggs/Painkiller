@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_drug_list_layout"
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:elevation="@dimen/card_recycler_elevation">
+    android:padding="@dimen/default_inner_container_margin"
+    tools:context=".activity.DrugListActivity">
 
     <TextView
         android:id="@+id/tv_drug_list_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="DRUG NAME"
-        android:textSize="20sp" />
+        android:textSize="@dimen/text_size_dose_history_drug_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/img_edit_drug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/touch_target_width"
+        android:layout_height="@dimen/touch_target_height"
         android:layout_alignParentEnd="true"
+        android:layout_margin="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="10dp"
         android:adjustViewBounds="true"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/ic_edit_black_24dp" />
+        android:padding="6dp"
+        android:src="@drawable/ic_edit_black_24dp"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
