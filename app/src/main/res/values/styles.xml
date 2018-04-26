@@ -5,6 +5,7 @@
         <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
         <!--<item name="colorAccent">@color/colorAccent</item>-->
         <!--<item name="android:windowBackground">@color/main_background</item>-->
+        <item name="android:layout_margin">@dimen/default_layout_margin</item>
     </style>
 
     <style name="InputLabelTextView" parent="@android:style/TextAppearance.Small">
@@ -18,4 +19,5 @@
         <item name="colorButtonNormal">@color/deleteButtonColor</item>
     </style>
 
+    <dimen name="default_layout_margin">0dp</dimen>
 </resources>

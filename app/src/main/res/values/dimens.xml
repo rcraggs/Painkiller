@@ -25,7 +25,10 @@
     <dimen name="text_margin_very_small">4dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="drug_card_detail_font_size">18sp</dimen>
+    <dimen name="drug_card_detail_font_size">20sp</dimen>
     <dimen name="default_main_container_margin">16dp</dimen>
+    <dimen name="default_inner_container_margin">16dp</dimen>
+    <dimen name="touch_target_width">42dp</dimen>
+    <dimen name="touch_target_height">42dp</dimen>
 
 </resources>
