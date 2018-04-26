@@ -17,8 +17,8 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="DeleteButton" parent="Widget.AppCompat.Button.Colored">
-        <item name="colorButtonNormal">@color/deleteButtonColor</item>
+    <style name="PainkillerColouredButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/primaryDarkColor</item>
     </style>
 
     <dimen name="default_layout_margin">0dp</dimen>

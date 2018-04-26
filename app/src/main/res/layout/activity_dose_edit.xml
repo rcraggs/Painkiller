@@ -27,10 +27,6 @@
         <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
             tools:context=".activity.DoseEditActivity">
 
             <TextView
@@ -43,50 +39,43 @@
             <Spinner
                 android:id="@+id/sp_drug"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginStart="24dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_drug" />
 
+            <View
+                android:id="@+id/hr_dose_edit"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="24dp"
+                android:background="@color/primaryLightColor"
+                app:layout_constraintTop_toBottomOf="@+id/sp_drug"
+                tools:background="@color/primaryLightColor" />
+
             <TextView
                 android:id="@+id/tv_time"
                 style="@style/InputLabelTextView"
                 android:layout_marginTop="16dp"
-                android:text="@string/input_title_text_time"
+                android:text="@string/dose_edit_title_date_and_time"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sp_drug" />
+                app:layout_constraintTop_toBottomOf="@+id/hr_dose_edit"
+                android:background="#FFFFFF"/>
 
-            <!--todo takes up too much room-->
             <TimePicker
                 android:id="@+id/time_dose_time"
                 android:layout_width="wrap_content"
-                android:layout_margin="@dimen/text_margin_small"
-                android:layout_marginEnd="32dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
+                android:layout_height="wrap_content"
                 android:elevation="@dimen/text_margin_very_small"
                 android:timePickerMode="spinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_time"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/tv_date"
-                style="@style/InputLabelTextView"
-                android:layout_marginTop="16dp"
-                android:calendarViewShown="false"
-                android:elevation="@dimen/text_margin_very_small"
-                android:text="@string/input_title_date"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/time_dose_time" />
-
+                app:layout_constraintTop_toBottomOf="@+id/tv_time" />
 
             <LinearLayout
-                android:id="@+id/linearLayout2"
+                android:id="@+id/ll_dose_edit_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
@@ -95,13 +84,14 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_date">
+                app:layout_constraintTop_toBottomOf="@+id/time_dose_time">
 
                 <TextView
                     android:id="@+id/tv_current_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textSize="@dimen/text_size_list_detail"/>
 
                 <Button
                     android:id="@+id/btn_change_date"
@@ -111,18 +101,28 @@
                     android:text="@string/button_text_date_chooser" />
             </LinearLayout>
 
+            <View
+                android:id="@+id/hr_dose_edit2"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="24dp"
+                android:background="@color/primaryLightColor"
+                app:layout_constraintTop_toBottomOf="@+id/ll_dose_edit_date"
+                tools:background="@color/primaryLightColor" />
+
             <LinearLayout
-                android:id="@+id/linearLayout"
+                android:id="@+id/ll_dose_edit_buttons"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+                app:layout_constraintTop_toBottomOf="@+id/hr_dose_edit2">
 
                 <Button
                     android:id="@+id/btn_update_dose"
-                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:theme="@style/PainkillerColouredButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
@@ -131,15 +131,17 @@
 
                 <Button
                     android:id="@+id/btn_delete_dose"
-                    style="@style/DeleteButton"
+                    android:theme="@style/PainkillerColouredButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-
                     android:text="@string/button_text_delete" />
             </LinearLayout>
+
+
+
 
         </android.support.constraint.ConstraintLayout>
 

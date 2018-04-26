@@ -9,7 +9,7 @@
     <color name="main_background">#ffffff</color>
 
     <color name="titleLabelList">#4285f4</color>
-    <color name="inputLabelTextColor">#133D43</color>
+    <color name="inputLabelTextColor">@color/primaryDarkColor</color>
 
     <color name="deleteButtonColor">#ef5350</color>
 </resources>
