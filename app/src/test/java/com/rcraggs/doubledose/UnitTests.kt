@@ -37,7 +37,6 @@ class UnitTests {
         val status = Drug("Ibroprufen").createWithDoses()
         status.refreshData(nowInstant)
 
-        assertEquals(null, status.timeOfLastDose)
         assertEquals(0, status.secondsBeforeNextDoseAvailable)
     }
 
@@ -144,6 +143,21 @@ class UnitTests {
                 , pointInTime)
 
         assertEquals(pointInTime.plusSeconds(Duration.ofHours(1).seconds), dd.timeNextDoseIsAvailable)
+    }
+
+    @Test
+    fun testDosesIn24HoursWithAMixOfBeforeAndAfter() {
+
+        val dd = d1.createWithDoses(listOf(
+                nowInstant.minus(Duration.ofHours(27)),
+                nowInstant.minus(Duration.ofHours(25)),
+                nowInstant.minus(Duration.ofHours(24)).plusMillis(1),
+                nowInstant.minus(Duration.ofHours(23)),
+                nowInstant.minus(Duration.ofHours(22))),
+                nowInstant
+        )
+
+        assertEquals(3, dd.dosesIn24Hours)
     }
 
     @Test

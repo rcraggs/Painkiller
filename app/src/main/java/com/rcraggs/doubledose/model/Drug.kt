@@ -23,4 +23,11 @@ class Drug() {
     override fun toString(): String {
         return name
     }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is Drug)
+            other.id == this.id
+        else
+            false
+    }
 }

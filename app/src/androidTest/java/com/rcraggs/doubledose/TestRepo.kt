@@ -15,6 +15,7 @@ import com.rcraggs.doubledose.ui.UiUtilities
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.MockNotificationsService
 import com.rcraggs.doubledose.util.blockingObserve
+import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.After
 import org.junit.Assert.*
@@ -117,14 +118,18 @@ class TestRepo {
     @Test
     fun testGetLatestAnyType() {
 
-        doseDao.insert(Dose(paracetamol))
-        doseDao.insert(Dose(paracetamol))
+        val j = launch {
+            doseDao.insert(Dose(paracetamol))
+            doseDao.insert(Dose(paracetamol))
+        }
 
         val d = Dose(ibroprufen)
         d.taken = d.taken.plusSeconds(1000)
 
-        doseDao.insert(d)
-
+        runBlocking {
+            j.join()
+            doseDao.insert(d)
+        }
 
         val retrieved = doseDao.getLatest().blockingObserve()
         assertEquals(d, retrieved)
@@ -333,5 +338,42 @@ class TestRepo {
             exceptionThrown = true
         }
         assertFalse("Inserting drug then dose did not throw exception", exceptionThrown)
+    }
+
+
+    @Test
+    fun getAllLiveDrugsGetsAllDrugs() {
+
+        runBlocking {
+            repo.insertDrug(Drug("d"))
+            repo.insertDrug(Drug("d2"))
+        }
+
+        val liveDrugs = repo.getAllDrugsLive().blockingObserve()
+
+        assertEquals(4, liveDrugs?.size ?: 0) // There are 2 from the setup
+    }
+
+
+    @Test
+    fun getAllDrugsWithDosesLiveGetsDoses() {
+
+        val d = Dose(paracetamol)
+        val j = launch { repo.insertDose(d) }
+
+        runBlocking {
+            j.join()
+            val dd = repo.getAllDrugWithDosesLive().blockingObserve()
+            val p = dd?.first { it.drug.id == paracetamol.id }
+            assertEquals(1,p?.doses?.size ?: 0)
+        }
+    }
+
+    @Test
+    fun getDrugWithIdGetsCorrectDrug(){
+        runBlocking {
+            val d = repo.getDrugWithId(paracetamol.id)
+            assertEquals(paracetamol, d)
+        }
     }
 }

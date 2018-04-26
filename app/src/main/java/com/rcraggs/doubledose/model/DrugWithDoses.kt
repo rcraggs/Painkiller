@@ -23,12 +23,13 @@ class DrugWithDoses() {
         drug = d
     }
 
-    @Ignore var timeOfLastDose: Instant? = null
+    @Ignore private var timeOfLastDose: Instant? = null
     @Ignore private var timeOfDoseThatIsMax: Instant? = null // if we can have 4 doses per day, when is the 4th most recent dose
     @Ignore var dosesIn24Hours: Int = 0
     @Ignore var secondsBeforeNextDoseAvailable: Int = 0
     @Ignore var timeNextDoseIsAvailable: Instant? = null
-    @Ignore lateinit var listOfDosesIn24HoursSinceRefresh: List<Dose>
+    @Ignore
+    private lateinit var listOfDosesIn24HoursSinceRefresh: List<Dose>
 
     private fun returnSecondsToNextDose(currentTime: Instant): Int {
 

@@ -32,21 +32,6 @@ object UiUtilities {
         return nextTimeString
     }
 }
-//
-//fun List<DrugStatus>.getNextDrugToBecomeAvailable(): DrugStatus? {
-//
-//    // Done ineligantly because filters seemed to not give the correct result each time
-//    val unavailableDrugs = this.filter { ds ->
-//        ds.secondsBeforeNextDoseAvailable > 0
-//    }
-//
-//    val sortedUnavailable = unavailableDrugs.sortedBy {
-//        it.secondsBeforeNextDoseAvailable
-//    }
-//
-//    return sortedUnavailable.firstOrNull()
-//}
-
 
 fun List<DrugWithDoses>.getNextDrugToBecomeAvailable(): DrugWithDoses? {
 
