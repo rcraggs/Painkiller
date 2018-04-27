@@ -38,5 +38,6 @@
     <string name="activity_title_drug_edit">Drug Details</string>
     <string name="tap_target_dose_now_text">Dose Now</string>
     <string name="tap_target_dose_now_description">Yeah Yeah Dose Now</string>
+    <string name="msg_dose_cannot_be_in_past">You must set the Date and Time of a dose to be in the past</string>
 
 </resources>

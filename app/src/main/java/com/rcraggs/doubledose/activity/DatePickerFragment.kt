@@ -21,7 +21,7 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val seconds = arguments.getLong(ARG_DATE)
         date = Instant.ofEpochSecond(seconds).atZone(ZoneId.systemDefault()).toLocalDate()
-        return DatePickerDialog(activity, this, date.year, date.monthValue, date.dayOfMonth)
+        return DatePickerDialog(activity, this, date.year, date.monthValue - 1, date.dayOfMonth)
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {

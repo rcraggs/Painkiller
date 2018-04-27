@@ -9,6 +9,7 @@ import com.rcraggs.doubledose.util.INotificationsService
 import kotlinx.coroutines.experimental.*
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
+import java.time.Instant
 
 class DoseEditViewModel(private val repo: AppRepo, private val notifications: INotificationsService): ViewModel(){
 
@@ -57,9 +58,12 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: IN
 
     fun getPositionOfDrugInList() = drugList.indexOfFirst { d -> d.id == newDrug?.id}
 
+    /**
+     * @param month 0-indexed month so that 0=January
+     */
     fun setNewDate(year: Int, month: Int, day: Int){
         newYear = year
-        newMonth = month
+        newMonth = month + 1
         newDay = day
     }
 
@@ -88,5 +92,11 @@ class DoseEditViewModel(private val repo: AppRepo, private val notifications: IN
         launch(CommonPool) {
             repo.updateDose(dose)
         }
+    }
+
+    fun newDoseDateTimeIsInTheFuture(): Boolean {
+
+        val newTaken = LocalDateTime.of(newYear, newMonth, newDay, newHours, newMinutes)
+        return newTaken.isAfter(LocalDateTime.now())
     }
 }

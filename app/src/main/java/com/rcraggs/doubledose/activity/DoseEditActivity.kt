@@ -9,6 +9,10 @@ import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.viewmodel.DoseEditViewModel
 import kotlinx.android.synthetic.main.activity_dose_edit.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.appcompat.v7.Appcompat
+import org.jetbrains.anko.toast
+import org.jetbrains.anko.yesButton
 import org.koin.android.architecture.ext.viewModel
 
 class DoseEditActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -65,8 +69,24 @@ class DoseEditActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     }
 
     private fun updateDose() {
-        viewModel.updateDose()
-        finish()
+
+        if (validateForm()) {
+            viewModel.updateDose()
+            finish()
+        }else{
+            toast(getString(R.string.msg_dose_cannot_be_in_past))
+        }
+    }
+
+    private fun validateForm(): Boolean {
+
+        var isValid = true
+
+        if (viewModel.newDoseDateTimeIsInTheFuture()){
+            isValid = false
+        }
+
+        return isValid
     }
 
     private fun updateDate() {
@@ -81,6 +101,7 @@ class DoseEditActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     }
 
     fun setNewDate(year: Int, month: Int, day: Int) {
+
         // Update the underlying model
         viewModel.setNewDate(year, month, day)
         tv_current_date.text = viewModel.getUpdatedDoseDate()
