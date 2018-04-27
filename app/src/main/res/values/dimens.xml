@@ -30,7 +30,7 @@
     <dimen name="default_inner_container_margin">16dp</dimen>
     <dimen name="touch_target_width">42dp</dimen>
     <dimen name="touch_target_height">42dp</dimen>
-    <dimen name="drug_card_elevation">18dp</dimen>
+    <dimen name="drug_card_elevation">8dp</dimen>
     <dimen name="text_size_dose_history_drug_title">20sp</dimen>
     <dimen name="text_size_list_detail">18sp</dimen>
 
