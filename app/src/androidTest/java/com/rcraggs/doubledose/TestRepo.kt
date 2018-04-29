@@ -118,21 +118,21 @@ class TestRepo {
     @Test
     fun testGetLatestAnyType() {
 
+
         val j = launch {
             doseDao.insert(Dose(paracetamol))
             doseDao.insert(Dose(paracetamol))
-        }
-
-        val d = Dose(ibroprufen)
-        d.taken = d.taken.plusSeconds(1000)
-
-        runBlocking {
-            j.join()
+            val d = Dose(ibroprufen)
+            d.taken = d.taken.plusSeconds(1000)
             doseDao.insert(d)
         }
 
-        val retrieved = doseDao.getLatest().blockingObserve()
-        assertEquals(d, retrieved)
+        launch {
+            j.join()
+            val retrieved = doseDao.getLatest().blockingObserve()
+            assertEquals(ibroprufen.id, retrieved?.drugId)
+        }
+
     }
 
     @Test
@@ -203,7 +203,7 @@ class TestRepo {
         status.doses = listOf(d1)
         status.refreshData()
 
-        val availString = UiUtilities.createDoseAvailableDesription(status.secondsBeforeNextDoseAvailable)
+        val availString = UiUtilities.createDoseAvailabilityDescription(status)
         assertEquals(Constants.NEXT_DOSE_AVAILABLE, availString)
     }
 
@@ -219,7 +219,7 @@ class TestRepo {
         status.doses = listOf(d1)
         status.refreshData()
 
-        assertNotEquals(UiUtilities.createDoseAvailableDesription(status.secondsBeforeNextDoseAvailable),
+        assertNotEquals(UiUtilities.createDoseAvailabilityDescription(status),
                 Constants.NEXT_DOSE_AVAILABLE)
     }
 

@@ -4,18 +4,21 @@ import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugWithDoses
 import com.rcraggs.doubledose.util.Constants
+import kotlinx.android.synthetic.main.drug_card.view.*
 import org.threeten.bp.*
 
 object UiUtilities {
 
-    fun createDoseAvailableDesription(secondsBeforeNextDoseAvailable: Int): String {
-        return if (secondsBeforeNextDoseAvailable == 0) {
+    fun createDoseAvailabilityDescription(drug: DrugWithDoses): String {
+
+        return if (drug.secondsBeforeNextDoseAvailable == 0) {
             "Available!"
         } else {
-            val minsTilAvail = secondsBeforeNextDoseAvailable.div(60)
-            minsTilAvail.toString() + " mins"
+            val minsTilAvail = drug.secondsBeforeNextDoseAvailable.div(60)
+            "${createTextForNextDoseTime(drug.timeNextDoseIsAvailable)}     $minsTilAvail mins"
         }
     }
+
 
     fun createTextForNextDoseTime(timeNextDoseIsAvailable: Instant?): String {
 
@@ -26,7 +29,7 @@ object UiUtilities {
                 LocalDateTime.of(LocalDate.now(ZoneId.systemDefault()).plusDays(1), LocalTime.MIDNIGHT)
 
         if (timeOfNextDose.isAfter(todayMidnight)){
-            nextTimeString = "Tomorrow ${nextTimeString}"
+            nextTimeString = "Tmrw ${nextTimeString}"
         }
 
         return nextTimeString

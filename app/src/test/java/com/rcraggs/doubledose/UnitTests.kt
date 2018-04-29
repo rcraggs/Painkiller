@@ -28,7 +28,7 @@ class UnitTests {
     fun testNoDosesMeansAvailable(){
         val status = Drug("Ibroprufen").createWithDoses(listOf(), nowInstant)
 
-        val availString = UiUtilities.createDoseAvailableDesription(status.secondsBeforeNextDoseAvailable)
+        val availString = UiUtilities.createDoseAvailabilityDescription(status)
         assertEquals(Constants.NEXT_DOSE_AVAILABLE, availString)
     }
 
