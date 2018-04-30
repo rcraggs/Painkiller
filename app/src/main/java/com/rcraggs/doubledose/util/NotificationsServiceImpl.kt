@@ -1,6 +1,7 @@
 package com.rcraggs.doubledose.util
 
 import android.app.AlarmManager
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -31,6 +32,8 @@ class NotificationsServiceImpl(private val context: Context, private val alarmMa
             .setContentIntent(actionIntent)
             .build()
 
+        notification.flags = notification.flags or Notification.FLAG_AUTO_CANCEL
+
         // The intent that wraps up the notification that the alarm will broadcast
         val notificationIntent = Intent(context, NotificationPublisher::class.java)
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, NotificationPublisher.SINGLE_NOTIFICATION_ID)
@@ -46,7 +49,9 @@ class NotificationsServiceImpl(private val context: Context, private val alarmMa
         //val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + secondsToAvailable * 1000,
+                System.currentTimeMillis()
+                        + secondsToAvailable * 1000
+                        + Constants.REFRESH_TIMER_MILLI, // add so that the notification doesn't arrive before the UI has updated
                 pendingIntent
         )
 

@@ -14,11 +14,18 @@ object UiUtilities {
         return if (drug.secondsBeforeNextDoseAvailable == 0) {
             "Available!"
         } else {
-            val minsTilAvail = drug.secondsBeforeNextDoseAvailable.div(60)
-            "${createTextForNextDoseTime(drug.timeNextDoseIsAvailable)}     $minsTilAvail mins"
+            val minsTilAvail = createTextForMinutesToNextDose(drug.secondsBeforeNextDoseAvailable)
+            "${createTextForNextDoseTime(drug.timeNextDoseIsAvailable)}   $minsTilAvail"
         }
     }
 
+    fun createTextForMinutesToNextDose(seconds: Int): String {
+        return if (seconds < 60){
+            "< 1 min"
+        }else{
+            "${seconds.div(60)} mins"
+        }
+    }
 
     fun createTextForNextDoseTime(timeNextDoseIsAvailable: Instant?): String {
 
