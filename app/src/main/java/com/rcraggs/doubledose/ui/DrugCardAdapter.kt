@@ -45,7 +45,13 @@ class DrugCardAdapter(private val items: LiveData<List<DrugWithDoses>>,
 
             if (item.secondsBeforeNextDoseAvailable > 0){
                 v.card_main.setCardBackgroundColor(Constants.UNAVAILABLE_DRUG_COLOR)
+//                v.tv_next_dose_info.setTextColor(Constants.UNAVAILABLE_DRUG_TEXT_COLOR)
+//                v.tv_amount_taken.setTextColor(Constants.UNAVAILABLE_DRUG_TEXT_COLOR)
+//                v.tv_medicine_type.setTextColor(Constants.UNAVAILABLE_DRUG_TEXT_COLOR)
             }else{
+//                v.tv_next_dose_info.setTextColor(Constants.AVAILABLE_DRUG_TEXT_COLOR)
+//                v.tv_amount_taken.setTextColor(Constants.AVAILABLE_DRUG_TEXT_COLOR)
+//                v.tv_medicine_type.setTextColor(Constants.AVAILABLE_DRUG_TEXT_COLOR)
                 v.card_main.setCardBackgroundColor(Constants.AVAILABLE_DRUG_COLOR)
             }
 

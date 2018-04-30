@@ -21,5 +21,4 @@
         <item name="colorButtonNormal">@color/primaryDarkColor</item>
     </style>
 
-    <dimen name="default_layout_margin">0dp</dimen>
 </resources>

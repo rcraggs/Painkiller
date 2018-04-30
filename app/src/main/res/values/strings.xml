@@ -13,18 +13,12 @@
 
     <!--View Text-->
     <string name="drug_name_hint">Drug Name</string>
-    <string name="drug_gap_hint">Minutes between doses</string>
-    <string name="drug_per_hint">How many does are allowed in 24 hours</string>
     <string name="title_text_drug">Drug</string>
     <string name="dose_edit_title_date_and_time">Date and Time</string>
-    <string name="input_title_date">Date</string>
     <string name="button_text_update">Update</string>
     <string name="button_text_delete">Delete</string>
     <string name="button_text_date_chooser">Date…</string>
-    <string name="drug_name">The name of the drug</string>
     <string name="button_text_add">Add</string>
-    <string name="doses_per_24_hours">Doses Per 24 Hours</string>
-    <string name="minutes_between_doses">Minutes between doses</string>
     <string name="error_msg_requires_number">You must enter a number here</string>
     <string name="doses_allowed_each_day">Number of doses allowed each day</string>
     <string name="doses_gap">Minutes between each dose</string>
@@ -36,14 +30,10 @@
     <string name="activity_title_history">History</string>
     <string name="activity_title_dose_edit">Edit Dose</string>
     <string name="activity_title_drug_edit">Drug Details</string>
-    <string name="tap_target_dose_now_text">Dose Now</string>
-    <string name="tap_target_dose_now_description">Yeah Yeah Dose Now</string>
     <string name="msg_dose_cannot_be_in_past">You must set the Date and Time of a dose to be in the past</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="pref_show_notifications">showNotifications</string>
-    <string name="pref_root">pref_room</string>
     <string name="pref_notifications_summary">Recieve notifications when a drug can be take</string>
 
 </resources>

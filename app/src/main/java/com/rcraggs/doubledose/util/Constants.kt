@@ -11,8 +11,10 @@ object Constants {
 
     const val PROD_DB_NAME = "dosesdb"
 
-    val AVAILABLE_DRUG_COLOR = Color.parseColor("#D2AA3C")
-    val UNAVAILABLE_DRUG_COLOR = Color.parseColor("#A03555")
+    val AVAILABLE_DRUG_TEXT_COLOR = Color.parseColor("#000000")
+    val UNAVAILABLE_DRUG_TEXT_COLOR = Color.parseColor("#FFFFFF")
+    val AVAILABLE_DRUG_COLOR = Color.parseColor("#D54200")
+    val UNAVAILABLE_DRUG_COLOR = Color.parseColor("#9D9C9C")
 
     val doseTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
     val historyDoseTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("E d-MMM-yyyy h:mm a")

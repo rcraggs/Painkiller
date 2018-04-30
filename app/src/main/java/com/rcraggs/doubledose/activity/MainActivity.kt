@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
                 this::chooseDoseTime,
                 this::showDrugHistory
                 )
-
         rv_drugs.adapter = adapter
         rv_drugs.layoutManager = LinearLayoutManager(this)
 

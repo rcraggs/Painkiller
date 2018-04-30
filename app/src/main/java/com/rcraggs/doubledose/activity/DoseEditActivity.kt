@@ -9,10 +9,7 @@ import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.viewmodel.DoseEditViewModel
 import kotlinx.android.synthetic.main.activity_dose_edit.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.appcompat.v7.Appcompat
 import org.jetbrains.anko.toast
-import org.jetbrains.anko.yesButton
 import org.koin.android.architecture.ext.viewModel
 
 class DoseEditActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -41,6 +38,7 @@ class DoseEditActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
         viewModel.setDose(doseId)
 
+
         time_dose_time.currentHour = viewModel.getDoseHour()
         time_dose_time.currentMinute = viewModel.getDoseMinutes()
         tv_current_date.text = viewModel.getDoseTimeString()
@@ -49,6 +47,7 @@ class DoseEditActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         btn_delete_dose.setOnClickListener { deleteDose() }
         btn_update_dose.setOnClickListener { updateDose() }
         btn_change_date.setOnClickListener { updateDate() }
+
 
         time_dose_time.setOnTimeChangedListener { view, hourOfDay, minute ->
             viewModel.setNewTime(hourOfDay, minute)

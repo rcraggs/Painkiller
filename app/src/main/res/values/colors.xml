@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#ce93d8</color>
-    <color name="primaryLightColor">#ffc4ff</color>
-    <color name="primaryDarkColor">#9c64a6</color>
+    <color name="primaryColor">#d54200</color>
+    <color name="primaryLightColor">#ff7436</color>
+    <color name="primaryDarkColor">#9c0000</color>
     <color name="primaryTextColor">#000000</color>
 
     <color name="white">#FFFFFF</color>
     <color name="main_background">#ffffff</color>
 
-    <color name="titleLabelList">#4285f4</color>
     <color name="inputLabelTextColor">@color/primaryDarkColor</color>
 
-    <color name="deleteButtonColor">#ef5350</color>
 </resources>

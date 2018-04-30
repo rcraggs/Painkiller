@@ -28,7 +28,7 @@ class NotificationsServiceImpl(private val context: Context, private val alarmMa
         val notification = NotificationCompat.Builder(context, Constants.CHANNEL_ID)
             .setContentTitle(context.getString(R.string.notification_title))
             .setContentText(context.getString(R.string.notification_text) + " " + drugName)
-            .setSmallIcon(R.drawable.abc_ic_star_black_16dp)
+            .setSmallIcon(R.drawable.ic_one_pill_notif)
             .setContentIntent(actionIntent)
             .build()
 
