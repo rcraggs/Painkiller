@@ -160,18 +160,6 @@ class TestRepo {
         assertEquals(0, doses.size)
     }
 
-
-    @Test
-    fun testADoseJustUnder24HoursGiveOne() {
-
-        val d = Dose(ibroprufen)
-        d.taken = get24HoursAgo().plusSeconds(10)
-        doseDao.insert(d)
-
-        val doses = doseDao.getDosesSince(ibroprufen.id, get24HoursAgo())
-        assertEquals(1, doses.size)
-    }
-
     @Test
     fun testDeletingDrugDeletesDoses() {
 
