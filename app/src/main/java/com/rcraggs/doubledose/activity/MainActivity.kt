@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
             Observer {
                 adapter.notifyDataSetChanged()
             })
+
     }
 
     private fun showDrugHistory(drug: Drug) {
@@ -75,6 +76,8 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
 
             R.id.action_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
                 true
             }
             R.id.action_update_drugs -> {
