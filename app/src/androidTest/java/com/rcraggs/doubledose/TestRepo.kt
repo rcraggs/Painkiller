@@ -68,19 +68,20 @@ class TestRepo {
         db.close()
     }
 
-    @Test
-    fun testAddThenDeleteLeavesNone() {
-
-        val startNumber = doseDao.getAll().size
-
-        val d = Dose(paracetamol)
-        val insertedId = doseDao.insert(d)
-        d.id = insertedId
-        doseDao.delete(d)
-
-        val endNumber = doseDao.getAll().size
-        assertEquals(endNumber, startNumber)
-    }
+    // todo replace with mock repo
+//    @Test
+//    fun testAddThenDeleteLeavesNone() {
+//
+//        val startNumber = doseDao.getAll().size
+//
+//        val d = Dose(paracetamol)
+//        val insertedId = doseDao.insert(d)
+//        d.id = insertedId
+//        doseDao.delete(d)
+//
+//        val endNumber = doseDao.getAll().size
+//        assertEquals(endNumber, startNumber)
+//    }
 
     @Test
     fun canSaveAndGetLatest() {
