@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.ui.DoseAdapter
@@ -37,6 +38,9 @@ class HistoryActivity : AppCompatActivity() {
             viewModel.start()
         }
 
+        // if there are no doses then show the message, otherwise the list
+
+
         viewModel.doses.observe(this, Observer {
             if (rv_history.adapter == null){
                 setUpRecyclerView(it)
@@ -51,13 +55,24 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setUpRecyclerView(it: List<Dose>?) {
-        adapter = DoseAdapter(it ?: ArrayList()) {
-            startActivity(intentFor<DoseEditActivity>(
-                    DoseEditActivity.DOSE_EDIT_ACTIVITY_EXTRA_DOSE_ID to it.id))
-        }.apply {
-            setHasStableIds(true)
+
+        if (it == null || it.isEmpty()) {
+            tv_no_history_message.visibility = View.VISIBLE
+            rv_history.visibility = View.GONE
+
+        }else {
+
+            adapter = DoseAdapter(it ?: ArrayList()) {
+                startActivity(intentFor<DoseEditActivity>(
+                        DoseEditActivity.DOSE_EDIT_ACTIVITY_EXTRA_DOSE_ID to it.id))
+            }.apply {
+                setHasStableIds(true)
+            }
+            rv_history.adapter = adapter
+            rv_history.setUpVerticalFixedWidthWithRule()
+
+            tv_no_history_message.visibility = View.GONE
+            rv_history.visibility = View.VISIBLE
         }
-        rv_history.adapter = adapter
-        rv_history.setUpVerticalFixedWidthWithRule()
     }
 }
