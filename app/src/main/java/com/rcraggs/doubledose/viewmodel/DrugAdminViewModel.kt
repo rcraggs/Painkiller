@@ -2,7 +2,6 @@ package com.rcraggs.doubledose.viewmodel
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
-import android.text.Editable
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Drug
 import kotlinx.coroutines.experimental.launch
@@ -36,20 +35,21 @@ class DrugAdminViewModel(val repo: AppRepo, application: Application) : AndroidV
         }
     }
 
-    fun addDrug(name: String, per24: String, gap: String) {
+    fun addDrug(name: String, per24: String, gap: String, isActive: Boolean) {
 
         val per24Int = Integer.parseInt(per24).toLong()
         val gapInt = Integer.parseInt(gap).toLong()
 
-        runBlocking { repo.insertDrug(Drug(name, per24Int, gapInt )) }
+        runBlocking { repo.insertDrug(Drug(name, per24Int, gapInt, isActive )) }
     }
 
-    fun updateDrug(name: String, per24: String, gap: String) {
+    fun updateDrug(name: String, per24: String, gap: String, isActive: Boolean) {
         val per24Int = Integer.parseInt(per24).toLong()
         val gapInt = Integer.parseInt(gap).toLong()
         drug.name = name
         drug.gapMinutes =  gapInt
         drug.dosesPerDay = per24Int
+        drug.active = isActive
         repo.updateDrug(drug)
 
     }

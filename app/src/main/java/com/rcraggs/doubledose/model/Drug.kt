@@ -11,10 +11,11 @@ class Drug() {
     @ColumnInfo(name = "active") var active = true
 
     @Ignore
-    constructor(n: String, p: Long = 4, g: Long = 240): this() {
+    constructor(n: String, p: Long = 4, g: Long = 240, a: Boolean = true): this() {
         name = n
         dosesPerDay = p
         gapMinutes = g
+        active = a
     }
 
     @ColumnInfo(name = "id")
@@ -30,5 +31,9 @@ class Drug() {
             other.id == this.id
         else
             false
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 }
