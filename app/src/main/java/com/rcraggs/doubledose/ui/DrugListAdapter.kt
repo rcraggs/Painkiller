@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.rcraggs.doubledose.R
+import com.rcraggs.doubledose.di.getContext
 import com.rcraggs.doubledose.model.Drug
+import kotlinx.android.synthetic.main.drug_card.view.*
 import kotlinx.android.synthetic.main.drug_list_items.view.*
 
 class DrugListAdapter(var items: List<Drug>, // todo val and utils
@@ -30,7 +32,8 @@ class DrugListAdapter(var items: List<Drug>, // todo val and utils
 
         fun bindDrug(item: Drug) {
 
-            v.tv_drug_list_name.text =  item.name
+            val drugSuffix = if (item.active) "" else " (disabled)"
+            v.tv_drug_list_name.text =  "${item.name}$drugSuffix"
 
             v.img_edit_drug.setOnClickListener {
                 clickAction(item)

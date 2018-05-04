@@ -47,7 +47,7 @@ fun List<DrugWithDoses>.getNextDrugToBecomeAvailable(): DrugWithDoses? {
 
     // Done ineligantly because filters seemed to not give the correct result each time
     val unavailableDrugs = this.filter { ds ->
-        ds.secondsBeforeNextDoseAvailable > 0
+        ds.secondsBeforeNextDoseAvailable > 0 && ds.drug.active
     }
 
     val sortedUnavailable = unavailableDrugs.sortedBy {

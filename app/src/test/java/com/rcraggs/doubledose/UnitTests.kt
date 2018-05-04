@@ -1,6 +1,7 @@
 package com.rcraggs.doubledose
 
 import com.rcraggs.doubledose.model.Drug
+import com.rcraggs.doubledose.model.DrugWithDoses
 import com.rcraggs.doubledose.ui.UiUtilities
 import com.rcraggs.doubledose.ui.createWithDoses
 import com.rcraggs.doubledose.ui.getNextDrugToBecomeAvailable
@@ -180,4 +181,53 @@ class UnitTests {
 
         assertEquals(4, dd.dosesIn24Hours) // in 1 hour's time
     }
+
+
+
+    @Test
+    fun testNextDrugAvailIsInactiveShowAnother() {
+
+        val activeDrug = Drug("active")
+        val inactiveDrug = Drug("inactive")
+        inactiveDrug.active = false
+
+        val dd1 = activeDrug.createWithDoses(listOf(
+                nowInstant
+        ), nowInstant)
+
+        // The inactive drug is the earlier one taken
+        val dd2 = inactiveDrug.createWithDoses(listOf(
+                nowInstant.minusMillis(1000)
+        ), nowInstant)
+
+        val drugList = listOf<DrugWithDoses>(dd1,dd2)
+        val nextAvail = drugList.getNextDrugToBecomeAvailable()
+
+        assertEquals(nextAvail?.drug, activeDrug )
+    }
+
+
+    @Test
+    fun testNoActiveDrugsHasNoNextAvail() {
+
+        val activeDrug = Drug("active")
+        val inactiveDrug = Drug("inactive")
+        inactiveDrug.active = false
+        activeDrug.active = false
+
+        val dd1 = activeDrug.createWithDoses(listOf(
+                nowInstant
+        ), nowInstant)
+
+        // The inactive drug is the earlier one taken
+        val dd2 = inactiveDrug.createWithDoses(listOf(
+                nowInstant.minusMillis(1000)
+        ), nowInstant)
+
+        val drugList = listOf<DrugWithDoses>(dd1,dd2)
+        val nextAvail = drugList.getNextDrugToBecomeAvailable()
+
+        assertEquals(nextAvail, null)
+    }
+
 }

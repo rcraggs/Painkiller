@@ -11,6 +11,7 @@ import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugWithDoses
+import com.rcraggs.doubledose.ui.createWithDoses
 import com.rcraggs.doubledose.ui.getNextDrugToBecomeAvailable
 import com.rcraggs.doubledose.util.INotificationsService
 import kotlinx.coroutines.experimental.android.UI
@@ -106,4 +107,21 @@ class NotificationsTests {
             verify(ns, times(1)).scheduleNotification(5 * 60, "D1")
         }
     }
+
+    @Test
+    fun testNotificationsNotSetWhenAllDrugsAreInactive(){
+
+
+        val now = Instant.now()
+
+        val d1 = Drug("D1", 3, 10, false).createWithDoses(listOf(now.minus(Duration.ofMinutes(5))), now)
+
+        val statusList = listOf(d1)
+//        statusList.getNextDrugToBecomeAvailable()
+
+        repo.rescheduleNotifications(statusList)
+        verify(ns, times(1)).cancelNotifications()
+
+    }
+
 }
