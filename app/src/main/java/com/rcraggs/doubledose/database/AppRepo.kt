@@ -33,10 +33,12 @@ class AppRepo(private val db: AppDatabase, private val notifications: INotificat
     }
 
     fun getAllDrugsLive() = db.drugDao().getAllLive()
+//
+//    fun getAllDrugWithDosesLive(): LiveData<List<DrugWithDoses>> {
+//        return db.drugDao().getAllDrugsWithDoses()
+//    }
 
-    fun getAllDrugWithDosesLive(): LiveData<List<DrugWithDoses>> {
-        return db.drugDao().getAllDrugsWithDoses()
-    }
+    fun getActiveDrugsWithDosesLive() = db.drugDao().getActiveWithDosesLive()
 
     /**
      * Schedule an android notification using the [INotificationsService] supplied as a

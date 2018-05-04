@@ -20,6 +20,9 @@ interface DrugDao {
     @Query("SELECT * FROM drug ORDER BY name asc")
     fun getAllLive(): LiveData<List<Drug>>
 
+    @Query("SELECT * FROM drug WHERE active = 1 ORDER BY name asc")
+    fun getActiveWithDosesLive(): LiveData<List<DrugWithDoses>>
+
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(d: Drug) : Long
@@ -35,4 +38,5 @@ interface DrugDao {
 
     @Update
     fun update(drug: Drug)
+
 }

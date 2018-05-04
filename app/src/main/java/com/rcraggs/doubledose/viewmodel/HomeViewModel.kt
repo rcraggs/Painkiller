@@ -19,7 +19,7 @@ class HomeViewModel(application: Application, private val repo: AppRepo): Androi
 
     fun start() {
 
-        drugWithDoses = Transformations.map(repo.getAllDrugWithDosesLive()) {
+        drugWithDoses = Transformations.map(repo.getActiveDrugsWithDosesLive()) {
             it.forEach { it.refreshData() }
             it
         }

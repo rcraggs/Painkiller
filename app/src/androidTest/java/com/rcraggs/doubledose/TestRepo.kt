@@ -345,16 +345,23 @@ class TestRepo {
 
 
     @Test
-    fun getAllDrugsWithDosesLiveGetsDoses() {
+    fun getActiveDrugsWithDosesLiveGetsDoses() {
+
+        val d1 = Drug("D")
+        d1.active = false
+        val o = launch {repo.insertDrug(d1)}
 
         val d = Dose(paracetamol)
         val j = launch { repo.insertDose(d) }
 
         runBlocking {
             j.join()
-            val dd = repo.getAllDrugWithDosesLive().blockingObserve()
+            o.join()
+            val dd = repo.getActiveDrugsWithDosesLive().blockingObserve()
             val p = dd?.first { it.drug.id == paracetamol.id }
             assertEquals(1,p?.doses?.size ?: 0)
+
+            assertEquals(dd?.size ?: 0, 2)
         }
     }
 
