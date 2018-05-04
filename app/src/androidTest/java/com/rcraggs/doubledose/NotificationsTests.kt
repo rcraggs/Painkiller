@@ -2,7 +2,6 @@ package com.rcraggs.doubledose
 
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
-import android.util.Log
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.verifyZeroInteractions
@@ -14,9 +13,6 @@ import com.rcraggs.doubledose.model.DrugWithDoses
 import com.rcraggs.doubledose.ui.createWithDoses
 import com.rcraggs.doubledose.ui.getNextDrugToBecomeAvailable
 import com.rcraggs.doubledose.util.INotificationsService
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
@@ -117,11 +113,9 @@ class NotificationsTests {
         val d1 = Drug("D1", 3, 10, false).createWithDoses(listOf(now.minus(Duration.ofMinutes(5))), now)
 
         val statusList = listOf(d1)
-//        statusList.getNextDrugToBecomeAvailable()
 
         repo.rescheduleNotifications(statusList)
         verify(ns, times(1)).cancelNotifications()
 
     }
-
 }
