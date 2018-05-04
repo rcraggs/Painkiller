@@ -33,6 +33,7 @@
         android:focusable="true"
         android:padding="6dp"
         android:src="@drawable/ic_edit_black_24dp"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="Edit Icon" />
 
 </android.support.constraint.ConstraintLayout>

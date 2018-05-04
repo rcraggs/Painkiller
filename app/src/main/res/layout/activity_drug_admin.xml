@@ -18,8 +18,8 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/drug_admin_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="?android:attr/colorPrimary"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
@@ -43,7 +43,5 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_add_white_24dp"/>
-        <!--android:backgroundTint="@color/primary_dark"-->
-
 
 </android.support.design.widget.CoordinatorLayout>
