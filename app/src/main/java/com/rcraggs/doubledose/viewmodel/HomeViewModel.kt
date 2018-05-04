@@ -13,9 +13,6 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
 class HomeViewModel(application: Application, private val repo: AppRepo): AndroidViewModel(application) {
-//
-//    private lateinit var internalStatusList: MutableList<DrugStatus>
-//    private var drugStatusLiveData = MediatorLiveData<List<DrugStatus>>()
 
     var timer: LiveData<Long> = MutableLiveData<Long>()
     lateinit var drugWithDoses: LiveData<List<DrugWithDoses>>
@@ -34,10 +31,6 @@ class HomeViewModel(application: Application, private val repo: AppRepo): Androi
             it
         })
     }
-//
-//    fun getDrugs(): List<DrugStatus> {
-//        return internalStatusList.sortedBy { d -> d.drug.name }
-//    }
 
     fun takeDose(drug: Drug) {
         launch(UI) {
