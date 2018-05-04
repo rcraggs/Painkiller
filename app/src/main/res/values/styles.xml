@@ -1,13 +1,15 @@
 <resources>
-
-
     <style name="Painkiller" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorAccent">@color/primaryLightColor</item>
-        <item name="android:textColorPrimary">@color/primaryTextColor</item>
-        <item name="android:textColorSecondary">@color/primaryTextColor</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/primary_light</item>
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <item name="android:textColorSecondary">@color/primary_text</item>
         <item name="android:windowBackground">@color/main_background</item>
+    </style>
+
+    <style name="PainkillerToolbarTheme" parent="Base.ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorPrimary">@color/primary</item>
     </style>
 
     <style name="InputLabelTextView" parent="@android:style/TextAppearance.Small">
@@ -18,7 +20,7 @@
     </style>
 
     <style name="PainkillerColouredButton" parent="Widget.AppCompat.Button.Colored">
-        <item name="colorButtonNormal">@color/primaryDarkColor</item>
+        <item name="colorButtonNormal">@color/primary_text</item>
     </style>
 
 </resources>
