@@ -6,7 +6,7 @@ import android.arch.persistence.room.TypeConverters
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 
-@Database(entities = [Dose::class, Drug::class], version = 4, exportSchema = false)
+@Database(entities = [Dose::class, Drug::class], version = 5, exportSchema = false)
 @TypeConverters(Dose.DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun doseDao(): DoseDao

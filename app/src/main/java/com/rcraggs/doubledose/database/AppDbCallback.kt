@@ -15,12 +15,14 @@ class AppDbCallback: RoomDatabase.Callback() {
         ibroprufen.put("name", "Ibroprufen")
         ibroprufen.put("perday", 4L)
         ibroprufen.put("gap", 240L)
+        ibroprufen.put("active", true)
         db.insert("drug", OnConflictStrategy.IGNORE, ibroprufen)
 
         val paracetamol = ContentValues()
         paracetamol.put("name", "Paracetamol")
         paracetamol.put("perday", 4L)
         paracetamol.put("gap", 240L)
+        paracetamol.put("active", true)
         db.insert("drug", OnConflictStrategy.IGNORE, paracetamol)
 
         Log.d("AppDbCallback", "Adding data to new database")
