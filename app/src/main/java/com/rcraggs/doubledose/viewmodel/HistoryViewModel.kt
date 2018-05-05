@@ -5,6 +5,8 @@ import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import com.rcraggs.doubledose.database.AppRepo
 import com.rcraggs.doubledose.model.Dose
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -39,5 +41,11 @@ class HistoryViewModel(val repo: AppRepo): ViewModel(){
         }
 
         drugName = runBlocking { repo.getDrugWithId(drugId)?.name ?: "All Drugs" }
+    }
+
+    fun deleteDose(dose: Dose) {
+        launch(CommonPool) {
+            repo.deleteDose(dose.id)
+        }
     }
 }

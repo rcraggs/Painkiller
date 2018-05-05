@@ -11,13 +11,13 @@ import kotlinx.android.synthetic.main.dose_history_item.view.*
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
-class DoseAdapter(var items: List<Dose>, private val doseAction: (Dose) -> Unit): RecyclerView.Adapter<DoseAdapter.DoseHolder>() {
+class DoseAdapter(var items: List<Dose>, private val doseAction: (Dose) -> Unit, private val deleteAction: (Dose) -> Unit): RecyclerView.Adapter<DoseAdapter.DoseHolder>() {
 
     override fun getItemCount() = items?.size ?: 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DoseHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.dose_history_item, parent, false)
-        return DoseHolder(v, doseAction)
+        return DoseHolder(v, doseAction, deleteAction)
     }
 
     override fun onBindViewHolder(holder: DoseHolder, position: Int) {
@@ -29,7 +29,7 @@ class DoseAdapter(var items: List<Dose>, private val doseAction: (Dose) -> Unit)
     override fun getItemId(position: Int): Long {
         return items[position].id
     }
-    class DoseHolder(private val v: View, private val doseAction: (Dose) -> Unit): RecyclerView.ViewHolder(v) {
+    class DoseHolder(private val v: View, private val doseAction: (Dose) -> Unit, private val deleteAction: (Dose) -> Unit): RecyclerView.ViewHolder(v) {
 
         fun bindDose(item: Dose) {
             val ld1: LocalDateTime = LocalDateTime.ofInstant(item.taken, ZoneId.systemDefault())
@@ -39,6 +39,10 @@ class DoseAdapter(var items: List<Dose>, private val doseAction: (Dose) -> Unit)
 
             v.img_edit_dose.setOnClickListener {
                 doseAction(item)
+            }
+
+            v.img_delete_dose.setOnClickListener {
+                deleteAction(item)
             }
         }
     }

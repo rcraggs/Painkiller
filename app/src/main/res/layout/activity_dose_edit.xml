@@ -130,8 +130,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
-                    android:text="@string/button_text_update"
-                    android:theme="@style/PainkillerColouredButton" />
+                    android:text="@string/button_text_update"/>
 
                 <Button
                     android:id="@+id/btn_delete_dose"
@@ -140,8 +139,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:text="@string/button_text_delete"
-                    android:theme="@style/PainkillerColouredButton" />
+                    android:text="@string/button_text_delete"/>
             </LinearLayout>
 
 

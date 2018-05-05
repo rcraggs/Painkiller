@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.rcraggs.doubledose.R
+import com.rcraggs.doubledose.R.id.tv_no_history_message
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.ui.DoseAdapter
 import com.rcraggs.doubledose.util.setUpVerticalFixedWidthWithRule
@@ -46,7 +47,12 @@ class HistoryActivity : AppCompatActivity() {
                 setUpRecyclerView(it)
             }else{
                 adapter.items = it ?: ArrayList() // todo do a list diff or similar?
-                rv_history.adapter.notifyDataSetChanged()
+
+                if (it == null || it.isEmpty()){
+                    setNoHistoryMessageVisible(true)
+                }else {
+                    rv_history.adapter.notifyDataSetChanged()
+                }
             }
         })
 
@@ -57,22 +63,34 @@ class HistoryActivity : AppCompatActivity() {
     private fun setUpRecyclerView(it: List<Dose>?) {
 
         if (it == null || it.isEmpty()) {
-            tv_no_history_message.visibility = View.VISIBLE
-            rv_history.visibility = View.GONE
-
+            setNoHistoryMessageVisible(true)
         }else {
 
-            adapter = DoseAdapter(it ?: ArrayList()) {
-                startActivity(intentFor<DoseEditActivity>(
-                        DoseEditActivity.DOSE_EDIT_ACTIVITY_EXTRA_DOSE_ID to it.id))
-            }.apply {
+            adapter = DoseAdapter(it, this::doseEditAction, this::doseDeleteAction).apply {
                 setHasStableIds(true)
             }
             rv_history.adapter = adapter
             rv_history.setUpVerticalFixedWidthWithRule()
+            setNoHistoryMessageVisible(false)
+        }
+    }
 
+    private fun setNoHistoryMessageVisible(showMessage: Boolean) {
+        if (showMessage){
+            tv_no_history_message.visibility = View.VISIBLE
+            rv_history.visibility = View.GONE
+        }else {
             tv_no_history_message.visibility = View.GONE
             rv_history.visibility = View.VISIBLE
         }
+    }
+
+    private fun doseDeleteAction(it: Dose) {
+        viewModel.deleteDose(it)
+    }
+
+    private fun doseEditAction(it: Dose) {
+        startActivity(intentFor<DoseEditActivity>(
+                DoseEditActivity.DOSE_EDIT_ACTIVITY_EXTRA_DOSE_ID to it.id))
     }
 }
