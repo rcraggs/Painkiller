@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.CallSuper
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
@@ -11,6 +12,7 @@ import android.view.MenuItem
 import com.rcraggs.doubledose.R
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.ui.DrugCardAdapter
+import com.rcraggs.doubledose.ui.getDoseDescription
 import com.rcraggs.doubledose.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.architecture.ext.viewModel
@@ -27,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.start()
 
         val adapter = DrugCardAdapter(viewModel.drugWithDoses,
-                viewModel::takeDose,
+                this::takeDoseNow,
                 this::chooseDoseTime,
                 this::showDrugHistory
                 )
@@ -95,5 +97,16 @@ class MainActivity : AppCompatActivity() {
 
     fun takeDose(drugId: Long, hourOfDay: Int, minute: Int) {
         viewModel.takeDose(drugId, hourOfDay, minute) // todo could this be behind an interface?
+        showDoseTakenMessage(getDoseDescription(hourOfDay, minute))
+    }
+}
+
+    private fun takeDoseNow(drug: Drug) {
+        viewModel.takeDose(drug)
+        showDoseTakenMessage(getDoseDescription())
+    }
+
+    private fun showDoseTakenMessage(doseDesc: String) {
+        Snackbar.make(main_container, "Dose Taken: $doseDesc", 1500).show()
     }
 }

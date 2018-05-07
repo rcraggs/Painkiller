@@ -70,3 +70,13 @@ fun Drug.createWithDoses(doses: List<Instant> = ArrayList(), time: Instant? = nu
 
     return dd
 }
+
+fun getDoseDescription(): String {
+    val takenTime = LocalDateTime.now()
+    return Constants.historyDoseTimeFormatter.format(takenTime)
+}
+
+fun getDoseDescription(hourOfDay: Int, minute: Int): String {
+    val takenTime = LocalDateTime.now().withHour(hourOfDay).withMinute(minute)
+    return Constants.historyDoseTimeFormatter.format(takenTime)
+}
