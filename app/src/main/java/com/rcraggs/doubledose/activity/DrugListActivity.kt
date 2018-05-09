@@ -38,7 +38,7 @@ class DrugListActivity : AppCompatActivity() {
 
         rv_dose_admin.layoutManager = LinearLayoutManager(this)
 
-        fab_add_drug.setOnClickListener { view ->
+        fab_add_drug.setOnClickListener {
             startActivity(intentFor<DrugAddEditActivity>())
         }
     }

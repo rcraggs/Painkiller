@@ -32,7 +32,7 @@ class NotificationPublisher: BroadcastReceiver() {
                 val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val notification = intent.getParcelableExtra<Notification>(NOTIFICATION)
                 val id = intent.getIntExtra(NOTIFICATION_ID, 0);
-                notificationManager.notify(id?: -1, notification);
+                notificationManager.notify(id, notification);
 
                 Log.d("NOTIFICATIONPUBLISHER", "Logging Broadcast")
             }

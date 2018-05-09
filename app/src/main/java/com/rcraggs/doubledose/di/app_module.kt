@@ -32,7 +32,7 @@ val appModule : Module = applicationContext {
 
 val inMemoryDBModule : Module = applicationContext {
 
-    bean { createMockNotificationService() as INotificationsService}
+    bean { createMockNotificationService() }
     bean { createInMemoryAppDatabase(this)}
 }
 

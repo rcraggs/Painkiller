@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                 .setFocalColour(ContextCompat.getColor(this, R.color.primary_light))
                 .setPrimaryText("Taking a dose ${++stepCount}/${introStepCount}")
                 .setSecondaryText("Click here when you take a dose")
-                .setPromptStateChangeListener { prompt, state ->
+                .setPromptStateChangeListener { _, state ->
                     if ((state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_NON_FOCAL_PRESSED) && promptList.size > promptIndex + 1)
                         promptList[++promptIndex].show()
                 })
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                 .setFocalColour(ContextCompat.getColor(this, R.color.primary_light))
                 .setPrimaryText("Recording an earlier dose ${++stepCount}/${introStepCount}")
                 .setSecondaryText("Click here when record a dose that you took earlier")
-                .setPromptStateChangeListener { prompt, state ->
+                .setPromptStateChangeListener { _, state ->
                     if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED && promptList.size > promptIndex + 1)
                         inDemoMode = false
                 })
@@ -167,34 +167,34 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun OldTapTargetThing() {
-        val drugCard = getFirstDrugCard()
-        if (drugCard != null) {
-            val introStepCount = "5"
-            var stepCount = 0
 
-            TapTargetSequence(this).targets(
-                    TapTarget.forView(drugCard.getDrugInfoView(),
-                            "Introduction ${++stepCount}/${introStepCount}",
-                            "For each drug you'll be shown the number of doses you've taken in 24 hours, and the time you can take your next dose")
-                            .defaultConfig(),
-                    TapTarget.forView(drugCard.getDoseNowView(),
-                            "Taking a dose ${++stepCount}/${introStepCount}",
-                            "Click here when you take a dose")
-                            .defaultConfig(),
-                    TapTarget.forView(drugCard.getDoseLaterView(),
-                            "Recording an earlier dose ${++stepCount}/${introStepCount}",
-                            "Add a dose you took recently")
-                            .defaultConfig(),
-                    TapTarget.forView(drugCard.getDoseHistory(),
-                            "Dose History ${++stepCount}/${introStepCount}",
-                            "View or change the doses of this drug")
-                            .defaultConfig(),
-                    TapTarget.forToolbarOverflow(main_toolbar,
-                            "More ... ${++stepCount}/${introStepCount}",
-                            "Add and update drugs or change settings")
-                            .defaultConfig()
-            ).start()
-        }
+        val drugCard = getFirstDrugCard()
+
+        val introStepCount = "5"
+        var stepCount = 0
+
+        TapTargetSequence(this).targets(
+                TapTarget.forView(drugCard.getDrugInfoView(),
+                        "Introduction ${++stepCount}/${introStepCount}",
+                        "For each drug you'll be shown the number of doses you've taken in 24 hours, and the time you can take your next dose")
+                        .defaultConfig(),
+                TapTarget.forView(drugCard.getDoseNowView(),
+                        "Taking a dose ${++stepCount}/${introStepCount}",
+                        "Click here when you take a dose")
+                        .defaultConfig(),
+                TapTarget.forView(drugCard.getDoseLaterView(),
+                        "Recording an earlier dose ${++stepCount}/${introStepCount}",
+                        "Add a dose you took recently")
+                        .defaultConfig(),
+                TapTarget.forView(drugCard.getDoseHistory(),
+                        "Dose History ${++stepCount}/${introStepCount}",
+                        "View or change the doses of this drug")
+                        .defaultConfig(),
+                TapTarget.forToolbarOverflow(main_toolbar,
+                        "More ... ${++stepCount}/${introStepCount}",
+                        "Add and update drugs or change settings")
+                        .defaultConfig()
+        ).start()
     }
 
     private fun getFirstDrugCard() =

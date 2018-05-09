@@ -8,9 +8,11 @@ import com.rcraggs.doubledose.model.DrugWithDoses
 @Dao
 interface DrugDao {
 
+    @Transaction
     @Query("SELECT * FROM drug ORDER BY name")
     fun getAllDrugsWithDoses(): LiveData<List<DrugWithDoses>>
 
+    @Transaction
     @Query("SELECT * FROM drug ORDER BY name")
     fun getAllDrugsWithDosesSync(): List<DrugWithDoses>
 
@@ -20,6 +22,7 @@ interface DrugDao {
     @Query("SELECT * FROM drug ORDER BY name asc")
     fun getAllLive(): LiveData<List<Drug>>
 
+    @Transaction
     @Query("SELECT * FROM drug WHERE active = 1 ORDER BY name asc")
     fun getActiveWithDosesLive(): LiveData<List<DrugWithDoses>>
 
@@ -33,10 +36,10 @@ interface DrugDao {
     @Query("SELECT * FROM drug WHERE id = :drugId LIMIT 1")
     fun findById(drugId: Long): Drug
 
+    @Transaction
     @Query("SELECT * FROM drug WHERE id = :id LIMIT 1")
     fun findWithDosesById(id: Long): DrugWithDoses
 
     @Update
     fun update(drug: Drug)
-
 }

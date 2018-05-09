@@ -13,7 +13,7 @@ class MaterialTapTargetSequence {
     }
 
     fun add(prompt: MaterialTapTargetPrompt.Builder){
-        prompt.setPromptStateChangeListener { prompt, state ->
+        prompt.setPromptStateChangeListener { _, state ->
             if (state == MaterialTapTargetPrompt.STATE_NON_FOCAL_PRESSED ||
                     state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED)
 

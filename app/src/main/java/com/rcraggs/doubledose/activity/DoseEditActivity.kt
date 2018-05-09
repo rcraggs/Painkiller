@@ -1,5 +1,6 @@
 package com.rcraggs.doubledose.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -38,8 +39,9 @@ class DoseEditActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
         viewModel.setDose(doseId)
 
-
+        @Suppress("DEPRECATION") // cannot fix because of min API levels
         time_dose_time.currentHour = viewModel.getDoseHour()
+        @Suppress("DEPRECATION")
         time_dose_time.currentMinute = viewModel.getDoseMinutes()
         tv_current_date.text = viewModel.getDoseTimeString()
         sp_drug.setSelection(viewModel.getPositionOfDrugInList(), false)
@@ -49,7 +51,7 @@ class DoseEditActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         btn_change_date.setOnClickListener { updateDate() }
 
 
-        time_dose_time.setOnTimeChangedListener { view, hourOfDay, minute ->
+        time_dose_time.setOnTimeChangedListener { _, hourOfDay, minute ->
             viewModel.setNewTime(hourOfDay, minute)
         }
 

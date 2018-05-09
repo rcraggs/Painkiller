@@ -9,8 +9,5 @@ class SettingFragment : PreferenceFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.preference_screen)
-        val p = findPreference(getString(R.string.pref_show_notifications))
     }
-
-
 }
