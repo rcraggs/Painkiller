@@ -1,6 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/default_inner_container_margin">
@@ -10,6 +9,7 @@
         android:id="@+id/card_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         card_view:cardCornerRadius="@dimen/card_recycler_corner_radius"
         card_view:cardElevation="@dimen/drug_card_elevation">
 
@@ -19,6 +19,13 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/default_inner_container_margin">
 
+            <TextView
+                android:id="@+id/drug_card_banner"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="TextView" />
+
+
             <!--todo card text to come from a style not explicit-->
             <TextView
                 android:id="@+id/tv_medicine_type"
@@ -26,18 +33,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
+                android:paddingTop="8dp"
                 android:paddingEnd="@dimen/default_inner_container_margin"
                 android:text="Drug name"
-                android:textColor="@color/white"
+                android:textColor="@color/drug_card_information"
                 card_view:layout_constraintStart_toStartOf="@+id/drug_card_layout"
-                card_view:layout_constraintTop_toTopOf="@+id/drug_card_layout" />
+                card_view:layout_constraintTop_toBottomOf="@id/drug_card_banner" />
+
+                <!--card_view:layout_constraintTop_toBottomOf="@+id/drug_card_banner" />-->
 
             <TextView
                 android:id="@+id/tv_amount_taken"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="X/Y"
-                android:textColor="@color/white"
+                android:textColor="@color/drug_card_information"
                 android:textSize="@dimen/drug_card_detail_font_size"
                 card_view:layout_constraintEnd_toEndOf="@+id/drug_card_layout"
                 card_view:layout_constraintTop_toTopOf="@+id/tv_medicine_type" />
@@ -49,7 +59,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Dummy"
                 android:textAlignment="viewStart"
-                android:textColor="@color/white"
+                android:textColor="@color/drug_card_information"
                 android:textSize="@dimen/drug_card_detail_font_size"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/tv_medicine_type" />
