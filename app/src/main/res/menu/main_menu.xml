@@ -17,4 +17,9 @@
         android:icon="@drawable/ic_local_hospital_black_24dp"
         android:title="@string/action_update_drugs"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_intro"
+        android:orderInCategory="400"
+        android:title="Intro"
+        app:showAsAction="never" />
 </menu>

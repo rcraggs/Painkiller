@@ -71,4 +71,10 @@ dependencies {
 
     implementation "org.jetbrains.anko:anko:0.10.4"
     implementation "org.jetbrains.anko:anko-commons:0.10.4"
+
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.11.0'
+
+    implementation 'uk.co.samuelwall:material-tap-target-prompt:2.8.0'
+
+    compile "org.jetbrains.anko:anko-commons:$anko_version"
 }

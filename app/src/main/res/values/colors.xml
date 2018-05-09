@@ -13,5 +13,8 @@
     <color name="main_background">#ffffff</color>
 
     <color name="inputLabelTextColor">@color/primary_dark</color>
+    <color name="red">#FF3333</color>
+    <color name="blue">#3333FF</color>
+    <color name="black">#000000</color>
 
 </resources>

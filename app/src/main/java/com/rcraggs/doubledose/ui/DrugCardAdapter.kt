@@ -37,6 +37,11 @@ class DrugCardAdapter(private val items: LiveData<List<DrugWithDoses>>,
             private val drugHistoryAction: (Drug) -> Unit)
         : RecyclerView.ViewHolder(v) {
 
+        fun getDrugInfoView() = v.tv_next_dose_info
+        fun getDoseNowView() = v.img_dose_now
+        fun getDoseLaterView() = v.img_dose_choose
+        fun getDoseHistory() = v.img_drug_history
+
         fun bindDrug(item: DrugWithDoses?) {
 
             if (item == null){
@@ -70,6 +75,8 @@ class DrugCardAdapter(private val items: LiveData<List<DrugWithDoses>>,
             }
 
         }
+
+        fun getCard() = v
     }
 }
 
