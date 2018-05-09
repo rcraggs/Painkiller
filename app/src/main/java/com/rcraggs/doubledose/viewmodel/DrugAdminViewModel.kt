@@ -14,15 +14,12 @@ class DrugAdminViewModel(val repo: AppRepo, application: Application) : AndroidV
      */
 
     val drugs = repo.getAllDrugsLive()
-
-
-
+    
     /**
      * For Drug Edit
      */
 
     internal lateinit var drug: Drug
-    private var isAdd: Boolean = true
 
     fun setDrugId(id: Long) {
 
@@ -44,17 +41,12 @@ class DrugAdminViewModel(val repo: AppRepo, application: Application) : AndroidV
     }
 
     fun updateDrug(name: String, per24: String, gap: String, isActive: Boolean) {
-        val per24Int = Integer.parseInt(per24).toLong()
-        val gapInt = Integer.parseInt(gap).toLong()
+        val per24Long = Integer.parseInt(per24).toLong()
+        val gapLong = Integer.parseInt(gap).toLong()
         drug.name = name
-        drug.gapMinutes =  gapInt
-        drug.dosesPerDay = per24Int
+        drug.gapMinutes = gapLong
+        drug.dosesPerDay = per24Long
         drug.active = isActive
         repo.updateDrug(drug)
-
     }
-
-
-
-
 }

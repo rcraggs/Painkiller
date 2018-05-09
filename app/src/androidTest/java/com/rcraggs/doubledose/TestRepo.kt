@@ -16,7 +16,6 @@ import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.MockNotificationsService
 import com.rcraggs.doubledose.util.blockingObserve
 import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking

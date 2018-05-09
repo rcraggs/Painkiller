@@ -1,9 +1,7 @@
 package com.rcraggs.doubledose.database
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.os.SystemClock
-import android.util.Log
 import com.rcraggs.doubledose.model.Dose
 import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugWithDoses

@@ -10,7 +10,6 @@ import com.rcraggs.doubledose.model.Drug
 import com.rcraggs.doubledose.model.DrugWithDoses
 import com.rcraggs.doubledose.util.Constants
 import kotlinx.android.synthetic.main.drug_card.view.*
-import org.jetbrains.anko.textColor
 
 class DrugCardAdapter(private val items: LiveData<List<DrugWithDoses>>,
                       private val doseAction: (Drug) -> Unit,

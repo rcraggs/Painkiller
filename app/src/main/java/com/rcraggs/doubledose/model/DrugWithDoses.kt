@@ -25,13 +25,13 @@ class DrugWithDoses() {
 
     @Ignore private var timeOfLastDose: Instant? = null
     @Ignore private var timeOfDoseThatIsMax: Instant? = null // if we can have 4 doses per day, when is the 4th most recent dose
-    @Ignore var dosesIn24Hours: Int = 0
-    @Ignore var secondsBeforeNextDoseAvailable: Int = 0
+    @Ignore var dosesIn24Hours: Long = 0
+    @Ignore var secondsBeforeNextDoseAvailable: Long = 0
     @Ignore var timeNextDoseIsAvailable: Instant? = null
     @Ignore
     private lateinit var listOfDosesIn24HoursSinceRefresh: List<Dose>
 
-    private fun returnSecondsToNextDose(currentTime: Instant): Int {
+    private fun returnSecondsToNextDose(currentTime: Instant): Long {
 
         // No doses, no minutes until a next dose
         if (timeOfLastDose == null){
@@ -40,16 +40,16 @@ class DrugWithDoses() {
 
         // If there are more doses in 24 hours then they can't dose until the time of the
         // last relevant dose
-        var secMaxDosesClear = 0
+        var secMaxDosesClear = 0L
         if (dosesIn24Hours >= drug.dosesPerDay) {
 
             val durationSinceMaxDose = Duration.between(timeOfDoseThatIsMax, currentTime)
             val howFarShortOf24HoursIsMaxDose = Duration.ofHours(24) - durationSinceMaxDose
-            secMaxDosesClear = howFarShortOf24HoursIsMaxDose.seconds.toInt()
+            secMaxDosesClear = howFarShortOf24HoursIsMaxDose.seconds
         }
 
-        val secSinceLastDose = Duration.between(timeOfLastDose, currentTime).seconds.toInt()
-        val secLastDoseClear = max(0, drug.gapMinutes * 60 - secSinceLastDose).toInt()
+        val secSinceLastDose = Duration.between(timeOfLastDose, currentTime).seconds
+        val secLastDoseClear = max(0, drug.gapMinutes * 60 - secSinceLastDose)
 
         return max(secLastDoseClear, secMaxDosesClear)
     }
@@ -59,10 +59,10 @@ class DrugWithDoses() {
         // Recalculate how many doses we've had in the last 24 hours
         dosesIn24Hours = listOfDosesIn24HoursSinceRefresh.count {
             it.taken > currentTime.minus(Duration.ofHours(24))
-        }
+        }.toLong()
 
         secondsBeforeNextDoseAvailable = returnSecondsToNextDose(currentTime)
-        timeNextDoseIsAvailable = currentTime.plusSeconds(secondsBeforeNextDoseAvailable.toLong())
+        timeNextDoseIsAvailable = currentTime.plusSeconds(secondsBeforeNextDoseAvailable)
     }
 
     fun refreshData(currentTime: Instant = Instant.now()) {

@@ -12,13 +12,13 @@ import com.rcraggs.doubledose.activity.MainActivity
 
 
 interface INotificationsService {
-    fun scheduleNotification(secondsToAvailable: Int, drugName: String)
+    fun scheduleNotification(secondsToAvailable: Long, drugName: String)
     fun cancelNotifications()
 }
 
 class NotificationsServiceImpl(private val context: Context, private val alarmManager: AlarmManager) : INotificationsService {
 
-    override fun scheduleNotification(secondsToAvailable: Int, drugName: String) {
+    override fun scheduleNotification(secondsToAvailable: Long, drugName: String) {
 
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -75,7 +75,7 @@ class NotificationsServiceImpl(private val context: Context, private val alarmMa
 }
 
 open class MockNotificationsService: INotificationsService {
-    override fun scheduleNotification(secondsToAvailable: Int, drugName: String) {
+    override fun scheduleNotification(secondsToAvailable: Long, drugName: String) {
         Log.d("MockNotificationsSer", "Logging Mock notification setup $secondsToAvailable for $drugName")
     }
 

@@ -34,8 +34,8 @@ class DoseAdapter(var items: List<Dose>, private val doseAction: (Dose) -> Unit,
         fun bindDose(item: Dose) {
             val ld1: LocalDateTime = LocalDateTime.ofInstant(item.taken, ZoneId.systemDefault())
             val takenTime = Constants.historyDoseTimeFormatter.format(ld1)
-            v.tv_dose_history_drug.text = "${item.drug.name}"
-            v.tv_dose_history_date.text =  "$takenTime"
+            v.tv_dose_history_drug.text = item.drug.name
+            v.tv_dose_history_date.text = takenTime
 
             v.img_edit_dose.setOnClickListener {
                 doseAction(item)
