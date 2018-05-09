@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MainActivity"
+    android:background="@color/dashboard_background_color">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/main_toolbar"
@@ -30,6 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        android:background="@color/dashboard_background_color"/>
 
 </android.support.constraint.ConstraintLayout>

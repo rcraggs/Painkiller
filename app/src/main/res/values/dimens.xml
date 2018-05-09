@@ -15,4 +15,5 @@
     <dimen name="text_size_dose_history_drug_title">20sp</dimen>
     <dimen name="text_size_list_detail">18sp</dimen>
     <dimen name="drug_card_banner_height">30dp</dimen>
+    <dimen name="drug_card_information_inset">14dp</dimen>
 </resources>
