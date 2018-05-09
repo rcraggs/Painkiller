@@ -55,6 +55,7 @@ fun createMockNotificationService(): INotificationsService {
 
 fun createInMemoryAppDatabase(context: Context): AppDatabase {
     return Room.inMemoryDatabaseBuilder(context.androidApplication(), AppDatabase::class.java)
+            .fallbackToDestructiveMigration()
             .build();
 }
 

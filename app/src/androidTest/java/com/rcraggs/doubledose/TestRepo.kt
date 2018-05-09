@@ -15,6 +15,9 @@ import com.rcraggs.doubledose.ui.UiUtilities
 import com.rcraggs.doubledose.util.Constants
 import com.rcraggs.doubledose.util.MockNotificationsService
 import com.rcraggs.doubledose.util.blockingObserve
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.After
@@ -57,10 +60,11 @@ class TestRepo {
         repo = AppRepo(db, notifications)
 
         // Insert drugs into the DB for testing
-        runBlocking {
+        val j = async(CommonPool){
             paracetamol.id = db.drugDao().insert(paracetamol)
             ibroprufen.id = db.drugDao().insert(ibroprufen)
         }
+        runBlocking { j.await() }
     }
 
     @After
@@ -115,26 +119,24 @@ class TestRepo {
         val retrieved = doseDao.getAll()
         assertEquals(retrieved.size, 3)
     }
-
-    @Test
-    fun testGetLatestAnyType() {
-
-
-        val j = launch {
-            doseDao.insert(Dose(paracetamol))
-            doseDao.insert(Dose(paracetamol))
-            val d = Dose(ibroprufen)
-            d.taken = d.taken.plusSeconds(1000)
-            doseDao.insert(d)
-        }
-
-        launch {
-            j.join()
-            val retrieved = doseDao.getLatest().blockingObserve()
-            assertEquals(ibroprufen.id, retrieved?.drugId)
-        }
-
-    }
+//
+//    @Test
+//    fun testGetLatestAnyType() {
+//
+//        val j = launch {
+//            doseDao.insert(Dose(paracetamol))
+//            doseDao.insert(Dose(paracetamol))
+//            val d = Dose(ibroprufen)
+//            d.taken = d.taken.plusSeconds(1000)
+//            doseDao.insert(d)
+//        }
+//
+//        launch {
+//            j.join()
+//            val retrieved = doseDao.getLatest().blockingObserve()
+//            assertEquals(ibroprufen.id, retrieved?.drugId)
+//        }
+//    }
 
     @Test
     fun testNoDosesGivesNothingIn24Hours() {
