@@ -10,7 +10,7 @@
         android:id="@+id/drug_edit_toolbar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:elevation="4dp"
+        android:elevation="@dimen/app_toolbar_elevation"
         android:label="@string/activity_title_drug_edit"
         android:background="@color/primary"
         android:theme="@style/PainkillerToolbarTheme"

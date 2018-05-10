@@ -16,4 +16,5 @@
     <dimen name="text_size_list_detail">18sp</dimen>
     <dimen name="drug_card_banner_height">30dp</dimen>
     <dimen name="drug_card_information_inset">14dp</dimen>
+    <dimen name="app_toolbar_elevation">4dp</dimen>
 </resources>
