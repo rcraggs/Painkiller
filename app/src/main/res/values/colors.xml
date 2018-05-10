@@ -16,5 +16,8 @@
     <color name="red">#FF3333</color>
     <color name="blue">#3333FF</color>
     <color name="black">#000000</color>
+    <color name="drug_card_information">#444444</color>
+    <color name="drug_card_title_color">#000000</color>
+    <color name="dashboard_background_color">#EEEEEE</color>
 
 </resources>

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="?android:attr/colorPrimary"
-        android:elevation="4dp"
+        android:elevation="@dimen/app_toolbar_elevation"
         android:label="@string/activity_title_dose_edit"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
